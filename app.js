@@ -63,7 +63,7 @@ function selectProduct(id) {
   unlock('step-1');
   markRail(1);
   track('Product', 'select', id);
-  trackStep('#step-1', 'Step 1 download');
+  trackStep('1-download', 'Funnel 1: product chosen');
 }
 
 function fw() { return R.firmware[product.firmware]; }
@@ -71,7 +71,7 @@ function fw() { return R.firmware[product.firmware]; }
 function wireDownload() {
   $('dlBtn').addEventListener('click', () => {
     track('Download', 'click', product ? product.firmware : 'none');
-    trackStep('#step-2', 'Step 2 check');
+    trackStep('2-downloaded', 'Funnel 2: download clicked');
   });
 }
 
@@ -222,7 +222,7 @@ function onVerified(computed) {
   unlock('step-4');
   markRail(3);
   track('Check', 'pass', product.id);
-  trackStep('#step-3', 'Step 3 write card');
+  trackStep('3-verified', 'Funnel 3: check passed');
   showResult('ok', 'It is genuine. You are safe to continue.', [
     'This file matches the version the publisher released. Keep it, you need it in the next step.',
   ]);

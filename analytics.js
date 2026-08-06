@@ -70,11 +70,14 @@ export function track(category, action, name, value) {
   globalThis._paq?.push(ev);
 }
 
-/* A page view for each step reached, so the funnel is readable in Matomo as
-   plain URLs rather than needing event maths. */
-export function trackStep(path, title) {
+/* A page view for each step reached, so the funnel reads as plain URLs in Matomo
+   rather than needing event maths. Uses a synthetic path rather than a fragment,
+   because Matomo strips fragments and every step would collapse into one row. */
+export function trackStep(slug, title) {
   if (!live) return;
-  globalThis._paq?.push(['setCustomUrl', location.pathname + path]);
+  globalThis._paq?.push(['setCustomUrl', `${location.origin}/funnel/${slug}`]);
   globalThis._paq?.push(['setDocumentTitle', title]);
   globalThis._paq?.push(['trackPageView']);
+  // Put the real URL back so any later page view is not mislabelled.
+  globalThis._paq?.push(['setCustomUrl', location.href]);
 }
