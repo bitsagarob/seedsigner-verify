@@ -42,6 +42,7 @@ index.html      the whole page, all three modes
 style.css       Bitsaga tokens, light and dark
 app.js          mode switching, product choice, file handling, result states
 sha256.js       streaming SHA-256, the only cryptographic code here
+analytics.js    cookieless visit counting, on our own server, easy to delete
 release.json    every pinned value
 ```
 
@@ -86,6 +87,15 @@ ed25519, expires 2031-12-31
 
 Where that key is held is deliberately not published. Key custody is not provable by anyone, so
 a claim about it would be unverifiable. See TRUST.md.
+
+## Privacy
+
+No cookies, no third parties, no consent banner. Visits are counted by a Matomo instance on
+Bitsaga's own server, reached through `/mtm/` on this same host, so the page never contacts
+another domain and the Content-Security-Policy stays `'self'` throughout. Nothing about the file
+you check is recorded: not its name, not its size, not its hash, only whether a check passed or
+failed. Cypherpunk mode, Do Not Track and Global Privacy Control each disable it entirely. It
+lives in one short file, `analytics.js`, and deleting that file breaks nothing else.
 
 ## Dependencies
 

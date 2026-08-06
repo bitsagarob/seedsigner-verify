@@ -1,4 +1,5 @@
 import { hashFile, selfTest, crossCheck } from './sha256.js';
+import { startAnalytics, stopAnalytics, track, trackStep } from './analytics.js';
 
 const $ = (id) => document.getElementById(id);
 const el = (tag, text, cls) => {
@@ -26,6 +27,10 @@ function setMode(mode) {
   }
   $('modeNote').textContent = MODE_NOTE[mode];
   try { localStorage.setItem('mode', mode); } catch {}
+
+  if (mode === 'cypherpunk') stopAnalytics();
+  else startAnalytics(mode);
+  track('Mode', 'switch', mode);
 }
 
 for (const b of document.querySelectorAll('[data-set-mode]')) {
@@ -57,9 +62,18 @@ function selectProduct(id) {
   applyProduct();
   unlock('step-1');
   markRail(1);
+  track('Product', 'select', id);
+  trackStep('#step-1', 'Step 1 download');
 }
 
 function fw() { return R.firmware[product.firmware]; }
+
+function wireDownload() {
+  $('dlBtn').addEventListener('click', () => {
+    track('Download', 'click', product ? product.firmware : 'none');
+    trackStep('#step-2', 'Step 2 check');
+  });
+}
 
 function applyProduct() {
   const f = fw();
@@ -191,6 +205,7 @@ function showResult(kind, title, lines, extra) {
     const b = el('button', 'How do I know this?');
     b.type = 'button';
     b.addEventListener('click', () => {
+      track('Trust', 'how-do-i-know');
       setMode('advanced');
       $('step-2').scrollIntoView({ block: 'center' });
     });
@@ -206,6 +221,8 @@ function onVerified(computed) {
   unlock('step-3');
   unlock('step-4');
   markRail(3);
+  track('Check', 'pass', product.id);
+  trackStep('#step-3', 'Step 3 write card');
   showResult('ok', 'It is genuine. You are safe to continue.', [
     'This file matches the version the publisher released. Keep it, you need it in the next step.',
   ]);
@@ -222,6 +239,7 @@ function onMismatch(computed) {
 
   if (known && known.kind === 'match') {
     const other = R.products.find((p) => p.firmware === known.firmware);
+    track('Check', 'wrong-model', product.id);
     showResult('warn', 'That is the file for a different model.', [
       `This is ${known.name}, which is the software for ${other ? other.label : known.firmware}.`,
       `You chose ${product.label}, which needs a different file. Go back to step 1 and use the button there.`,
@@ -230,6 +248,7 @@ function onMismatch(computed) {
   }
 
   if (known && known.kind === 'wrong-board') {
+    track('Check', 'wrong-board', known.board);
     showResult('warn', 'That is the image for a different board.', [
       `This is ${known.name}, built for the ${known.board}.`,
       'Your device is a Raspberry Pi Zero v1.3. Go back to step 1 and download the file the button points at.',
@@ -237,6 +256,7 @@ function onMismatch(computed) {
     return;
   }
 
+  track('Check', 'stop-unknown-file', product.id);
   showResult('bad', 'Something is wrong with this file. Stop here.', [
     'Do not use it. Download it again using the button in step 1.',
     'If this happens twice, do not continue, and contact me before you go any further.',
@@ -258,6 +278,7 @@ async function handleFile(file) {
   $('result').hidden = true;
 
   if (!/\.(img|zip)$/i.test(file.name)) {
+    track('Check', 'wrong-filetype');
     showResult('warn', 'That does not look like the right file.', [
       'The file you want ends in .img and is the one you downloaded in step 1.',
       'Try again with that one. Nothing is wrong.',
@@ -265,6 +286,8 @@ async function handleFile(file) {
     return;
   }
 
+  track('Check', 'start', product.id);
+  const startedAt = Date.now();
   $('progWrap').hidden = false;
   $('fill').style.width = '0%';
   $('progText').textContent = 'Reading the file. Nothing is being uploaded.';
@@ -275,9 +298,11 @@ async function handleFile(file) {
       $('progText').textContent = `Checking… ${Math.round(frac * 100)}%`;
     });
     $('progText').textContent = 'Done.';
+    track('Check', 'duration-seconds', product.id, Math.round((Date.now() - startedAt) / 1000));
     if (computed === fw().sha256) onVerified(computed);
     else onMismatch(computed);
   } catch (e) {
+    track('Check', 'read-error');
     showResult('bad', 'The file could not be read.', [
       'This usually means it was moved or deleted while we were reading it. Try again.',
     ]);
@@ -318,6 +343,7 @@ function staleness() {
   if (days <= R.stalenessWarningAfterDays) return;
   const n = $('staleNotice');
   n.hidden = false;
+  track('Health', 'stale-release-data', R.lastConfirmed);
   n.textContent =
     `We last confirmed this release data on ${R.lastConfirmed}, which is more than ` +
     `${Math.round(days)} days ago. There may be a newer version we have not checked. ` +
@@ -336,6 +362,7 @@ function settingsDownload() {
   box.addEventListener('change', () => {
     const link = $('settingsDl');
     link.hidden = !box.checked;
+    track('Settings', box.checked ? 'optin-download' : 'optout-download');
     if (box.checked) {
       const blob = new Blob([JSON.stringify(R.displaySettings.settingsJson, null, 4)],
         { type: 'application/json' });
@@ -358,6 +385,7 @@ async function boot() {
   staleness();
   mobile();
   wireDrop();
+  wireDownload();
   settingsDownload();
   markRail(0);
 
@@ -365,6 +393,7 @@ async function boot() {
   const cross = await crossCheck();
   cryptoReady = test.ok && cross.ok;
   if (!cryptoReady) {
+    track('Health', 'crypto-selftest-failed', test.ok ? cross.detail : test.detail);
     showResult('bad', 'This page cannot verify anything right now.', [
       'Its own hash function failed a self-check, so any result it gave you would be meaningless.',
       `Detail: ${test.ok ? cross.detail : test.detail}`,

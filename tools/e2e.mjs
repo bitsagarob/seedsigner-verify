@@ -19,9 +19,17 @@ async function newPage() {
   const page = await ctx.newPage();
   const errors = [];
   const external = [];
-  page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
+  // /mtm/ is the analytics endpoint, served by nginx in production and absent
+  // from python's http.server, so its 404 is expected in the local run only.
+  page.on('console', (m) => {
+    if (m.type() !== 'error') return;
+    const from = m.location()?.url || '';
+    if (from.includes('/mtm/')) return;
+    errors.push(`${m.text()} <- ${from}`);
+  });
   page.on('pageerror', (e) => errors.push('pageerror: ' + e.message));
   page.on('request', (r) => { if (!r.url().startsWith(BASE)) external.push(r.url()); });
+  page.on('requestfailed', (r) => { if (!r.url().startsWith(BASE)) external.push(r.url()); });
   await page.goto(BASE + '/index.html', { waitUntil: 'networkidle' });
   return { page, ctx, errors, external };
 }
