@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en" data-mode="easy">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self'; script-src 'self'; style-src 'self'; base-uri 'none'; form-action 'none'">
+<title>Check your SeedSigner software | Bitsaga</title>
+<meta name="description" content="Download the SeedSigner software, check it is genuine, and put it on your memory card. Nothing leaves your computer.">
+<link rel="icon" href="assets/favicon-32.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site">
+  <a class="brand" href="https://bitsaga.be">
+    <img src="assets/logo-dark.png" alt="Bitsaga" class="logo logo-light">
+    <img src="assets/logo-white.png" alt="Bitsaga" class="logo logo-dark">
+  </a>
+
+  <div class="modes" role="group" aria-label="Level of detail">
+    <button type="button" data-set-mode="easy" aria-pressed="true">Easy</button>
+    <button type="button" data-set-mode="advanced" aria-pressed="false">Advanced</button>
+    <button type="button" data-set-mode="cypherpunk" aria-pressed="false">Cypherpunk</button>
+  </div>
+</header>
+
+<p class="mode-note" id="modeNote" aria-live="polite"></p>
+
+<nav class="rail" aria-label="Progress">
+  <ol>
+    <li data-rail="1"><span class="dot"></span><span class="rl">Download</span></li>
+    <li data-rail="2"><span class="dot"></span><span class="rl">Check</span></li>
+    <li data-rail="3"><span class="dot"></span><span class="rl">Card</span></li>
+    <li data-rail="4"><span class="dot"></span><span class="rl">Start</span></li>
+  </ol>
+</nav>
+
+<main id="main">
+
+<section class="hero">
+  <h1>Get your SeedSigner ready.</h1>
+  <p class="lede easy-copy">Three things: download, check, put it on the card. About 15 minutes.</p>
+  <p class="lede terse-copy">Download the firmware, verify it against the publisher's signed hash, write it to a microSD. About 15 minutes.</p>
+
+  <p class="trustline adv">
+    <span>Software comes only from the publisher's own GitHub</span>
+    <span>checked locally in your browser</span>
+    <span>this page loads nothing from any other server</span>
+  </p>
+
+  <p class="stale" id="staleNotice" hidden></p>
+</section>
+
+<!-- ------------------------------------------------------------------ -->
+<section class="step" id="step-product">
+  <h2><span class="n">0</span> Which one did you buy?</h2>
+  <div class="picker" id="picker" role="group" aria-label="Your product"></div>
+  <p class="hint easy-copy">It is printed on your order. Not sure? The smartcard version has a slot for a card.</p>
+  <p class="hint terse-copy">Determines which image you need. Premium and Plus take the stock image; Plus Smartcard takes the Satochip fork.</p>
+</section>
+
+<!-- ------------------------------------------------------------------ -->
+<section class="step locked" id="step-1" aria-labelledby="h1s">
+  <h2 id="h1s"><span class="n">1</span> Download the software</h2>
+
+  <p class="easy-copy">Your computer will save one file. That is the SeedSigner software.</p>
+  <p class="terse-copy">One file, straight from the publisher's release page. We host nothing.</p>
+
+  <p><a class="btn primary" id="dlBtn" href="#" rel="noopener">Download the software</a></p>
+  <p class="meta" id="dlMeta"></p>
+
+  <div class="adv layer">
+    <p class="k">Exact URL</p>
+    <p class="mono wrap" id="dlUrl"></p>
+    <p>Your browser's download bar shows this comes from the publisher's own account, not from us.</p>
+    <p><a id="relPage" href="#" rel="noopener">Open the release page</a> and compare the filename yourself.</p>
+  </div>
+
+  <div class="cyp layer">
+    <p class="k">Fetch and check without this page</p>
+    <pre class="mono" id="cypDl"></pre>
+    <p class="fn">Different board? Every official image is at <a href="https://github.com/SeedSigner/seedsigner/releases" rel="noopener">github.com/SeedSigner/seedsigner/releases</a>. This page only covers the Raspberry Pi Zero v1.3, which is what we ship.</p>
+  </div>
+</section>
+
+<!-- ------------------------------------------------------------------ -->
+<section class="step locked" id="step-2" aria-labelledby="h2s">
+  <h2 id="h2s"><span class="n">2</span> Check it is genuine</h2>
+
+  <div class="drop" id="drop" tabindex="0" role="button" aria-describedby="dropHelp">
+    <p class="dropbig easy-copy">Drop the file you just downloaded here</p>
+    <p class="dropbig terse-copy">Drop the image file here</p>
+    <p id="dropHelp" class="easy-copy">It stays on your computer. Nothing is uploaded.</p>
+    <p class="terse-copy">Read locally, hashed in this tab. No request is made.</p>
+    <p><button type="button" class="btn ghost" id="pick">Choose the file</button></p>
+    <input type="file" id="file" hidden>
+  </div>
+
+  <div id="progWrap" hidden>
+    <div class="bar"><div class="fill" id="fill"></div></div>
+    <p class="meta" id="progText">Checking…</p>
+  </div>
+
+  <div id="result" hidden aria-live="polite"></div>
+
+  <div class="adv layer">
+    <p class="k">What we compare against</p>
+    <dl class="kv">
+      <dt>Expected hash</dt><dd class="mono" id="expHash"></dd>
+      <dt>Computed hash</dt><dd class="mono" id="gotHash">not yet</dd>
+      <dt>Signed by</dt><dd id="sigBy"></dd>
+      <dt>Fingerprint</dt><dd class="mono" id="sigKey"></dd>
+    </dl>
+    <p class="k">Check the signer against sources we do not control</p>
+    <ul id="keySources"></ul>
+    <p class="k">Do not trust our checkmark</p>
+    <p id="escapeHatch"></p>
+  </div>
+
+  <div class="cyp layer">
+    <p class="k">Do it yourself in a terminal</p>
+    <pre class="mono" id="cypVerify"></pre>
+    <p class="k">Rebuild it from source and get the same bytes</p>
+    <pre class="mono" id="cypRebuild"></pre>
+    <p>The publisher's build is reproducible, so the hash above is not something you have to take
+       anyone's word for. Anyone can derive it from the source. That is the strongest link in this
+       whole chain, and it is the reason this page is a guide rather than an authority.</p>
+    <p class="k">Audit this page against its own signed manifest</p>
+    <pre class="mono" id="cypSite"></pre>
+  </div>
+</section>
+
+<!-- ------------------------------------------------------------------ -->
+<section class="step locked" id="step-3" aria-labelledby="h3s">
+  <h2 id="h3s"><span class="n">3</span> Put it on the card</h2>
+
+  <p class="mobile-note" id="mobileNote" hidden>You are on a phone. This step needs a computer.
+     Everything up to here is done, so pick it up on a laptop when you can.</p>
+
+  <p class="easy-copy">Use Raspberry Pi Imager. It is free and it double-checks the card when it is done.</p>
+  <p class="terse-copy">Raspberry Pi Imager, custom image, verify-after-write is on by default.</p>
+
+  <p><a class="btn" href="https://www.raspberrypi.com/software/" rel="noopener">Get Raspberry Pi Imager</a></p>
+
+  <ol class="mini">
+    <li>Open the app.</li>
+    <li>Under operating system, scroll down and choose <strong>Use custom</strong>.</li>
+    <li>Pick <strong>the exact file you just checked</strong>. Do not let the app download anything for you.</li>
+    <li>Choose your memory card.</li>
+    <li>Write, and wait for it to say it is done.</li>
+  </ol>
+
+  <figure class="shot"><img src="assets/step3-choose-custom.png" alt="Raspberry Pi Imager with Use custom highlighted" loading="lazy"><figcaption>Choosing your own file</figcaption></figure>
+
+  <div class="cyp layer">
+    <p class="k">Verify the card, not just the file</p>
+    <p>Writing can go wrong after a correct file. Imager verifies by default; confirm it did. On the
+       smartcard firmware the device itself can verify a freshly written card under MicroSD Card Tools.</p>
+    <pre class="mono" id="cypCard"></pre>
+  </div>
+</section>
+
+<!-- ------------------------------------------------------------------ -->
+<section class="step locked" id="step-4" aria-labelledby="h4s">
+  <h2 id="h4s"><span class="n">4</span> Start it up</h2>
+
+  <p class="easy-copy">Put the card in, plug in the power. The first screen appears in about twenty seconds.</p>
+  <p class="terse-copy">Insert the card, power it. First boot takes roughly twenty seconds.</p>
+
+  <div id="displayFix" hidden>
+    <h3>Your screen needs one setting changed</h3>
+    <p class="easy-copy">Your model has the bigger screen. Out of the box the picture will look wrong.
+       Fix it once and it stays fixed.</p>
+    <p class="terse-copy">The 320x240 panel is not the default. Set it once, with persistence on, or you
+       will redo it every boot.</p>
+    <ol class="mini">
+      <li>Go to <strong>Settings</strong>.</li>
+      <li>Turn on <strong>Persistent settings</strong> first. Without this, the next step is forgotten every time you switch off.</li>
+      <li>Then <strong>Advanced</strong>, then <strong>Hardware</strong>, then <strong>Display type</strong>.</li>
+      <li>Choose <strong>st7789 320x240</strong>.</li>
+    </ol>
+    <details class="adv">
+      <summary>Skip the menus: put a small file on the card instead</summary>
+      <p>Before you eject the card, save a file called <code>settings.json</code> in the top level of
+         the card containing exactly this. It sets the same two options at first boot.</p>
+      <pre class="mono" id="settingsJson"></pre>
+      <p>Type it yourself rather than taking ours. It is two lines and it means you are not trusting
+         a file from your seller on the device that will hold your keys.</p>
+      <p><label class="optin"><input type="checkbox" id="optinDl"> I would rather download it</label>
+         <a class="btn ghost small" id="settingsDl" href="#" download="settings.json" hidden>Download settings.json</a></p>
+    </details>
+  </div>
+
+  <div class="practice">
+    <h3>Practise first</h3>
+    <p class="easy-copy">Do a practice run with a throwaway seed. Use your real seed only when the
+       practice feels easy. There is no rush and no prize for going fast.</p>
+    <p class="terse-copy">Rehearse the full flow with a throwaway seed before touching a real one.</p>
+    <p><a href="https://bitsaga.be/seedsigner-simulator/" rel="noopener">Practise in the simulator</a>, in your browser, no hardware needed.</p>
+  </div>
+
+  <div class="cyp layer">
+    <p class="k">Before you put real value behind it</p>
+    <ul>
+      <li>Generate the seed with your own entropy, dice rather than the camera, and check the entropy indicator.</li>
+      <li>Confirm the xpub on a second, independent path before you accept any receive address.</li>
+      <li>Send a small test amount and spend it back before funding properly.</li>
+      <li>Inspect the hardware. Verified firmware says nothing about a tampered board.</li>
+    </ul>
+    <p class="k">The honest ceiling</p>
+    <p>Software cannot verify hardware. Reproducible builds push the boundary a long way but they do
+       not remove it, and no page can prove itself. Everything here is designed so you can check it
+       with tools you did not get from us. That is the most this can honestly offer.</p>
+  </div>
+
+  <div class="sell">
+    <h3>Want a hand?</h3>
+    <p>I do guided setup calls. We go through this page together on a screenshare, then set up your
+       seed properly. No pressure, and no upsell at the end.</p>
+    <p><a class="btn ghost" href="https://cal.com/bitsaga" rel="noopener">Book a setup call</a></p>
+  </div>
+</section>
+
+</main>
+
+<footer class="site">
+  <p><a href="https://github.com/bitsagarob/seedsigner-verify" rel="noopener">This page is open source. Audit it, fork it, improve it.</a></p>
+  <p class="adv">Every version of this page is signed by Bitsaga.
+     <span class="mono" id="bitsagaKey"></span></p>
+  <p class="adv"><a href="TRUST.md">What this page can prove, and what it cannot.</a></p>
+  <p>This page loads nothing from any other server, sets no cookies, and needs no cookie banner.
+     Your file is read inside this tab and never leaves your computer.</p>
+  <p class="fn">Not affiliated with the SeedSigner project. SeedSigner is an independent open-source
+     project. The smartcard firmware is an independent fork.</p>
+  <p class="fn"><a href="https://bitsaga.be/insights/agent-server-hardening.html" rel="noopener">How our servers are hardened</a></p>
+  <p class="fn" id="footBrand"></p>
+</footer>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

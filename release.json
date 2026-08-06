@@ -1,0 +1,113 @@
+{
+  "HUMAN CHECKPOINT": "Rob must independently re-verify all values below before deploy. See VERIFICATION_LOG.md",
+
+  "lastConfirmed": "2026-08-06",
+  "stalenessWarningAfterDays": 180,
+
+  "products": [
+    {
+      "id": "premium",
+      "label": "SeedSigner premium",
+      "firmware": "stock",
+      "needsDisplaySetting": false
+    },
+    {
+      "id": "plus",
+      "label": "SeedSigner Plus",
+      "firmware": "stock",
+      "needsDisplaySetting": true
+    },
+    {
+      "id": "plus-smartcard",
+      "label": "SeedSigner Plus Smartcard",
+      "firmware": "smartcard",
+      "needsDisplaySetting": true
+    }
+  ],
+
+  "firmware": {
+    "stock": {
+      "project": "SeedSigner",
+      "version": "0.8.7",
+      "filename": "seedsigner_os.0.8.7.pi0.img",
+      "sizeBytes": 52428800,
+      "sha256": "67f005c7ace26500a78be3f4d97eaf02d76d018550ec54df011741dde1933ce9",
+      "downloadUrl": "https://github.com/SeedSigner/seedsigner/releases/download/0.8.7/seedsigner_os.0.8.7.pi0.img",
+      "releasePageUrl": "https://github.com/SeedSigner/seedsigner/releases/tag/0.8.7",
+      "publishedAt": "2026-07-08",
+      "signature": {
+        "scheme": "pgp",
+        "signedFile": "seedsigner.0.8.7.sha256.txt",
+        "signedFileUrl": "https://github.com/SeedSigner/seedsigner/releases/download/0.8.7/seedsigner.0.8.7.sha256.txt",
+        "signatureUrl": "https://github.com/SeedSigner/seedsigner/releases/download/0.8.7/seedsigner.0.8.7.sha256.txt.sig",
+        "keyFingerprint": "46739B74B56AD88F14B0882EC7EF709007260119",
+        "keyUid": "seedsigner <btc.hardware.solutions@gmail.com>",
+        "keySources": [
+          { "label": "In the SeedSigner repo", "url": "https://github.com/SeedSigner/seedsigner/blob/dev/seedsigner_pubkey.gpg" },
+          { "label": "Keybase", "url": "https://keybase.io/seedsigner" },
+          { "label": "seedsigner.com", "url": "https://seedsigner.com" }
+        ]
+      },
+      "reproducibleBuild": {
+        "repo": "https://github.com/SeedSigner/seedsigner-os",
+        "docs": "https://github.com/SeedSigner/seedsigner-os/blob/main/docs/building.md"
+      }
+    },
+
+    "smartcard": {
+      "project": "SeedSigner + Satochip (3rdIteration fork)",
+      "version": "SeSi-0.8.7+ShSi-B11",
+      "filename": "seedsigner_os.SeSi-0.8.7_ShSi-B11_.pi0-smartcard.img",
+      "sizeBytes": 536870912,
+      "sha256": "1b844cffdaa382d32a100d690cc0be5dd1208d23278fe22fea46593f47fb68a0",
+      "downloadUrl": "https://github.com/3rdIteration/seedsigner/releases/download/SeSi-0.8.7%2BShSi-B11/seedsigner_os.SeSi-0.8.7_ShSi-B11_.pi0-smartcard.img",
+      "releasePageUrl": "https://github.com/3rdIteration/seedsigner/releases/tag/SeSi-0.8.7%2BShSi-B11",
+      "publishedAt": "2026-07-14",
+      "signature": {
+        "scheme": "bitcoin-message",
+        "note": "The developer signs the checksum block in the release notes with a Bitcoin message signature, Electrum format.",
+        "address": "37hiiSB1Poj6Shs8WawPS2HjT2jzHkFSQi",
+        "signatureB64": "IDS9imBk642PtjkbND22ioVUh79KPIWmCQXQG021Es76Ja6ZQ/FJHrLRO+NoJ2IZZghQnvsJABTfiX8o479VVD0=",
+        "keySources": [
+          { "label": "cryptoguide.tips", "url": "https://cryptoguide.tips/send-me-a-tip/" },
+          { "label": "YouTube channel", "url": "https://www.youtube.com/channel/UCEviBQwLv-yfv3BErm0ojHg/" },
+          { "label": "Reddit profile", "url": "https://www.reddit.com/user/Crypto-Guide/comments/czy13u/a_post_or_video_of_mine_was_helpful_feel_free_to/" }
+        ]
+      },
+      "reproducibleBuild": {
+        "repo": "https://github.com/3rdIteration/seedsigner-os",
+        "docs": "https://github.com/3rdIteration/seedsigner/releases/tag/SeSi-0.8.7%2BShSi-B11"
+      }
+    }
+  },
+
+  "knownFiles": [
+    { "sha256": "67f005c7ace26500a78be3f4d97eaf02d76d018550ec54df011741dde1933ce9", "name": "seedsigner_os.0.8.7.pi0.img", "kind": "match", "firmware": "stock" },
+    { "sha256": "1b844cffdaa382d32a100d690cc0be5dd1208d23278fe22fea46593f47fb68a0", "name": "seedsigner_os.SeSi-0.8.7_ShSi-B11_.pi0-smartcard.img", "kind": "match", "firmware": "smartcard" },
+
+    { "sha256": "f38237cdde39efca2fb9e3b3f9f8b0beff2248767f85289bd50657fa69b54f1f", "name": "seedsigner_os.0.8.7.pi02w.img", "kind": "wrong-board", "board": "Raspberry Pi Zero 2 W" },
+    { "sha256": "9fc7f2ea8462e1c9d62efe41301e12d559e8f155653913e33c93e905360bb813", "name": "seedsigner_os.0.8.7.pi2.img", "kind": "wrong-board", "board": "Raspberry Pi 2" },
+    { "sha256": "3c2a11a2303abf2a73b10be913d44a1eb85d5e5a15b5389a670cb963afd1e28b", "name": "seedsigner_os.0.8.7.pi4.img", "kind": "wrong-board", "board": "Raspberry Pi 4" },
+
+    { "sha256": "2866932dc06355f7f2f272f44464e06d67884e825be0ad11219379e1647ef3d8", "name": "seedsigner_os.SeSi-0.8.7_ShSi-B11_.pi02w-smartcard.img", "kind": "wrong-board", "board": "Raspberry Pi Zero 2 W" },
+    { "sha256": "f3f870cf7c5d59e112a1d090673c11813868210cc2740b5d2284951a2c1f9485", "name": "seedsigner_os.SeSi-0.8.7_ShSi-B11_.pi2-smartcard.img", "kind": "wrong-board", "board": "Raspberry Pi 2" },
+    { "sha256": "97324ab558281a5e3539750b8a7d85d3523383e6555b00eb618d4539343c04f4", "name": "seedsigner_os.SeSi-0.8.7_ShSi-B11_.pi4-smartcard.img", "kind": "wrong-board", "board": "Raspberry Pi 4" }
+  ],
+
+  "displaySettings": {
+    "note": "SeedSigner Plus uses a 320x240 panel. The stock default is 240x240 and settings do not persist unless switched on.",
+    "menuPath": "Settings -> Advanced -> Hardware -> Display type",
+    "settingsJson": {
+      "persistent_settings": "E",
+      "display_config": "st7789_320x240"
+    },
+    "cardPath": "settings.json in the root of the microSD card"
+  },
+
+  "bitsagaKey": {
+    "fingerprint": "715E4B76200E7455C8F0AAB4DE395EC9D53D5FF3",
+    "uid": "Bitsaga (release signing) <releases@bitsaga.be>",
+    "algorithm": "Ed25519",
+    "expires": "2031-12-31"
+  }
+}
