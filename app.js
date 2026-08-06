@@ -79,6 +79,7 @@ function selectProduct(id) {
   try { localStorage.setItem('product', id); } catch {}
   applyProduct();
   unlock('step-1');
+  unlock('step-2');   // both are usable as soon as the product is known
   markRail(1);
 }
 

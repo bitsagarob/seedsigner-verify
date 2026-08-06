@@ -102,6 +102,28 @@ console.log('\n3. Stock image, correct product');
   await ctx.close();
 }
 
+// ------------------------------- 3b. a real human click, not setInputFiles
+console.log('\n3b. The drop zone is actually clickable');
+{
+  const { page, ctx } = await newPage();
+  await page.click('[data-product="premium"]');
+  // setInputFiles bypasses pointer-events, so it cannot catch a locked step.
+  // Clicking the visible button can: Playwright waits for actionability.
+  try {
+    const [chooser] = await Promise.all([
+      page.waitForEvent('filechooser', { timeout: 5000 }),
+      page.click('#pick', { timeout: 5000 }),
+    ]);
+    await chooser.setFiles(IMG_STOCK);
+    const r = await resultOf(page);
+    check(r.cls === 'ok', 'clicking Choose the file works for a real user', r.title);
+  } catch (e) {
+    check(false, 'clicking Choose the file works for a real user',
+      'the button was not clickable, is step 2 still locked? ' + e.message.split('\n')[0]);
+  }
+  await ctx.close();
+}
+
 // ------------------------------------------------- 4. tamper test, 1 byte
 console.log('\n4. Tampered image, one flipped byte');
 {

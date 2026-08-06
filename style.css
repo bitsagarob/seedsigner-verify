@@ -155,7 +155,7 @@ h1 .hl{white-space:nowrap}
 #result.bad h3{color:var(--bad)}
 #result.warn{border-color:var(--warn);background:color-mix(in srgb,var(--warn) 12%,var(--panel))}
 #result.warn h3{color:var(--warn)}
-.tick{font-size:54px;line-height:1;display:block;margin-bottom:6px;
+.tick{font-size:54px;line-height:1;display:block;margin-bottom:6px;color:var(--good);
   animation:pop .45s cubic-bezier(.2,1.5,.4,1)}
 @keyframes pop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
 .howknow{font-size:15px;margin-top:14px!important}
