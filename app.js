@@ -14,9 +14,9 @@ let cryptoReady = false;
 
 /* ------------------------------------------------------------------ modes */
 const MODE_NOTE = {
-  easy: 'Who you have to trust: Bitsaga.',
-  advanced: 'Who you have to trust: SeedSigner. You check Bitsaga\'s claims against theirs.',
-  cypherpunk: 'Who you have to trust: nobody. Everything below can be derived without Bitsaga.',
+  easy: 'Bitsaga. The page checks the file for you and you take its word for it.',
+  advanced: 'SeedSigner. Every value is shown so you can check it against their own release page.',
+  cypherpunk: 'Nobody. Every step can be repeated, and the firmware rebuilt from source, without Bitsaga.',
 };
 
 function setMode(mode) {
@@ -24,13 +24,35 @@ function setMode(mode) {
   for (const b of document.querySelectorAll('[data-set-mode]')) {
     b.setAttribute('aria-pressed', String(b.dataset.setMode === mode));
   }
-  $('modeNote').textContent = MODE_NOTE[mode];
+  const pop = $('modeNote');
+  pop.textContent = '';
+  pop.append(el('b', 'Who you have to trust'));
+  pop.append(document.createTextNode(MODE_NOTE[mode]));
   try { localStorage.setItem('mode', mode); } catch {}
 }
 
 for (const b of document.querySelectorAll('[data-set-mode]')) {
   b.addEventListener('click', () => setMode(b.dataset.setMode));
 }
+
+/* The trust line is one line too many in the header, so it lives behind the i. */
+function wireInfo() {
+  const btn = $('infoBtn');
+  const pop = $('modeNote');
+  const close = () => { pop.hidden = true; btn.setAttribute('aria-expanded', 'false'); };
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const open = pop.hidden;
+    pop.hidden = !open;
+    btn.setAttribute('aria-expanded', String(open));
+  });
+  document.addEventListener('click', (e) => {
+    if (!pop.hidden && !pop.contains(e.target)) close();
+  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+}
+wireInfo();
 
 /* ---------------------------------------------------------------- product */
 function buildPicker() {

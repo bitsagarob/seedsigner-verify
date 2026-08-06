@@ -58,8 +58,16 @@ header.site{display:flex;align-items:center;justify-content:space-between;gap:16
   padding:7px 15px;border-radius:999px;cursor:pointer;white-space:nowrap}
 .modes button[aria-pressed="true"]{background:var(--panel);color:var(--fg);font-weight:600;
   box-shadow:0 1px 4px rgba(7,17,31,.12)}
-.mode-note{max-width:1180px;margin:0 auto;padding:0 clamp(18px,5vw,56px) 6px;
-  color:var(--muted);font-size:15px;text-align:right}
+.modewrap{position:relative;display:flex;align-items:center;gap:10px}
+.info-btn{flex:none;width:30px;height:30px;border-radius:50%;border:1px solid var(--line);
+  background:var(--panel);color:var(--muted);font-family:var(--display);font-size:15px;
+  font-weight:700;line-height:1;cursor:pointer;padding:0}
+.info-btn[aria-expanded="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.info-pop{position:absolute;top:calc(100% + 12px);right:0;z-index:40;width:min(320px,80vw);
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--r-sm);
+  padding:16px 18px;font-size:15.5px;line-height:1.5;box-shadow:var(--shadow)}
+.info-pop b{display:block;font-family:var(--display);font-size:14px;text-transform:uppercase;
+  letter-spacing:.06em;color:var(--muted);margin-bottom:4px;font-weight:600}
 
 /* ---------- progress rail ---------- */
 .rail{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);

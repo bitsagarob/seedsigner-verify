@@ -18,14 +18,17 @@
     <img src="assets/logo-bitsaga.png" alt="Bitsaga" class="logo">
   </a>
 
-  <div class="modes" role="group" aria-label="Level of detail">
-    <button type="button" data-set-mode="easy" aria-pressed="true">Easy</button>
-    <button type="button" data-set-mode="advanced" aria-pressed="false">Advanced</button>
-    <button type="button" data-set-mode="cypherpunk" aria-pressed="false">Cypherpunk</button>
+  <div class="modewrap">
+    <div class="modes" role="group" aria-label="Level of detail">
+      <button type="button" data-set-mode="easy" aria-pressed="true">Easy</button>
+      <button type="button" data-set-mode="advanced" aria-pressed="false">Advanced</button>
+      <button type="button" data-set-mode="cypherpunk" aria-pressed="false">Cypherpunk</button>
+    </div>
+    <button type="button" class="info-btn" id="infoBtn" aria-expanded="false"
+            aria-controls="modeNote" aria-label="What this level means">i</button>
+    <div class="info-pop" id="modeNote" role="status" hidden></div>
   </div>
 </header>
-
-<p class="mode-note" id="modeNote" aria-live="polite"></p>
 
 <nav class="rail" aria-label="Progress">
   <ol>
