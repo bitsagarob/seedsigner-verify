@@ -46,9 +46,12 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible{
 /* ---------- header ---------- */
 header.site{display:flex;align-items:center;justify-content:space-between;gap:16px;
   padding:22px clamp(18px,5vw,56px);max-width:1180px;margin:0 auto}
-.logo{height:30px;display:block}
-.logo-dark{display:none}
-@media (prefers-color-scheme:dark){.logo-light{display:none}.logo-dark{display:block}}
+/* Both Bitsaga logo files are light ink, meant for dark backgrounds, so on a
+   light page the mark sits on a dark chip rather than disappearing. */
+.brand{display:inline-flex;align-items:center;background:var(--charcoal);
+  padding:9px 16px;border-radius:999px}
+.logo{height:26px;display:block}
+@media (prefers-color-scheme:dark){.brand{background:transparent;padding:0}}
 
 .modes{display:flex;background:var(--sand);border-radius:999px;padding:4px;gap:2px}
 .modes button{font:inherit;font-size:15px;border:0;background:transparent;color:var(--muted);
@@ -72,8 +75,9 @@ header.site{display:flex;align-items:center;justify-content:space-between;gap:16
 /* ---------- layout ---------- */
 main{max-width:760px;margin:0 auto;padding:0 clamp(18px,5vw,32px) 90px}
 .hero{padding:clamp(48px,9vw,104px) 0 24px}
-h1{font-family:var(--display);font-size:clamp(38px,7vw,62px);line-height:1.05;
-  letter-spacing:-.02em;margin:0 0 18px;font-weight:700}
+h1{font-family:var(--display);font-size:clamp(40px,8vw,68px);line-height:1.02;
+  letter-spacing:-.03em;margin:0 0 18px;font-weight:700;text-wrap:balance}
+h1 .hl{white-space:nowrap}
 .lede{font-size:clamp(19px,2.4vw,23px);color:var(--muted);margin:0 0 10px;max-width:34ch}
 
 .trustline{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:15px;color:var(--muted);
@@ -89,7 +93,11 @@ h1{font-family:var(--display);font-size:clamp(38px,7vw,62px);line-height:1.05;
   letter-spacing:-.02em;margin:0 0 22px;font-weight:700;display:flex;gap:16px;align-items:baseline}
 .step h2 .n{font-size:.52em;color:var(--gold-deep);font-variant-numeric:tabular-nums;flex:none}
 .step h3{font-family:var(--display);font-size:21px;margin:30px 0 8px}
-.step.locked{opacity:.42;pointer-events:none}
+.step.locked{pointer-events:none}
+.step.locked>*{opacity:.42}
+/* Things a visitor may legitimately want before the step is unlocked, such as
+   downloading the imaging tool while the firmware is still coming down. */
+.step.locked>.always-wrap{opacity:1;pointer-events:auto}
 .step.locked .adv,.step.locked .cyp{display:none!important}
 
 .hint,.meta,.fn{color:var(--muted);font-size:15.5px}
@@ -188,3 +196,5 @@ html[data-mode="cypherpunk"] .easy-copy{display:none}
 html[data-mode="cypherpunk"] .sell{display:none}
 html[data-mode="advanced"] .sell{display:block}
 .step.locked .layer{display:none!important}
+
+.always-wrap .hint{display:inline-block;margin-left:10px}

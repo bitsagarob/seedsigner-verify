@@ -15,9 +15,9 @@ let cryptoReady = false;
 
 /* ------------------------------------------------------------------ modes */
 const MODE_NOTE = {
-  easy: 'Who you have to trust: us.',
-  advanced: 'Who you have to trust: the publisher. You check our claims against theirs.',
-  cypherpunk: 'Who you have to trust: nobody. Everything below can be derived without us.',
+  easy: 'Who you have to trust: Bitsaga.',
+  advanced: 'Who you have to trust: SeedSigner. You check Bitsaga\'s claims against theirs.',
+  cypherpunk: 'Who you have to trust: nobody. Everything below can be derived without Bitsaga.',
 };
 
 function setMode(mode) {
@@ -93,7 +93,7 @@ function applyProduct() {
     $('sigBy').textContent = `${f.project}, PGP signature over the published checksum file`;
     $('sigKey').textContent = group(sig.keyFingerprint);
     $('escapeHatch').textContent =
-      'Verify the same file in Sparrow Wallet, or with gpg, using the commands in cypherpunk mode. Neither needs this page.';
+      'Check the same file in Sparrow Wallet, or with gpg, using the commands in cypherpunk mode. Neither needs this page.';
   } else {
     $('sigBy').textContent = `${f.project}, Bitcoin message signature over the checksum block`;
     $('sigKey').textContent = sig.address;

@@ -15,8 +15,7 @@
 
 <header class="site">
   <a class="brand" href="https://bitsaga.be">
-    <img src="assets/logo-dark.png" alt="Bitsaga" class="logo logo-light">
-    <img src="assets/logo-white.png" alt="Bitsaga" class="logo logo-dark">
+    <img src="assets/logo-white.png" alt="Bitsaga" class="logo">
   </a>
 
   <div class="modes" role="group" aria-label="Level of detail">
@@ -40,12 +39,12 @@
 <main id="main">
 
 <section class="hero">
-  <h1>Get your SeedSigner ready.</h1>
-  <p class="lede easy-copy">Three things: download, check, put it on the card. About 15 minutes.</p>
-  <p class="lede terse-copy">Download the firmware, verify it against the publisher's signed hash, write it to a microSD. About 15 minutes.</p>
+  <h1>Prepare your<br><span class="hl">SeedSigner</span></h1>
+  <p class="lede easy-copy">Download it, check it, put it on the card. About 15 minutes.</p>
+  <p class="lede terse-copy">Download the firmware, check it against SeedSigner's published hash, write it to a microSD. About 15 minutes.</p>
 
   <p class="trustline adv">
-    <span>Software comes only from the publisher's own GitHub</span>
+    <span>Software comes only from SeedSigner's own GitHub</span>
     <span>checked locally in your browser</span>
     <span>this page loads nothing from any other server</span>
   </p>
@@ -57,16 +56,16 @@
 <section class="step" id="step-product">
   <h2><span class="n">0</span> Which one did you buy?</h2>
   <div class="picker" id="picker" role="group" aria-label="Your product"></div>
-  <p class="hint easy-copy">It is printed on your order. Not sure? The smartcard version has a slot for a card.</p>
-  <p class="hint terse-copy">Determines which image you need. Premium and Plus take the stock image; Plus Smartcard takes the Satochip fork.</p>
+  <p class="hint easy-copy">It is on your order. The smartcard one has a card slot.</p>
+  <p class="hint terse-copy">Premium and Plus take the stock SeedSigner image. Plus Smartcard takes the Satochip fork.</p>
 </section>
 
 <!-- ------------------------------------------------------------------ -->
 <section class="step locked" id="step-1" aria-labelledby="h1s">
   <h2 id="h1s"><span class="n">1</span> Download the software</h2>
 
-  <p class="easy-copy">Your computer will save one file. That is the SeedSigner software.</p>
-  <p class="terse-copy">One file, straight from the publisher's release page. We host nothing.</p>
+  <p class="easy-copy">One file gets saved to your computer.</p>
+  <p class="terse-copy">One file, straight from SeedSigner's own release page. Bitsaga hosts nothing.</p>
 
   <p><a class="btn primary" id="dlBtn" href="#" rel="noopener">Download the software</a></p>
   <p class="meta" id="dlMeta"></p>
@@ -74,14 +73,14 @@
   <div class="adv layer">
     <p class="k">Exact URL</p>
     <p class="mono wrap" id="dlUrl"></p>
-    <p>Your browser's download bar shows this comes from the publisher's own account, not from us.</p>
+    <p>Your browser's download bar shows this comes from SeedSigner's own GitHub account, not from Bitsaga.</p>
     <p><a id="relPage" href="#" rel="noopener">Open the release page</a> and compare the filename yourself.</p>
   </div>
 
   <div class="cyp layer">
     <p class="k">Fetch and check without this page</p>
     <pre class="mono" id="cypDl"></pre>
-    <p class="fn">Different board? Every official image is at <a href="https://github.com/SeedSigner/seedsigner/releases" rel="noopener">github.com/SeedSigner/seedsigner/releases</a>. This page only covers the Raspberry Pi Zero v1.3, which is what we ship.</p>
+    <p class="fn">Different board? Every official image is at <a href="https://github.com/SeedSigner/seedsigner/releases" rel="noopener">github.com/SeedSigner/seedsigner/releases</a>. This page only covers the Raspberry Pi Zero v1.3, which is what Bitsaga ships.</p>
   </div>
 </section>
 
@@ -92,8 +91,8 @@
   <div class="drop" id="drop" tabindex="0" role="button" aria-describedby="dropHelp">
     <p class="dropbig easy-copy">Drop the file you just downloaded here</p>
     <p class="dropbig terse-copy">Drop the image file here</p>
-    <p id="dropHelp" class="easy-copy">It stays on your computer. Nothing is uploaded.</p>
-    <p class="terse-copy">Read locally, hashed in this tab. No request is made.</p>
+    <p id="dropHelp" class="easy-copy">It stays on your computer.</p>
+    <p class="terse-copy">Read locally, hashed in this tab. Nothing is sent anywhere.</p>
     <p><button type="button" class="btn ghost" id="pick">Choose the file</button></p>
     <input type="file" id="file" hidden>
   </div>
@@ -106,16 +105,16 @@
   <div id="result" hidden aria-live="polite"></div>
 
   <div class="adv layer">
-    <p class="k">What we compare against</p>
+    <p class="k">What this is compared against</p>
     <dl class="kv">
       <dt>Expected hash</dt><dd class="mono" id="expHash"></dd>
       <dt>Computed hash</dt><dd class="mono" id="gotHash">not yet</dd>
       <dt>Signed by</dt><dd id="sigBy"></dd>
       <dt>Fingerprint</dt><dd class="mono" id="sigKey"></dd>
     </dl>
-    <p class="k">Check the signer against sources we do not control</p>
+    <p class="k">Check the signer against sources Bitsaga does not control</p>
     <ul id="keySources"></ul>
-    <p class="k">Do not trust our checkmark</p>
+    <p class="k">Do not trust Bitsaga's checkmark</p>
     <p id="escapeHatch"></p>
   </div>
 
@@ -124,7 +123,7 @@
     <pre class="mono" id="cypVerify"></pre>
     <p class="k">Rebuild it from source and get the same bytes</p>
     <pre class="mono" id="cypRebuild"></pre>
-    <p>The publisher's build is reproducible, so the hash above is not something you have to take
+    <p>SeedSigner's build is reproducible, so the hash above is not something you have to take
        anyone's word for. Anyone can derive it from the source. That is the strongest link in this
        whole chain, and it is the reason this page is a guide rather than an authority.</p>
     <p class="k">Audit this page against its own signed manifest</p>
@@ -139,10 +138,11 @@
   <p class="mobile-note" id="mobileNote" hidden>You are on a phone. This step needs a computer.
      Everything up to here is done, so pick it up on a laptop when you can.</p>
 
-  <p class="easy-copy">Use Raspberry Pi Imager. It is free and it double-checks the card when it is done.</p>
+  <p class="easy-copy">Use Raspberry Pi Imager. It is free, and it checks the card when it is done.</p>
   <p class="terse-copy">Raspberry Pi Imager, custom image, verify-after-write is on by default.</p>
 
-  <p><a class="btn" href="https://www.raspberrypi.com/software/" rel="noopener">Get Raspberry Pi Imager</a></p>
+  <p class="always-wrap"><a class="btn" href="https://www.raspberrypi.com/software/" rel="noopener">Get Raspberry Pi Imager</a>
+     <span class="hint">You can grab this now, while the file downloads.</span></p>
 
   <ol class="mini">
     <li>Open the app.</li>
@@ -166,12 +166,12 @@
 <section class="step locked" id="step-4" aria-labelledby="h4s">
   <h2 id="h4s"><span class="n">4</span> Start it up</h2>
 
-  <p class="easy-copy">Put the card in, plug in the power. The first screen appears in about twenty seconds.</p>
+  <p class="easy-copy">Put the card in and plug in the power.</p>
   <p class="terse-copy">Insert the card, power it. First boot takes roughly twenty seconds.</p>
 
   <div id="displayFix" hidden>
     <h3>Your screen needs one setting changed</h3>
-    <p class="easy-copy">Your model has the bigger screen. Out of the box the picture will look wrong.
+    <p class="easy-copy">Your model has the bigger screen, so the picture looks wrong at first.
        Fix it once and it stays fixed.</p>
     <p class="terse-copy">The 320x240 panel is not the default. Set it once, with persistence on, or you
        will redo it every boot.</p>
@@ -195,8 +195,7 @@
 
   <div class="practice">
     <h3>Practise first</h3>
-    <p class="easy-copy">Do a practice run with a throwaway seed. Use your real seed only when the
-       practice feels easy. There is no rush and no prize for going fast.</p>
+    <p class="easy-copy">Practise with a throwaway seed first. Use your real one only when it feels easy.</p>
     <p class="terse-copy">Rehearse the full flow with a throwaway seed before touching a real one.</p>
     <p><a href="https://bitsaga.be/seedsigner-simulator/" rel="noopener">Practise in the simulator</a>, in your browser, no hardware needed.</p>
   </div>
@@ -217,8 +216,8 @@
 
   <div class="sell">
     <h3>Want a hand?</h3>
-    <p>I do guided setup calls. We go through this page together on a screenshare, then set up your
-       seed properly. No pressure, and no upsell at the end.</p>
+    <p>I do guided setup calls. We go through this together on a screenshare, then set up your
+       seed properly.</p>
     <p><a class="btn ghost" href="https://cal.com/bitsaga" rel="noopener">Book a setup call</a></p>
   </div>
 </section>
