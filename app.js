@@ -230,8 +230,8 @@ function onVerified(computed) {
   unlock('step-3');
   unlock('step-4');
   markRail(3);
-  showResult('ok', 'It is genuine. You are safe to continue.', [
-    'This file matches the version the publisher released. Keep it, you need it in the next step.',
+  showResult('ok', 'It is genuine.', [
+    `This file matches exactly what ${fw().project.split(' (')[0]} released. Keep it, you need it in the next step.`,
   ]);
 }
 
