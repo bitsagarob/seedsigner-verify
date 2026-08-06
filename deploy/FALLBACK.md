@@ -7,9 +7,8 @@ DNS for bitsaga.be stays under our control, so switching hosts is one record cha
 
 ## Why we are not on Pages today
 
-Pages provides no server logs, which would mean no measurement of the site at all, ever. Serving
-from our own nginx lets us import access logs into Matomo, which needs no script on the page, no
-cookies and no consent banner. The page still loads nothing from any other server.
+Serving from our own nginx means real response headers rather than only a meta tag, and it keeps
+the site independent of a single provider's policies.
 
 The tradeoff is honest: our VPS runs other services and therefore has a larger attack surface
 than a GitHub Pages account. What compensates is that the source and the signed manifest live on

@@ -89,18 +89,8 @@ a claim about it would be unverifiable. See TRUST.md.
 
 ## Privacy
 
-There is no tracking code on this page. No analytics script, no beacon, no cookie, no consent
-banner, and nothing recorded about the file you check. The only requests the page makes are for
-its own files, and the file you drop on it is read inside the tab and never sent anywhere.
-
-Visits are counted from the web server's access log, which every web server writes anyway. That
-happens entirely off the page, so there is nothing in what your browser receives that reports
-back, and nothing to disable.
-
-An earlier commit in this repository's history added a first-party Matomo script to record
-in-page interactions. It was removed, deliberately and quickly, because a page asking you not to
-have to trust it should not also be watching what you do on it. The history is left intact rather
-than rewritten, since a project about tamper-evident records should not quietly edit its own.
+No tracking code, no cookies, no consent banner, and no requests to any other server. The file
+you check is read inside the tab and never leaves your computer.
 
 ## Dependencies
 
