@@ -48,7 +48,8 @@ function wireInfo() {
     btn.setAttribute('aria-expanded', String(open));
   });
   document.addEventListener('click', (e) => {
-    if (!pop.hidden && !pop.contains(e.target)) close();
+    // Clicking a mode button keeps it open so the three can be compared.
+    if (!pop.hidden && !e.target.closest('.modewrap')) close();
   });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
 }
