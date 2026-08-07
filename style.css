@@ -222,3 +222,5 @@ html[data-mode="cypherpunk"] .sell{display:none}
 html[data-mode="advanced"] .sell{display:block}
 
 .always-wrap .hint{display:inline-block;margin-left:10px}
+
+#capFile{font-family:var(--mono);font-size:.9em;overflow-wrap:anywhere}

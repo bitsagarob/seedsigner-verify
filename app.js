@@ -173,6 +173,9 @@ function applyProduct() {
     `diff /tmp/local.txt signatures/manifest.txt`,
   ].join('\n');
 
+  // Name the actual file in the caption, so nobody has to guess in a file picker.
+  $('capFile').textContent = `: ${f.filename}`;
+
   const needs = product.needsDisplaySetting;
   $('displayFix').hidden = !needs;
   if (needs) {
