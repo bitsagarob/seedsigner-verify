@@ -43,46 +43,44 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible{
 .skip{position:absolute;left:-9999px}
 .skip:focus{left:12px;top:12px;background:var(--panel);padding:10px 16px;z-index:99}
 
-/* ---------- header ---------- */
-header.site{display:flex;align-items:center;justify-content:space-between;gap:16px;
-  padding:22px clamp(18px,5vw,56px);max-width:1180px;margin:0 auto}
-/* Both Bitsaga logo files are light ink, meant for dark backgrounds, so on a
-   light page the mark sits on a dark chip rather than disappearing. */
-.brand{display:inline-flex;align-items:center;background:var(--charcoal);
-  padding:9px 16px;border-radius:999px}
-.logo{height:26px;display:block}
-@media (prefers-color-scheme:dark){.brand{background:transparent;padding:0}}
+/* ---------- sticky top bar: progress on the left, level on the right ---------- */
+.topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;
+  justify-content:space-between;gap:14px;flex-wrap:wrap;
+  padding:11px clamp(14px,4vw,32px);
+  background:color-mix(in srgb,var(--bg) 90%,transparent);
+  backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
 
-.modes{display:flex;background:var(--sand);border-radius:999px;padding:4px;gap:2px}
-.modes button{font:inherit;font-size:15px;border:0;background:transparent;color:var(--muted);
-  padding:7px 15px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.modewrap{position:relative;display:flex;align-items:center;gap:8px}
+.modes{display:flex;background:var(--sand);border-radius:999px;padding:3px;gap:2px}
+.modes button{font:inherit;font-size:14px;border:0;background:transparent;color:var(--muted);
+  padding:6px 13px;border-radius:999px;cursor:pointer;white-space:nowrap}
 .modes button[aria-pressed="true"]{background:var(--panel);color:var(--fg);font-weight:600;
   box-shadow:0 1px 4px rgba(7,17,31,.12)}
-.modewrap{position:relative;display:flex;align-items:center;gap:10px}
-.info-btn{flex:none;width:30px;height:30px;border-radius:50%;border:1px solid var(--line);
-  background:var(--panel);color:var(--muted);font-family:var(--display);font-size:15px;
+.info-btn{flex:none;width:28px;height:28px;border-radius:50%;border:1px solid var(--line);
+  background:var(--panel);color:var(--muted);font-family:var(--display);font-size:14px;
   font-weight:700;line-height:1;cursor:pointer;padding:0}
 .info-btn[aria-expanded="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
-.info-pop{position:absolute;top:calc(100% + 12px);right:0;z-index:40;width:min(320px,80vw);
+.info-pop{position:absolute;top:calc(100% + 12px);right:0;z-index:40;width:min(320px,84vw);
   background:var(--panel);border:1px solid var(--line);border-radius:var(--r-sm);
   padding:16px 18px;font-size:15.5px;line-height:1.5;box-shadow:var(--shadow)}
 .info-pop b{display:block;font-family:var(--display);font-size:14px;text-transform:uppercase;
   letter-spacing:.06em;color:var(--muted);margin-bottom:4px;font-weight:600}
 
 /* ---------- progress rail ---------- */
-.rail{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);
-  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-.rail ol{display:flex;gap:clamp(10px,4vw,44px);justify-content:center;list-style:none;
-  margin:0 auto;padding:12px 16px;max-width:1180px}
+.rail ol{display:flex;align-items:center;gap:clamp(6px,2.2vw,26px);list-style:none;margin:0;padding:0}
 .rail li{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:14px}
-.rail .dot{width:11px;height:11px;border-radius:50%;border:2px solid var(--line);flex:none}
+.rail .num{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+  border:1.5px solid var(--line);font-family:var(--display);font-size:13px;font-weight:700;
+  font-variant-numeric:tabular-nums;line-height:1;transition:background .25s,border-color .25s,color .25s}
 .rail li.done{color:var(--fg)}
-.rail li.done .dot{background:var(--good);border-color:var(--good)}
-.rail li.now .dot{border-color:var(--gold-deep);background:var(--gold)}
+.rail li.done .num{background:var(--good);border-color:var(--good);color:#fff}
+.rail li.now{color:var(--fg);font-weight:600}
+.rail li.now .num{background:var(--gold);border-color:var(--gold-deep);color:#2a1a00}
+@media (max-width:660px){.rail .rl{display:none}}
 
 /* ---------- layout ---------- */
 main{max-width:760px;margin:0 auto;padding:0 clamp(18px,5vw,32px) 90px}
-.hero{padding:clamp(48px,9vw,104px) 0 24px}
+.hero{padding:clamp(56px,11vw,120px) 0 24px}
 h1{font-family:var(--display);font-size:clamp(40px,8vw,68px);line-height:1.02;
   letter-spacing:-.03em;margin:0 0 18px;font-weight:700;text-wrap:balance}
 h1 .hl{white-space:nowrap}
