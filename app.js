@@ -119,12 +119,12 @@ function applyProduct() {
     ul.append(li);
   }
 
-  $('cypDl').textContent = [
+  $('advDl').textContent = [
     `curl -LO ${f.downloadUrl}`,
     `sha256sum ${f.filename}`,
   ].join('\n');
 
-  $('cypVerify').textContent = sig.scheme === 'pgp'
+  $('advVerify').textContent = sig.scheme === 'pgp'
     ? [
         `curl -LO ${sig.signedFileUrl}`,
         `curl -LO ${sig.signatureUrl}`,
