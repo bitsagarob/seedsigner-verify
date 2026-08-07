@@ -32,6 +32,27 @@ transit, and the wrong image for your model.
 
 ## What it does not prove
 
+**That the software is correct.** This is the big one, and it is the one most easily
+misread. A matching hash proves the file came from the project unaltered. It says nothing
+whatsoever about whether the code inside is any good. A release can be authentic, correctly
+signed, reproducibly built, and still contain a serious bug, including in something as
+critical as how entropy is generated. Verification answers "is this really theirs?", never
+"is this safe to trust with money?".
+
+Nothing can fully answer the second question. What moves the needle is not this page:
+
+- **Read the release notes** for the version you are installing, and skim the project's open
+  issues. Both are linked in Advanced mode.
+- **Prefer a release that has been out a while** over one published yesterday, unless the new
+  one fixes something that affects you.
+- **Public review is the real defence.** The source is open and reproducible, so bugs are
+  found by many people over time rather than by you in an afternoon. Reading the whole
+  codebase yourself is not a realistic standard, and anyone claiming they do it for every
+  update is not being straight with you.
+- **Bound the damage anyway.** Your own dice entropy, an xpub checked on a second independent
+  path, and a small test spend before funding, all catch classes of problem that no signature
+  check ever will.
+
 **That we are honest.** This page supplies the expected hash *and* performs the comparison. If
 someone controlled this page, they could show you a green tick for a file that was not the
 publisher's. No amount of good code inside the page fixes that, because the page cannot

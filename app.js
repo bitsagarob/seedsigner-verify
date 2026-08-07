@@ -97,6 +97,8 @@ function applyProduct() {
     `${f.filename} · ${(f.sizeBytes / 1048576).toFixed(0)} MB · version ${f.version}, published ${f.publishedAt}`;
   $('dlUrl').textContent = f.downloadUrl;
   $('relPage').href = f.releasePageUrl;
+  $('relNotes').href = f.releasePageUrl;
+  $('relIssues').href = f.reproducibleBuild.repo.replace('-os', '') + '/issues';
 
   $('expHash').textContent = f.sha256;
   $('gotHash').textContent = 'not yet';
