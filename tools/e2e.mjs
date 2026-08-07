@@ -39,7 +39,8 @@ async function resultOf(page) {
   return {
     cls: await page.getAttribute('#result', 'class'),
     title: (await page.textContent('#result h3'))?.trim(),
-    step3Locked: await page.evaluate(() => document.getElementById('step-3').classList.contains('locked')),
+    step3Usable: await page.evaluate(() =>
+      getComputedStyle(document.getElementById('step-3')).pointerEvents !== 'none'),
   };
 }
 
@@ -90,15 +91,14 @@ console.log('\n3. Stock image, correct product');
 {
   const { page, ctx } = await newPage();
   await page.click('[data-product="premium"]');
-  check(!(await page.evaluate(() => document.getElementById('step-1').classList.contains('locked'))),
-    'step 1 unlocks on product choice');
-  check(await page.evaluate(() => document.getElementById('step-3').classList.contains('locked')),
-    'step 3 starts locked');
+  const allUsable = await page.evaluate(() => [...document.querySelectorAll('.step')]
+    .every(s => getComputedStyle(s).pointerEvents !== 'none'));
+  check(allUsable, 'every step is readable and clickable from the start');
 
   await page.setInputFiles('#file', IMG_STOCK);
   const r = await resultOf(page);
   check(r.cls === 'ok', 'green result', r.title);
-  check(!r.step3Locked, 'step 3 unlocked after a good check');
+  check(r.step3Usable, 'step 3 remains usable');
   await ctx.close();
 }
 
@@ -132,7 +132,7 @@ console.log('\n4. Tampered image, one flipped byte');
   await page.setInputFiles('#file', IMG_TAMPER);
   const r = await resultOf(page);
   check(r.cls === 'bad', 'full stop shown', r.title);
-  check(r.step3Locked, 'step 3 stays locked');
+  check(r.step3Usable, 'step 3 is never disabled, the stop message carries the warning');
   await ctx.close();
 }
 
@@ -145,7 +145,7 @@ console.log('\n5. Smartcard image while premium is selected');
   const r = await resultOf(page);
   check(r.cls === 'warn', 'helpful warning, not an alarm', r.title);
   check(/different model/i.test(r.title), 'names the actual problem', r.title);
-  check(r.step3Locked, 'step 3 stays locked');
+  check(r.step3Usable, 'step 3 is never disabled, the stop message carries the warning');
   await ctx.close();
 }
 
@@ -172,6 +172,23 @@ console.log('\n7. Wrong file type');
   await page.setInputFiles('#file', NOT_IMG);
   const r = await resultOf(page);
   check(r.cls === 'warn', 'gentle correction, not an error', r.title);
+  await ctx.close();
+}
+
+// ------------------------------------------------- 7b. rail tracks scrolling
+console.log('\n7b. The rail follows scroll position');
+{
+  const { page, ctx } = await newPage();
+  let ok = true;
+  for (const n of [1, 2, 3, 4]) {
+    await page.evaluate((i) =>
+      document.getElementById(`step-${i}`).scrollIntoView({ block: 'start', behavior: 'instant' }), n);
+    await page.waitForTimeout(200);
+    const now = await page.evaluate(() =>
+      [...document.querySelectorAll('.rail li.now')].map((l) => Number(l.dataset.rail)));
+    if (now.length !== 1 || now[0] !== n) { ok = false; console.log(`       at step ${n} rail showed [${now}]`); }
+  }
+  check(ok, 'each step highlights exactly itself while being read');
   await ctx.close();
 }
 
