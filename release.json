@@ -27,8 +27,7 @@
       "firmware": "smartcard",
       "needsDisplaySetting": true,
       "look": "Bigger screen & card slot",
-      "image": "assets/product-plus-smartcard.png",
-      "runs": "Sold as SeedSigner Plus Smartcard"
+      "image": "assets/product-plus-smartcard.png"
     }
   ],
   "firmware": {

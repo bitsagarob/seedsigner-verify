@@ -72,7 +72,7 @@ function buildPicker() {
     b.append(img);
     b.append(el('b', p.label));
     b.append(el('span', p.look));
-    b.append(el('span', p.runs, 'runs'));
+    if (p.runs) b.append(el('span', p.runs, 'runs'));
     b.addEventListener('click', () => selectProduct(p.id));
     wrap.append(b);
   }
