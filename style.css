@@ -81,6 +81,11 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible{
 .rail li.now{color:var(--fg);font-weight:600}
 .rail li.now .num{background:var(--gold);border-color:var(--gold-deep);color:#2a1a00}
 @media (max-width:660px){
+  /* The toggle group does not reach the right edge once it wraps, so anchoring
+     the panel to it pushed the panel off-screen. Anchor it to the bar instead
+     and inset both sides, which fits at any width. */
+  .modewrap{position:static}
+  .info-pop{left:12px;right:12px;width:auto;top:calc(100% + 6px)}
   .rail .rl{display:none}
   .rail .num{width:24px;height:24px;font-size:12px}
   .topbar{padding:8px clamp(12px,4vw,20px);gap:8px}
