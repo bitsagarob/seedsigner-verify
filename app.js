@@ -78,9 +78,6 @@ function selectProduct(id) {
   }
   try { localStorage.setItem('product', id); } catch {}
   applyProduct();
-  unlock('step-1');
-  unlock('step-2');   // both are usable as soon as the product is known
-  markRail(1);
 }
 
 function fw() { return R.firmware[product.firmware]; }
@@ -186,15 +183,27 @@ function applyProduct() {
 const group = (fpr) => (fpr.match(/.{1,4}/g) || []).join(' ');
 
 /* ------------------------------------------------------------------- gate */
-function unlock(id) { $(id).classList.remove('locked'); }
-function lock(id) { $(id).classList.add('locked'); }
+/* The rail says where you are, not what you have completed. Nothing on this page
+   is ever disabled: someone may legitimately want to read step 3 before they have
+   checked a file, or come back to step 4 later. */
+function wireScrollSpy() {
+  const steps = [1, 2, 3, 4].map((n) => ({ n, el: $(`step-${n}`) }));
 
-function markRail(n) {
-  for (const li of document.querySelectorAll('.rail li')) {
-    const i = Number(li.dataset.rail);
-    li.classList.toggle('done', i < n);
-    li.classList.toggle('now', i === n);
-  }
+  const update = () => {
+    const line = innerHeight * 0.35;   // a band a third down the viewport
+    let current = null;
+    for (const s of steps) {
+      const box = s.el.getBoundingClientRect();
+      if (box.top <= line) current = s.n;
+    }
+    for (const li of document.querySelectorAll('.rail li')) {
+      li.classList.toggle('now', Number(li.dataset.rail) === current);
+    }
+  };
+
+  addEventListener('scroll', () => requestAnimationFrame(update), { passive: true });
+  addEventListener('resize', () => requestAnimationFrame(update), { passive: true });
+  update();
 }
 
 /* ----------------------------------------------------------------- result */
@@ -227,8 +236,6 @@ function showResult(kind, title, lines, extra) {
 function onVerified(computed) {
   $('gotHash').textContent = computed;
   $('gotHash').className = 'mono hit';
-  unlock('step-3');
-  markRail(3);
   showResult('ok', 'It is genuine.', [
     `This file matches exactly what ${fw().project.split(' (')[0]} released. Keep it, you need it in the next step.`,
   ]);
@@ -237,8 +244,6 @@ function onVerified(computed) {
 function onMismatch(computed) {
   $('gotHash').textContent = computed;
   $('gotHash').className = 'mono miss';
-  lock('step-3');
-  markRail(2);
 
   const known = R.knownFiles.find((k) => k.sha256 === computed);
 
@@ -380,8 +385,8 @@ async function boot() {
   staleness();
   mobile();
   wireDrop();
+  wireScrollSpy();
   settingsDownload();
-  markRail(0);
 
   const test = selfTest();
   const cross = await crossCheck();

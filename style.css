@@ -76,10 +76,8 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible{
 .rail .num{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
   border:1.5px solid var(--line);font-family:var(--display);font-size:13px;font-weight:700;
   font-variant-numeric:tabular-nums;line-height:1;transition:background .25s,border-color .25s,color .25s}
-.rail li.done{color:var(--fg)}
-.rail li.done .num{background:var(--good);border-color:var(--good);color:#fff}
 .rail li.now{color:var(--fg);font-weight:600}
-.rail li.now .num{background:var(--gold);border-color:var(--gold-deep);color:#2a1a00}
+.rail li.now .num{background:var(--fg);border-color:var(--fg);color:var(--bg)}
 @media (max-width:660px){
   /* The toggle group does not reach the right edge once it wraps, so anchoring
      the panel to it pushed the panel off-screen. Anchor it to the bar instead
@@ -114,12 +112,6 @@ h1 .hl{white-space:nowrap}
   letter-spacing:-.02em;margin:0 0 22px;font-weight:700;display:flex;gap:16px;align-items:baseline}
 .step h2 .n{font-size:.52em;color:var(--gold-deep);font-variant-numeric:tabular-nums;flex:none}
 .step h3{font-family:var(--display);font-size:21px;margin:30px 0 8px}
-.step.locked{pointer-events:none}
-.step.locked>*{opacity:.42}
-/* Things a visitor may legitimately want before the step is unlocked, such as
-   downloading the imaging tool while the firmware is still coming down. */
-.step.locked>.always-wrap{opacity:1;pointer-events:auto}
-.step.locked .adv,.step.locked .cyp{display:none!important}
 
 .hint,.meta,.fn{color:var(--muted);font-size:15.5px}
 .fn{font-size:14px}
@@ -228,6 +220,5 @@ html[data-mode="cypherpunk"] .easy-copy{display:none}
 /* cypherpunk mode sells nothing */
 html[data-mode="cypherpunk"] .sell{display:none}
 html[data-mode="advanced"] .sell{display:block}
-.step.locked .layer{display:none!important}
 
 .always-wrap .hint{display:inline-block;margin-left:10px}
