@@ -29,6 +29,7 @@ function setMode(mode) {
   pop.append(el('b', 'Who you have to trust'));
   pop.append(document.createTextNode(MODE_NOTE[mode]));
   try { localStorage.setItem('mode', mode); } catch {}
+  paintTime();
 }
 
 for (const b of document.querySelectorAll('[data-set-mode]')) {
@@ -64,8 +65,13 @@ function buildPicker() {
     b.type = 'button';
     b.setAttribute('aria-pressed', 'false');
     b.dataset.product = p.id;
+    const img = el('img');
+    img.src = p.image;
+    img.alt = '';          // decorative: the label beside it carries the meaning
+    img.loading = 'lazy';
+    b.append(img);
     b.append(el('b', p.label));
-    b.append(el('span', p.firmware === 'smartcard' ? 'Has a smartcard slot' : 'No smartcard slot'));
+    b.append(el('span', p.look));
     b.addEventListener('click', () => selectProduct(p.id));
     wrap.append(b);
   }
@@ -196,11 +202,28 @@ function applyProduct() {
   // Name the actual file in the caption, so nobody has to guess in a file picker.
   $('capFile').textContent = `: ${f.filename}`;
 
+  paintTime();
+
   const needs = product.needsDisplaySetting;
   $('displayFix').hidden = !needs;
   if (needs) {
     $('settingsJson').textContent = JSON.stringify(R.displaySettings.settingsJson, null, 4);
   }
+}
+
+/* Fifteen minutes is only true for one of the two images, and not at all if you
+   are rebuilding from source. */
+function timeEstimate() {
+  const mode = document.documentElement.dataset.mode;
+  if (mode === 'cypherpunk') return 'An hour or more if you rebuild from source.';
+  if (!product) return 'About 10 minutes, plus the download.';
+  const mb = Math.round(fw().sizeBytes / 1048576);
+  return `About 10 minutes, plus a ${mb} MB download.`;
+}
+
+function paintTime() {
+  const t = timeEstimate();
+  for (const id of ['timeEst', 'timeEst2']) { const e = $(id); if (e) e.textContent = t; }
 }
 
 const group = (fpr) => (fpr.match(/.{1,4}/g) || []).join(' ');
@@ -307,7 +330,15 @@ async function handleFile(file) {
 
   $('result').hidden = true;
 
-  if (!/\.(img|zip)$/i.test(file.name)) {
+  if (/\.zip$/i.test(file.name)) {
+    showResult('warn', 'That is the compressed version.', [
+      'Some releases publish a smaller .zip next to the .img. We check the .img itself,',
+      'so go back to step 1 and use the download button there. Nothing is wrong with your file.',
+    ]);
+    return;
+  }
+
+  if (!/\.img$/i.test(file.name)) {
     showResult('warn', 'That does not look like the right file.', [
       'The file you want ends in .img and is the one you downloaded in step 1.',
       'Try again with that one. Nothing is wrong.',

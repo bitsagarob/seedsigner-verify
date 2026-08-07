@@ -130,8 +130,10 @@ h1 .hl{white-space:nowrap}
 
 /* ---------- product picker ---------- */
 .picker{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
-.picker button{font:inherit;text-align:left;background:var(--panel);border:1.5px solid var(--line);display:flex;flex-direction:column;gap:4px;justify-content:flex-start;
+.picker button{font:inherit;text-align:center;background:var(--panel);border:1.5px solid var(--line);display:flex;flex-direction:column;gap:4px;justify-content:flex-start;
   border-radius:var(--r-sm);padding:18px 20px;cursor:pointer;color:var(--fg)}
+.picker button img{width:100%;max-width:150px;aspect-ratio:1;object-fit:contain;
+  margin:0 auto 10px;display:block}
 .picker button b{display:block;font-family:var(--display);font-size:18px}
 .picker button span{color:var(--muted);font-size:14.5px}
 .picker button[aria-pressed="true"]{border-color:var(--gold-deep);
