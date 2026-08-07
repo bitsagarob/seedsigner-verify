@@ -76,13 +76,12 @@
     <p class="mono wrap" id="dlUrl"></p>
     <p>Your browser's download bar shows this comes from SeedSigner's own GitHub account, not from Bitsaga.</p>
     <p><a id="relPage" href="#" rel="noopener">Open the release page</a> and compare the filename yourself.</p>
-  </div>
-
-  <div class="cyp layer">
-    <p class="k">Fetch and check without this page</p>
+    <p class="k">Fetch and hash it without this page</p>
     <pre class="mono" id="cypDl"></pre>
     <p class="fn">Different board? Every official image is at <a href="https://github.com/SeedSigner/seedsigner/releases" rel="noopener">github.com/SeedSigner/seedsigner/releases</a>. This page only covers the Raspberry Pi Zero v1.3, which is what Bitsaga ships.</p>
   </div>
+
+
 </section>
 
 <!-- ------------------------------------------------------------------ -->
@@ -117,11 +116,11 @@
     <ul id="keySources"></ul>
     <p class="k">Do not trust Bitsaga's checkmark</p>
     <p id="escapeHatch"></p>
+    <p class="k">Check the signature yourself</p>
+    <pre class="mono" id="cypVerify"></pre>
   </div>
 
   <div class="cyp layer">
-    <p class="k">Do it yourself in a terminal</p>
-    <pre class="mono" id="cypVerify"></pre>
     <p class="k">Rebuild it from source and get the same bytes</p>
     <pre class="mono" id="cypRebuild"></pre>
     <p>SeedSigner's build is reproducible, so the hash above is not something you have to take

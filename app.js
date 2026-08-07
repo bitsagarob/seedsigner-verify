@@ -15,8 +15,8 @@ let cryptoReady = false;
 /* ------------------------------------------------------------------ modes */
 const MODE_NOTE = {
   easy: 'Bitsaga. The page checks the file for you and you take its word for it.',
-  advanced: 'SeedSigner. Every value is shown so you can check it against their own release page.',
-  cypherpunk: 'Nobody. Every step can be repeated, and the firmware rebuilt from source, without Bitsaga.',
+  advanced: 'SeedSigner. Every value and command is here, so you can check it against their own release.',
+  cypherpunk: 'Nobody. Rebuild the firmware from source and derive the hash yourself.',
 };
 
 function setMode(mode) {
@@ -100,12 +100,12 @@ function applyProduct() {
     $('sigBy').textContent = `${f.project}, PGP signature over the published checksum file`;
     $('sigKey').textContent = group(sig.keyFingerprint);
     $('escapeHatch').textContent =
-      'Check the same file in Sparrow Wallet, or with gpg, using the commands in cypherpunk mode. Neither needs this page.';
+      'Check the same file in Sparrow Wallet, or with gpg using the commands below. Neither needs this page.';
   } else {
     $('sigBy').textContent = `${f.project}, Bitcoin message signature over the checksum block`;
     $('sigKey').textContent = sig.address;
     $('escapeHatch').textContent =
-      'Verify the message signature in Sparrow or Electrum against the address above. The checksums are in the release notes. Neither needs this page.';
+      'Verify the message signature in Sparrow or Electrum against the address above, using the details below. Neither needs this page.';
   }
 
   const ul = $('keySources');
