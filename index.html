@@ -14,6 +14,7 @@
 <a class="skip" href="#main">Skip to content</a>
 
 <div class="topbar">
+ <div class="bar-inner">
   <nav class="rail" aria-label="Progress">
     <ol>
       <li data-rail="1"><span class="num">1</span><span class="rl">Download</span></li>
@@ -33,6 +34,7 @@
             aria-controls="modeNote" aria-label="What this level means">i</button>
     <div class="info-pop" id="modeNote" role="status" hidden></div>
   </div>
+ </div>
 </div>
 
 <main id="main">
@@ -140,7 +142,7 @@
   <p class="easy-copy">Use Raspberry Pi Imager. It is free, and it checks the card when it is done.</p>
   <p class="terse-copy">Raspberry Pi Imager, custom image, verify-after-write is on by default.</p>
 
-  <p class="always-wrap"><a class="btn" href="https://www.raspberrypi.com/software/" rel="noopener">Get Raspberry Pi Imager</a>
+  <p class="always-wrap"><a class="btn" href="https://www.raspberrypi.com/software/" target="_blank" rel="noopener">Get Raspberry Pi Imager</a>
      <span class="hint">You can grab this now, while the file downloads.</span></p>
 
   <ol class="mini">
@@ -162,7 +164,7 @@
 </section>
 
 <!-- ------------------------------------------------------------------ -->
-<section class="step locked" id="step-4" aria-labelledby="h4s">
+<section class="step" id="step-4" aria-labelledby="h4s">
   <h2 id="h4s"><span class="n">4</span> Start it up</h2>
 
   <p class="easy-copy">Put the card in and plug in the power.</p>
@@ -224,18 +226,33 @@
 </main>
 
 <footer class="site">
-  <p><a href="https://github.com/bitsagarob/seedsigner-verify" rel="noopener">This page is open source. Audit it, fork it, improve it.</a></p>
-  <p class="adv">Every version of this page is signed by Bitsaga.
-     <span class="mono" id="bitsagaKey"></span></p>
-  <p class="adv"><a href="TRUST.md">What this page can prove, and what it cannot.</a></p>
-  <p>This page loads nothing from any other server, sets no cookies, and needs no cookie banner.
-     Your file is read inside this tab and never leaves your computer.</p>
-  <p>No tracking code, no cookies, and nothing recorded about the file you check.
-     <a href="https://bitsaga.be/privacy-policy.html" rel="noopener">Privacy policy</a>.</p>
-  <p class="fn">Not affiliated with the SeedSigner project. SeedSigner is an independent open-source
-     project. The smartcard firmware is an independent fork.</p>
-  <p class="fn"><a href="https://bitsaga.be/insights/agent-server-hardening.html" rel="noopener">How our servers are hardened</a></p>
-  <p class="fn"><a href="https://bitsaga.be">Bitsaga</a> <span id="footBrand"></span></p>
+  <div class="foot-inner">
+    <a class="foot-brand" href="https://bitsaga.be"><img src="assets/logo-bitsaga.png" alt="Bitsaga"></a>
+
+    <div class="foot-cols">
+      <div>
+        <p class="foot-h">This page</p>
+        <p><a href="https://github.com/bitsagarob/seedsigner-verify" target="_blank" rel="noopener">Source on GitHub</a></p>
+        <p><a href="TRUST.md">What it can and cannot prove</a></p>
+        <p class="adv">Signed by Bitsaga <span class="mono" id="bitsagaKey"></span></p>
+      </div>
+      <div>
+        <p class="foot-h">Bitsaga</p>
+        <p><a href="https://bitsaga.be" target="_blank" rel="noopener">bitsaga.be</a></p>
+        <p><a href="https://bitsaga.be/seedsigner-simulator/" target="_blank" rel="noopener">SeedSigner simulator</a></p>
+        <p><a href="https://bitsaga.be/insights/agent-server-hardening.html" target="_blank" rel="noopener">Server hardening guide</a></p>
+      </div>
+      <div>
+        <p class="foot-h">Privacy</p>
+        <p>No tracking code, no cookies, and nothing recorded about the file you check.</p>
+        <p><a href="https://bitsaga.be/privacy-policy.html" target="_blank" rel="noopener">Privacy policy</a></p>
+      </div>
+    </div>
+
+    <p class="fn">Not affiliated with the SeedSigner project. SeedSigner is an independent
+       open-source project, and the smartcard firmware is an independent fork of it.</p>
+    <p class="fn" id="footBrand"></p>
+  </div>
 </footer>
 
 <script type="module" src="app.js"></script>

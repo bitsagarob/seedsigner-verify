@@ -228,7 +228,6 @@ function onVerified(computed) {
   $('gotHash').textContent = computed;
   $('gotHash').className = 'mono hit';
   unlock('step-3');
-  unlock('step-4');
   markRail(3);
   showResult('ok', 'It is genuine.', [
     `This file matches exactly what ${fw().project.split(' (')[0]} released. Keep it, you need it in the next step.`,
@@ -239,7 +238,6 @@ function onMismatch(computed) {
   $('gotHash').textContent = computed;
   $('gotHash').className = 'mono miss';
   lock('step-3');
-  lock('step-4');
   markRail(2);
 
   const known = R.knownFiles.find((k) => k.sha256 === computed);

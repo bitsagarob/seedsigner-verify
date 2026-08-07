@@ -44,11 +44,15 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible{
 .skip:focus{left:12px;top:12px;background:var(--panel);padding:10px 16px;z-index:99}
 
 /* ---------- sticky top bar: progress on the left, level on the right ---------- */
-.topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;
-  justify-content:space-between;gap:14px;flex-wrap:wrap;
+.topbar{position:sticky;top:0;z-index:30;
   padding:11px clamp(14px,4vw,32px);
   background:color-mix(in srgb,var(--bg) 90%,transparent);
   backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+
+/* Keeps the bar readable on ultrawide displays instead of flinging the two
+   halves to opposite edges of a 3440px screen. */
+.bar-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;
+  justify-content:space-between;gap:14px;flex-wrap:wrap}
 
 .modewrap{position:relative;display:flex;align-items:center;gap:8px}
 .modes{display:flex;background:var(--sand);border-radius:999px;padding:3px;gap:2px}
@@ -188,9 +192,21 @@ summary{cursor:pointer;font-weight:600}
 .practice,.sell{margin-top:34px;padding:26px 28px;border-radius:var(--radius);
   border:1px solid var(--line);background:var(--panel)}
 
-footer.site{border-top:1px solid var(--line);max-width:760px;margin:0 auto;
-  padding:44px clamp(18px,5vw,32px) 80px;color:var(--muted);font-size:15px}
-footer.site p{margin:0 0 10px}
+footer.site{margin-top:40px;background:var(--charcoal);color:rgba(255,249,239,.72);
+  font-size:15px;padding:clamp(44px,6vw,68px) clamp(18px,5vw,32px) clamp(40px,5vw,60px)}
+.foot-inner{max-width:1180px;margin:0 auto}
+.foot-brand{display:inline-block;margin-bottom:clamp(26px,4vw,38px)}
+.foot-brand img{height:26px;display:block}
+.foot-cols{display:grid;gap:clamp(24px,4vw,48px);
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-bottom:34px}
+.foot-h{font-family:var(--display);font-size:13px;text-transform:uppercase;
+  letter-spacing:.1em;color:rgba(255,249,239,.45);margin:0 0 10px;font-weight:600}
+footer.site p{margin:0 0 8px;line-height:1.6}
+footer.site a{color:rgba(255,249,239,.9);text-decoration-color:var(--gold)}
+footer.site a:hover{color:#fff}
+footer.site .fn{font-size:13.5px;color:rgba(255,249,239,.45);max-width:70ch}
+footer.site .mono{color:rgba(255,249,239,.6);font-size:13px}
+footer.site a:focus-visible{outline-color:var(--gold)}
 
 /* ---------- mode switching ---------- */
 .adv,.cyp,.layer{display:none}
