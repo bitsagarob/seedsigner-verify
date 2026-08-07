@@ -165,6 +165,8 @@ h1 .hl{white-space:nowrap}
 .tick{font-size:54px;line-height:1;display:block;margin-bottom:6px;color:var(--good);
   animation:pop .45s cubic-bezier(.2,1.5,.4,1)}
 @keyframes pop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+.helplinks{display:flex;flex-wrap:wrap;gap:10px 18px;margin:18px 0 4px!important;font-weight:600}
+.helplinks a{text-decoration-color:var(--bad)}
 .howknow{font-size:15px;margin-top:14px!important}
 .howknow button{font:inherit;font-size:15px;background:none;border:0;padding:0;cursor:pointer;
   color:var(--muted);text-decoration:underline;text-underline-offset:3px}

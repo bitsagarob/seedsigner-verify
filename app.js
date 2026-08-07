@@ -311,9 +311,29 @@ function onMismatch(computed) {
   }
 
   showResult('bad', 'Something is wrong with this file. Stop here.', [
-    'Do not use it. Download it again using the button in step 1.',
-    'If this happens twice, do not continue, and contact me before you go any further.',
-  ], detailForBad());
+    'Do not use it. Download it again, straight from SeedSigner, and check it here once more.',
+    'If it fails a second time, stop and get in touch before you go any further.',
+  ], helpForBad());
+}
+
+/* The most alarming screen on the page had no way out of it. Order matters: a
+   fresh download from source fixes the common case, and only then do we ask
+   someone to write in. */
+function helpForBad() {
+  const d = el('div');
+
+  const links = el('p', '', 'helplinks');
+  const a1 = el('a', 'Download again from SeedSigner');
+  a1.href = fw().releasePageUrl; a1.target = '_blank'; a1.rel = 'noopener';
+  const a2 = el('a', 'Email contact@bitsaga.be');
+  a2.href = 'mailto:contact@bitsaga.be?subject=SeedSigner%20file%20did%20not%20check%20out';
+  const a3 = el('a', 'Book a call');
+  a3.href = 'https://cal.com/bitsaga'; a3.target = '_blank'; a3.rel = 'noopener';
+  links.append(a1, a2, a3);
+  d.append(links);
+
+  d.append(detailForBad());
+  return d;
 }
 
 function detailForBad() {
