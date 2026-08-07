@@ -158,6 +158,18 @@
   <figure class="shot"><img src="assets/step3-choose-custom.png" alt="Raspberry Pi Imager with Use custom highlighted at the bottom of the operating system list" loading="lazy"><figcaption>Choose Use custom, then pick the file you checked<span id="capFile"></span></figcaption></figure>
 
   <div class="cyp layer">
+    <p class="k">Write it without a GUI tool</p>
+    <p>Raspberry Pi Imager is open source, Apache licensed, and worth recommending. It also reports
+       usage to <span class="mono">rpi-imager-stats.raspberrypi.com</span>: the version, your
+       operating system, CPU architecture and locale, plus which image you picked when it comes from
+       their own repository. Choosing your own file is not that, but if you would rather run nothing
+       extra at all, <span class="mono">dd</span> is already on your machine.</p>
+    <pre class="mono" id="cypWrite"></pre>
+    <p>Get the device wrong and you overwrite a disk with no confirmation and no undo. Check it twice.</p>
+
+    <p class="k">Or keep Imager and switch the telemetry off</p>
+    <pre class="mono" id="cypTelemetry"></pre>
+
     <p class="k">Verify the card, not just the file</p>
     <p>Writing can go wrong after a correct file. Imager verifies by default; confirm it did. On the
        smartcard firmware the device itself can verify a freshly written card under MicroSD Card Tools.</p>

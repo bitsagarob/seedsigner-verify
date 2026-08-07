@@ -158,6 +158,26 @@ function applyProduct() {
     `# the printed SHA256 must equal ${f.sha256}`,
   ].join('\n');
 
+  $('cypWrite').textContent = [
+    `# Linux. Find the card first and be certain: lsblk`,
+    `sudo dd if=${f.filename} of=/dev/sdX bs=4M status=progress conv=fsync`,
+    ``,
+    `# macOS. diskutil list to find it, note the r in rdiskN for speed.`,
+    `diskutil unmountDisk /dev/diskN`,
+    `sudo dd if=${f.filename} of=/dev/rdiskN bs=4m status=progress`,
+  ].join('\n');
+
+  $('cypTelemetry').textContent = [
+    `# Linux`,
+    `rpi-imager --disable-telemetry`,
+    ``,
+    `# macOS`,
+    `defaults write org.raspberrypi.Imager.plist telemetry -bool NO`,
+    ``,
+    `# Windows`,
+    `reg add "HKCU\\Software\\Raspberry Pi\\Imager" /v telemetry /t REG_DWORD /d 0`,
+  ].join('\n');
+
   $('cypCard').textContent = [
     `# Linux or macOS, read the card back and hash what is actually on it.`,
     `# Replace /dev/sdX with your card. Getting this wrong overwrites a disk.`,
