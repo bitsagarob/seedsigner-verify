@@ -201,8 +201,6 @@ footer.site{margin-top:40px;background:var(--charcoal);color:rgba(255,249,239,.7
 .foot-brand img{height:26px;display:block}
 .foot-cols{display:grid;gap:clamp(24px,4vw,48px);
   grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-bottom:34px}
-.foot-h{font-family:var(--display);font-size:13px;text-transform:uppercase;
-  letter-spacing:.1em;color:rgba(255,249,239,.45);margin:0 0 10px;font-weight:600}
 footer.site p{margin:0 0 8px;line-height:1.6}
 footer.site a{color:rgba(255,249,239,.9);text-decoration-color:var(--gold)}
 footer.site a:hover{color:#fff}
