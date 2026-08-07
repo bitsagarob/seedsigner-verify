@@ -135,7 +135,8 @@ h1 .hl{white-space:nowrap}
 .picker button img{width:100%;max-width:150px;aspect-ratio:1;object-fit:contain;
   margin:0 auto 10px;display:block}
 .picker button b{display:block;font-family:var(--display);font-size:18px}
-.picker button span{color:var(--muted);font-size:14.5px}
+.picker button span{color:var(--muted);font-size:14.5px;display:block}
+.picker button .runs{margin-top:4px;font-size:13px;opacity:.75}
 .picker button[aria-pressed="true"]{border-color:var(--gold-deep);
   background:color-mix(in srgb,var(--gold) 12%,var(--panel))}
 

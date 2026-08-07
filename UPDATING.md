@@ -21,7 +21,7 @@ curl -s https://api.github.com/repos/SeedSigner/seedsigner/releases/latest | gre
 curl -s https://api.github.com/repos/3rdIteration/seedsigner/releases?per_page=1
 ```
 
-For the smartcard fork, images live in `3rdIteration/seedsigner`, **not** in
+For ShieldSigner, images live in `3rdIteration/seedsigner`, **not** in
 `3rdIteration/seedsigner-os`. That repo publishes 1 GB `-dev` builds and sometimes tags with no
 assets at all. Check download counts if unsure.
 
@@ -42,7 +42,7 @@ gpg --verify seedsigner.<version>.sha256.txt.sig seedsigner.<version>.sha256.txt
 
 Expect `Good signature` and fingerprint `46739B74B56AD88F14B0882EC7EF709007260119`.
 
-Smartcard, Bitcoin message signature over the checksum block in the release notes:
+ShieldSigner, Bitcoin message signature over the checksum block in the release notes:
 
 ```
 python3 tools/verify_btc_msg.py release-body.txt
@@ -60,7 +60,7 @@ tampering alarm. Add the new other-board hashes as `wrong-board`. Update `lastCo
 **5. Append to VERIFICATION_LOG.md**, with the commands and their real output.
 
 **5b. Update the two version badges** at the top of README.md, the `stock` one and the
-`smartcard fork` one. They are the only badges that carry a value which can go stale; the rest
+`ShieldSigner` one. They are the only badges that carry a value which can go stale; the rest
 state structural facts about this repository that stay true, which is why none of them claim a
 test result. There is no CI here, so a green badge asserting something that is only checked by
 hand would be exactly the kind of unverifiable claim this project argues against.

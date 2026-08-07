@@ -12,14 +12,14 @@ A firmware image reaches your card through a chain, and every link can fail:
 2. **Source to binary.** SeedSigner OS builds reproducibly. Anyone can rebuild the image from
    source and get the same bytes. This is the strongest link in the chain and the reason the
    hash on this page is not something you have to take anyone's word for.
-3. **Binary to published hash.** Signed by the publisher. PGP for the stock image, a Bitcoin
-   message signature for the smartcard fork.
+3. **Binary to published hash.** Signed by the publisher. PGP for stock SeedSigner, a Bitcoin
+   message signature for ShieldSigner, the Satochip smartcard fork.
 4. **Signing key to identity.** Published in several places that one person cannot all control.
    The page links them so you can compare rather than trust.
 5. **Published hash to your file.** The check this page performs.
 6. **The checker itself.** See below.
-7. **File to card.** Verified by Raspberry Pi Imager after writing, and on the smartcard
-   firmware the device can verify a card directly.
+7. **File to card.** Verified by Raspberry Pi Imager after writing, and on ShieldSigner the
+   device can verify a card directly.
 8. **Card to device to seed.** Where software stops helping.
 
 ## What this page proves

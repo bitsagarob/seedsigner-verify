@@ -72,6 +72,7 @@ function buildPicker() {
     b.append(img);
     b.append(el('b', p.label));
     b.append(el('span', p.look));
+    b.append(el('span', `Runs ${p.runs}`, 'runs'));
     b.addEventListener('click', () => selectProduct(p.id));
     wrap.append(b);
   }
@@ -145,7 +146,7 @@ function applyProduct() {
         `# expect: Good signature, key ${sig.keyFingerprint}`,
       ].join('\n')
     : [
-        `# The developer signs the checksum block with a Bitcoin message signature.`,
+        `# ${f.project}: the developer signs the checksum block with a Bitcoin message signature.`,
         `# Address: ${sig.address}`,
         `# Verify in Sparrow: Tools, Verify Message. Paste the checksum block from`,
         `# the release notes as the message, and the signature below.`,
