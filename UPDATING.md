@@ -59,6 +59,12 @@ tampering alarm. Add the new other-board hashes as `wrong-board`. Update `lastCo
 
 **5. Append to VERIFICATION_LOG.md**, with the commands and their real output.
 
+**5b. Update the two version badges** at the top of README.md, the `stock` one and the
+`smartcard fork` one. They are the only badges that carry a value which can go stale; the rest
+state structural facts about this repository that stay true, which is why none of them claim a
+test result. There is no CI here, so a green badge asserting something that is only checked by
+hand would be exactly the kind of unverifiable claim this project argues against.
+
 **6. Run the tests** against the new images: `node tools/e2e.mjs`.
 
 **7. Cut a signed release**, below.

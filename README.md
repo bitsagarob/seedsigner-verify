@@ -1,5 +1,15 @@
 # seedsigner-verify
 
+[![try it live](https://img.shields.io/badge/try%20it-live-f7931a?style=flat-square)](https://verify.bitsaga.be)
+[![stock](https://img.shields.io/badge/stock-0.8.7-blue?style=flat-square)](https://github.com/SeedSigner/seedsigner/releases/tag/0.8.7)
+[![smartcard fork](https://img.shields.io/badge/smartcard%20fork-SeSi--0.8.7%2BShSi--B11-blue?style=flat-square)](https://github.com/3rdIteration/seedsigner/releases/tag/SeSi-0.8.7%2BShSi-B11)
+[![board](https://img.shields.io/badge/board-Pi%20Zero%20v1.3-blue?style=flat-square)](https://github.com/SeedSigner/seedsigner-os/blob/main/docs/building.md)
+[![pinned values](https://img.shields.io/badge/pinned%20values-verified-brightgreen?style=flat-square)](VERIFICATION_LOG.md)
+[![dependencies](https://img.shields.io/badge/dependencies-none-brightgreen?style=flat-square)](#dependencies)
+[![build step](https://img.shields.io/badge/build%20step-none-brightgreen?style=flat-square)](#deployment)
+[![tracking](https://img.shields.io/badge/tracking-none-brightgreen?style=flat-square)](#privacy)
+[![licence](https://img.shields.io/github/license/bitsagarob/seedsigner-verify?style=flat-square)](LICENSE)
+
 The source of [verify.bitsaga.be](https://verify.bitsaga.be), a single page that walks a
 SeedSigner buyer from a downloaded file to a checked, ready microSD card without opening a
 terminal, in about fifteen minutes.
