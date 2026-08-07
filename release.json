@@ -10,7 +10,7 @@
       "needsDisplaySetting": false,
       "look": "Small square screen",
       "image": "assets/product-premium.png",
-      "runs": "SeedSigner"
+      "runs": "Runs SeedSigner"
     },
     {
       "id": "plus",
@@ -19,16 +19,16 @@
       "needsDisplaySetting": true,
       "look": "Bigger screen",
       "image": "assets/product-plus.png",
-      "runs": "SeedSigner"
+      "runs": "Runs SeedSigner"
     },
     {
       "id": "plus-smartcard",
-      "label": "SeedSigner Plus Smartcard",
+      "label": "ShieldSigner",
       "firmware": "smartcard",
       "needsDisplaySetting": true,
-      "look": "Bigger screen, card slot",
+      "look": "Bigger screen & card slot",
       "image": "assets/product-plus-smartcard.png",
-      "runs": "ShieldSigner"
+      "runs": "Sold as SeedSigner Plus Smartcard"
     }
   ],
   "firmware": {
