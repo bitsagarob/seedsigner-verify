@@ -32,7 +32,7 @@
   unicode-range:U+0000-00FF,U+2000-206F,U+2212;}
 
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:118px}
 body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);
   font-size:19px;line-height:1.65;-webkit-font-smoothing:antialiased}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
@@ -76,7 +76,13 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible{
 .rail li.done .num{background:var(--good);border-color:var(--good);color:#fff}
 .rail li.now{color:var(--fg);font-weight:600}
 .rail li.now .num{background:var(--gold);border-color:var(--gold-deep);color:#2a1a00}
-@media (max-width:660px){.rail .rl{display:none}}
+@media (max-width:660px){
+  .rail .rl{display:none}
+  .rail .num{width:24px;height:24px;font-size:12px}
+  .topbar{padding:8px clamp(12px,4vw,20px);gap:8px}
+  .modes button{padding:5px 11px;font-size:13.5px}
+  .info-btn{width:26px;height:26px}
+}
 
 /* ---------- layout ---------- */
 main{max-width:760px;margin:0 auto;padding:0 clamp(18px,5vw,32px) 90px}
