@@ -1,0 +1,45 @@
+## What's Changed
+* Fill fork translation gaps for all 21 locales by @3rdIteration in https://github.com/3rdIteration/seedsigner/pull/379
+* Fork translation overlay: pull upstream translations + agent-filled gaps by @3rdIteration in https://github.com/3rdIteration/seedsigner/pull/377
+* Merge upstream 0.8.7 by @3rdIteration in https://github.com/3rdIteration/seedsigner/pull/376
+
+
+**Full Changelog**: https://github.com/3rdIteration/seedsigner/compare/SeSi-0.8.6+ShSi-B11...SeSi-0.8.7+ShSi-B11
+
+Dev images available for Raspberry Pi and Libre Computer here https://github.com/3rdIteration/seedsigner-os/releases/tag/SeSi-0.8.7%2BShSi-B11
+
+Dev images for Luckfox Pico Mini, Max and Pi here
+https://github.com/3rdIteration/seedsigner-luckfox-pico/releases/tag/SeSi-0.8.6%2BShSi-B10
+
+**To Build:**
+```
+git clone https://github.com/3rdIteration/seedsigner-os/
+cd seedsigner-os
+git checkout SeSi-0.8.7+ShSi-B11
+git submodule init
+git submodule update
+SS_ARGS="--all --app-repo=https://github.com/3rdIteration/seedsigner --app-branch=SeSi-0.8.7+ShSi-B11 --smartcard" docker compose up --force-recreate --build
+```
+
+**SHA256 Checksums (And message to verify)**
+- - - - - - - - - - - - - - - - - - - - - - - - 
+seedsigner_os.SeSi-0.8.7_ShSi-B11_.pi0-smartcard.img: 1b844cffdaa382d32a100d690cc0be5dd1208d23278fe22fea46593f47fb68a0
+seedsigner_os.SeSi-0.8.7_ShSi-B11_.pi02w-smartcard.img: 2866932dc06355f7f2f272f44464e06d67884e825be0ad11219379e1647ef3d8
+seedsigner_os.SeSi-0.8.7_ShSi-B11_.pi2-smartcard.img: f3f870cf7c5d59e112a1d090673c11813868210cc2740b5d2284951a2c1f9485
+seedsigner_os.SeSi-0.8.7_ShSi-B11_.pi4-smartcard.img: 97324ab558281a5e3539750b8a7d85d3523383e6555b00eb618d4539343c04f4
+- - - - - - - - - - - - - - - - - - - - - - - - 
+ **Bitcoin Message Signature:**
+- - - - - - - - - - - - - - - - - - - - - - - - 
+IDS9imBk642PtjkbND22ioVUh79KPIWmCQXQG021Es76Ja6ZQ/FJHrLRO+NoJ2IZZghQnvsJABTfiX8o479VVD0=
+- - - - - - - - - - - - - - - - - - - - - - - - 
+
+**Signature Verification**
+You can confirm that the checksums are correct by verifying the Bitcoin Message Signature above with a "Message" containing the signatures of the two files. (All of the information between the lines above) with the Bitcoin address "37hiiSB1Poj6Shs8WawPS2HjT2jzHkFSQi".
+
+This is a public tip address of mine that can be verified via:
+
+My video descriptions (Basically any video on my channel: https://www.youtube.com/channel/UCEviBQwLv-yfv3BErm0ojHg/)
+Reddit profile (https://www.reddit.com/user/Crypto-Guide/comments/czy13u/a_post_or_video_of_mine_was_helpful_feel_free_to/)
+Website (https://cryptoguide.tips/send-me-a-tip/)
+
+It is an "Electrum" formatted message that can be verified with software like Electrum, Sparrow or web based tools like https://www.verifybitcoinmessage.com/ or https://bitaps.com/signature
