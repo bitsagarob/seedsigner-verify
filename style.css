@@ -190,7 +190,7 @@ figcaption{color:var(--muted);font-size:14px;margin-top:8px}
 details{margin:16px 0;border:1px solid var(--line);border-radius:var(--r-sm);padding:14px 18px}
 summary{cursor:pointer;font-weight:600}
 .optin{display:inline-flex;gap:8px;align-items:center;font-size:15px;margin-right:12px}
-.mobile-note{padding:14px 18px;border-radius:var(--r-sm);background:var(--sand);margin-bottom:22px}
+.mobile-note,.bootnote{padding:14px 18px;border-radius:var(--r-sm);background:var(--sand);margin-bottom:22px}
 .practice,.sell{margin-top:34px;padding:26px 28px;border-radius:var(--radius);
   border:1px solid var(--line);background:var(--panel)}
 
