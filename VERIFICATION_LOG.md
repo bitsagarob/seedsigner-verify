@@ -214,3 +214,60 @@ uid   Bitsaga (release signing) <releases@bitsaga.be>
 
 Where this key is held is not published. See TRUST.md for what its signature does and does not
 prove.
+
+---
+
+## 8. The reproducible build, actually run
+
+Run on 2026-08-27. Until this date the page called the reproducible build "the strongest link in
+the chain" without anyone here having ever exercised it. Now it has been exercised.
+
+The build was run with `tools/rebuild-stock-0.8.7.sh`, which clones
+`SeedSigner/seedsigner-os` at tag `0.8.7`, checks out its submodules, and builds the pi0 image in
+the project's own Docker container:
+
+```
+SS_ARGS="--pi0 --app-branch=0.8.7" docker compose up --force-recreate --build
+```
+
+Refs the build was pinned to:
+
+```
+seedsigner-os tag 0.8.7 = d13859392660fe512a753bc14ecd0edc86c35510
+seedsigner    tag 0.8.7 = e0a80d4b33b8eb7fb1e9fd14a27b7cd11c7d2cd6
+```
+
+Result, verbatim from the build log:
+
+```
+=== build starting 2026-08-26T23:31:15Z ===
+=== build finished 2026-08-27T00:34:28Z ===
+67f005c7ace26500a78be3f4d97eaf02d76d018550ec54df011741dde1933ce9  ./images/seedsigner_os.0.8.7.pi0.img
+expected: 67f005c7ace26500a78be3f4d97eaf02d76d018550ec54df011741dde1933ce9
+```
+
+The locally built image was then compared against the file downloaded from SeedSigner's own
+release page, not just against a recorded number:
+
+```
+sha256sum images/seedsigner_os.0.8.7.pi0.img
+67f005c7ace26500a78be3f4d97eaf02d76d018550ec54df011741dde1933ce9
+
+cmp images/seedsigner_os.0.8.7.pi0.img seedsigner_os.0.8.7.pi0.img
+(no output: identical, byte for byte)
+```
+
+**The build reproduces.** The image SeedSigner published is the image their published source
+produces. Nobody has to take the hash on this page on trust.
+
+Cost, so anyone deciding whether to repeat it knows what they are in for: 63 minutes wall clock
+on 16 cores, about 800 MB of disk, and a Docker install. It is an evening, not a project.
+
+### The one caveat, and it did not bite
+
+The build installs two Python packages from PyPI without pinning a version, `babel` and
+`fonttools`, and their output ships inside the image. That is a real hole: a bad day at PyPI is
+inside the trust boundary of a build whose whole point is that it does not need one. This run
+resolved `babel-2.18.0` and `fonttools-4.63.0` and still produced identical bytes, so the hole is
+theoretical today rather than active. It is worth knowing about, and it is upstream's to close,
+not ours.

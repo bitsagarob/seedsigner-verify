@@ -162,8 +162,9 @@ function applyProduct() {
     `cd ${f.reproducibleBuild.repo.split('/').pop()}`,
     `git checkout ${f.version}`,
     `git submodule init && git submodule update`,
-    `docker compose up --force-recreate --build`,
+    `SS_ARGS="${f.reproducibleBuild.buildArgs}" docker compose up --force-recreate --build`,
     ``,
+    `# Without SS_ARGS the container defaults to --no-op and just sits there.`,
     `# the printed SHA256 must equal ${f.sha256}`,
   ].join('\n');
 
