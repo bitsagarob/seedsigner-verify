@@ -110,6 +110,7 @@ h1 .hl{white-space:nowrap}
 .zipnote{margin-top:16px;padding:12px 16px;border-radius:var(--r-sm);
   background:color-mix(in srgb,var(--gold-deep) 10%,transparent);
   border:1px solid color-mix(in srgb,var(--gold-deep) 32%,transparent);font-size:15.5px}
+.zipnote p{margin:0}
 
 .step{padding:clamp(44px,7vw,76px) 0;border-top:1px solid var(--line)}
 .step h2{font-family:var(--display);font-size:clamp(29px,4.6vw,46px);line-height:1.1;

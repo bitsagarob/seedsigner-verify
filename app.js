@@ -105,11 +105,16 @@ function applyProduct() {
   const note = $('dlNote');
   note.hidden = f.container !== 'zip';
   if (f.container === 'zip') {
-    note.textContent =
-      `This release is published only as a .zip. ${f.project} signs the hash of the .img inside ` +
-      `it, never of the .zip itself. Drop the .zip on the next step anyway: this page opens it ` +
-      `and checks the image inside, which is the number that was signed. You do not have to ` +
-      `unzip it yourself.`;
+    // Easy mode is told what to do. Why the zip has to be opened at all is a
+    // question about signatures, which is what the other two modes are for.
+    $('dlNoteEasy').textContent =
+      'This one arrives as a zip. Drop it on the next step exactly as it is, there is no need ' +
+      'to unzip it first.';
+    $('dlNoteTerse').textContent =
+      `${f.project} publishes only the .zip and signs the hash of the .img inside it, never of ` +
+      `the .zip itself. This page reads that image out of the zip and checks it, so the number ` +
+      `being compared is still the signed one. If your writing tool in step 3 will not take a ` +
+      `.zip, unzip it yourself and use ${f.filename}.`;
   }
 
   $('dlUrl').textContent = f.downloadUrl;
@@ -229,9 +234,7 @@ function applyProduct() {
   ].join('\n');
 
   // Name the actual file in the caption, so nobody has to guess in a file picker.
-  $('capFile').textContent = f.container === 'zip'
-    ? `: ${dlName(f)}. If your writing tool will not take a .zip, unzip it first and use ${f.filename}.`
-    : `: ${f.filename}`;
+  $('capFile').textContent = `: ${dlName(f)}`;
 
   paintTime();
 
