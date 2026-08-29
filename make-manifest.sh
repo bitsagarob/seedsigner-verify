@@ -18,6 +18,7 @@ find . -type f \
   -not -path './signatures/*' \
   -not -name '*.asc' \
   -not -name '*.ots' \
+  -not -name '*.pyc' \
   | sed 's|^\./||' \
   | LC_ALL=C sort \
   | xargs sha256sum

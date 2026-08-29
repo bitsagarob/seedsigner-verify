@@ -2,7 +2,9 @@ import { chromium } from '/home/rob/apps/abra/node_modules/playwright/index.mjs'
 
 const BASE = 'http://127.0.0.1:8777';
 const IMG_STOCK = '/home/rob/ss-check/pi0.img';
-const IMG_SMART = '/home/rob/ss-check/seedsigner_os.SeSi-0.8.7_ShSi-B11_.pi0-smartcard.img';
+const IMG_SMART = '/home/rob/ss-check/seedsigner_os.SeSi-0.8.7_ShSi-B12_.pi0-smartcard.img';
+const ZIP_SMART = '/home/rob/ss-check/seedsigner_os.SeSi-0.8.7_ShSi-B12_.pi0-smartcard.img.zip';
+const IMG_SMART_OLD = '/home/rob/ss-check/seedsigner_os.SeSi-0.8.7_ShSi-B11_.pi0-smartcard.img';
 const IMG_TAMPER = '/home/rob/ss-check/tampered.img';
 const NOT_IMG = '/home/rob/ss-check/notanimage.txt';
 
@@ -161,6 +163,45 @@ console.log('\n6. Smartcard image, correct product (537 MB)');
   console.log(`       hashed 512 MiB in ${((Date.now() - t0) / 1000).toFixed(1)}s`);
   const fixShown = await page.evaluate(() => !document.getElementById('displayFix').hidden);
   check(fixShown, 'display setting instructions appear for a Plus model');
+  await ctx.close();
+}
+
+// ------------------------- 6b. the zip the publisher actually ships now
+// From B12 the ShieldSigner release is zip-only, and the signed hash covers the
+// .img inside it. If this fails, buyers have no way to check their download.
+console.log('\n6b. Smartcard zip, correct product (327 MB zip, 512 MiB inside)');
+{
+  const { page, ctx } = await newPage();
+  await page.click('[data-product="plus-smartcard"]');
+  const t0 = Date.now();
+  await page.setInputFiles('#file', ZIP_SMART);
+  const r = await resultOf(page);
+  check(r.cls === 'ok', 'green result from inside the zip', r.title);
+  console.log(`       unzipped and hashed in ${((Date.now() - t0) / 1000).toFixed(1)}s`);
+  await ctx.close();
+}
+
+// ------------------------- 6c. a zip where the release is not published as one
+console.log('\n6c. Zip dropped while a stock product is selected');
+{
+  const { page, ctx } = await newPage();
+  await page.click('[data-product="premium"]');
+  await page.setInputFiles('#file', ZIP_SMART);
+  const r = await resultOf(page);
+  check(r.cls === 'warn', 'gentle correction, not an alarm', r.title);
+  check(/compressed/i.test(r.title), 'says it is the compressed version', r.title);
+  await ctx.close();
+}
+
+// ------------------------------------- 6d. the previous release, still genuine
+console.log('\n6d. Superseded B11 image, smartcard product');
+{
+  const { page, ctx } = await newPage();
+  await page.click('[data-product="plus-smartcard"]');
+  await page.setInputFiles('#file', IMG_SMART_OLD);
+  const r = await resultOf(page);
+  check(r.cls === 'warn', 'a genuine older file is not treated as tampering', r.title);
+  check(/older release/i.test(r.title), 'says it is an older release', r.title);
   await ctx.close();
 }
 

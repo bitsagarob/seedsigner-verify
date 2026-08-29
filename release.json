@@ -1,7 +1,7 @@
 {
   "HUMAN CHECKPOINT": "Rob must independently re-verify all values below before deploy. See VERIFICATION_LOG.md",
-  "lastConfirmed": "2026-08-06",
-  "stalenessWarningAfterDays": 180,
+  "lastConfirmed": "2026-08-29",
+  "stalenessWarningAfterDays": 45,
   "products": [
     {
       "id": "premium",
@@ -71,18 +71,22 @@
     },
     "smartcard": {
       "project": "ShieldSigner",
-      "version": "SeSi-0.8.7+ShSi-B11",
-      "filename": "seedsigner_os.SeSi-0.8.7_ShSi-B11_.pi0-smartcard.img",
+      "version": "SeSi-0.8.7+ShSi-B12",
+      "filename": "seedsigner_os.SeSi-0.8.7_ShSi-B12_.pi0-smartcard.img",
       "sizeBytes": 536870912,
-      "sha256": "1b844cffdaa382d32a100d690cc0be5dd1208d23278fe22fea46593f47fb68a0",
-      "downloadUrl": "https://github.com/3rdIteration/seedsigner/releases/download/SeSi-0.8.7%2BShSi-B11/seedsigner_os.SeSi-0.8.7_ShSi-B11_.pi0-smartcard.img",
-      "releasePageUrl": "https://github.com/3rdIteration/seedsigner/releases/tag/SeSi-0.8.7%2BShSi-B11",
-      "publishedAt": "2026-07-14",
+      "container": "zip",
+      "containerNote": "From B12 the developer publishes only the .zip. He signs the hash of the .img inside it, never of the .zip, so that is what this page opens and checks.",
+      "downloadFilename": "seedsigner_os.SeSi-0.8.7_ShSi-B12_.pi0-smartcard.img.zip",
+      "downloadSizeBytes": 326996688,
+      "sha256": "1c9f8a1c84b3e626986b62d7ab847126fcb1c5bcd6a96ee15a4be2f76ecbeab6",
+      "downloadUrl": "https://github.com/3rdIteration/seedsigner/releases/download/SeSi-0.8.7%2BShSi-B12/seedsigner_os.SeSi-0.8.7_ShSi-B12_.pi0-smartcard.img.zip",
+      "releasePageUrl": "https://github.com/3rdIteration/seedsigner/releases/tag/SeSi-0.8.7%2BShSi-B12",
+      "publishedAt": "2026-08-21",
       "signature": {
         "scheme": "bitcoin-message",
         "note": "The developer signs the checksum block in the release notes with a Bitcoin message signature, Electrum format.",
         "address": "37hiiSB1Poj6Shs8WawPS2HjT2jzHkFSQi",
-        "signatureB64": "IDS9imBk642PtjkbND22ioVUh79KPIWmCQXQG021Es76Ja6ZQ/FJHrLRO+NoJ2IZZghQnvsJABTfiX8o479VVD0=",
+        "signatureB64": "H5Ayg8hhAbbjZ6BpHiNVKfDPgcifnep4ByxbkWNvfB0DMT2w5AVR7p5ZC+o9RDSREFYA5LxR0pZ3OEcCRM/OIZ4=",
         "keySources": [
           {
             "label": "cryptoguide.tips",
@@ -100,8 +104,8 @@
       },
       "reproducibleBuild": {
         "repo": "https://github.com/3rdIteration/seedsigner-os",
-        "docs": "https://github.com/3rdIteration/seedsigner/releases/tag/SeSi-0.8.7%2BShSi-B11",
-        "buildArgs": "--pi0 --smartcard --app-branch=SeSi-0.8.7+ShSi-B11"
+        "docs": "https://github.com/3rdIteration/seedsigner/releases/tag/SeSi-0.8.7%2BShSi-B12",
+        "buildArgs": "--all --app-repo=https://github.com/3rdIteration/seedsigner --app-branch=SeSi-0.8.7+ShSi-B12 --smartcard"
       },
       "projectLong": "ShieldSigner, the Satochip smartcard fork of SeedSigner by 3rdIteration. Every release is tagged ShSi."
     }
@@ -114,10 +118,41 @@
       "firmware": "stock"
     },
     {
-      "sha256": "1b844cffdaa382d32a100d690cc0be5dd1208d23278fe22fea46593f47fb68a0",
-      "name": "seedsigner_os.SeSi-0.8.7_ShSi-B11_.pi0-smartcard.img",
+      "sha256": "1c9f8a1c84b3e626986b62d7ab847126fcb1c5bcd6a96ee15a4be2f76ecbeab6",
+      "name": "seedsigner_os.SeSi-0.8.7_ShSi-B12_.pi0-smartcard.img",
       "kind": "match",
       "firmware": "smartcard"
+    },
+    {
+      "sha256": "1b844cffdaa382d32a100d690cc0be5dd1208d23278fe22fea46593f47fb68a0",
+      "name": "seedsigner_os.SeSi-0.8.7_ShSi-B11_.pi0-smartcard.img",
+      "kind": "old-version",
+      "firmware": "smartcard",
+      "version": "SeSi-0.8.7+ShSi-B11"
+    },
+    {
+      "sha256": "60f50115eba4d34bb642de2c430c062834c635a23e55632001baccf3cf145991",
+      "name": "seedsigner_os.SeSi-0.8.7_ShSi-B12_.lafrite-smartcard.img",
+      "kind": "wrong-board",
+      "board": "Libre Computer La Frite"
+    },
+    {
+      "sha256": "105085957adce34548bda3a11e8f2125a659ff17ef3545aa0c737eec1ced8085",
+      "name": "seedsigner_os.SeSi-0.8.7_ShSi-B12_.pi02w-smartcard.img",
+      "kind": "wrong-board",
+      "board": "Raspberry Pi Zero 2 W"
+    },
+    {
+      "sha256": "78fcd7d1a1538d2f9cb191f34cfd6fa4f79421d46f6f25ab7cb988d9b337cc5f",
+      "name": "seedsigner_os.SeSi-0.8.7_ShSi-B12_.pi2-smartcard.img",
+      "kind": "wrong-board",
+      "board": "Raspberry Pi 2"
+    },
+    {
+      "sha256": "7e59b6e421f2fed0b4759f8f3eb20c0e225e86afbb8f4223b161f781976227c8",
+      "name": "seedsigner_os.SeSi-0.8.7_ShSi-B12_.pi4-smartcard.img",
+      "kind": "wrong-board",
+      "board": "Raspberry Pi 4"
     },
     {
       "sha256": "f38237cdde39efca2fb9e3b3f9f8b0beff2248767f85289bd50657fa69b54f1f",

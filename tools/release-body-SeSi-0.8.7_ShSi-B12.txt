@@ -1,0 +1,57 @@
+## What's Changed
+* Fix latent NameErrors from tools_views.py split; add pyflakes guard by @3rdIteration in https://github.com/3rdIteration/seedsigner/pull/381
+* ci: fail the docker build step on in-container build failure by @3rdIteration in https://github.com/3rdIteration/seedsigner/pull/382
+* Generalize OS-environment detection; make storage failures non-fatal; add build provenance by @3rdIteration in https://github.com/3rdIteration/seedsigner/pull/383
+* Fix Satochip seed import reporting failure on a card that was seeded by @bitsagarob in https://github.com/3rdIteration/seedsigner/pull/386
+* tests: pin the import-seed return arity for both smartcard backends by @3rdIteration in https://github.com/3rdIteration/seedsigner/pull/394
+* ci: clone the fork when building a pull request from one by @3rdIteration in https://github.com/3rdIteration/seedsigner/pull/393
+* ci: build a hardened Luckfox Pico Pi image on every PR and push by @3rdIteration in https://github.com/3rdIteration/seedsigner/pull/392
+* Fix SeedKeeperSelectView back-button crash on missing self.seed (#389) by @3rdIteration in https://github.com/3rdIteration/seedsigner/pull/395
+* fix: prevent UnboundLocalError in ToolsSeedkeeperViewSecretsView except handler (#385) by @3rdIteration in https://github.com/3rdIteration/seedsigner/pull/396
+* fix: multisig address verification always reports non-standard path by @3rdIteration in https://github.com/3rdIteration/seedsigner/pull/397
+* fix: La Frite boot hang, GPG Tools pgpy failure, opt-in error diagnostics by @3rdIteration in https://github.com/3rdIteration/seedsigner/pull/399
+* Add off-by-default testing build Home menu by @3rdIteration in https://github.com/3rdIteration/seedsigner/pull/400
+
+## New Contributors
+* @bitsagarob made their first contribution in https://github.com/3rdIteration/seedsigner/pull/386
+
+**Full Changelog**: https://github.com/3rdIteration/seedsigner/compare/SeSi-0.8.7+ShSi-B11...SeSi-0.8.7+ShSi-B12
+
+Dev images available for Raspberry Pi and Libre Computer here https://github.com/3rdIteration/seedsigner-os/releases/tag/SeSi-0.8.7%2BShSi-B12
+
+**Note on Reproducibility:**
+This is the first non-dev release for Lafrite and Luckfox Pico devices and there are still a few things with these two platforms that need to be tweaked for full reproducibility. (Probably for next release) Pi versions are reproducible as normal.
+
+**To Build:**
+```
+git clone https://github.com/3rdIteration/seedsigner-os/
+cd seedsigner-os
+git checkout SeSi-0.8.7+ShSi-B12
+git submodule init
+git submodule update
+SS_ARGS="--all --app-repo=https://github.com/3rdIteration/seedsigner --app-branch=SeSi-0.8.7+ShSi-B12 --smartcard" docker compose up --force-recreate --build
+```
+
+**SHA256 Checksums (And message to verify)**
+- - - - - - - - - - - - - - - - - - - - - - - - 
+seedsigner_os.SeSi-0.8.7_ShSi-B12_.lafrite-smartcard.img: 60f50115eba4d34bb642de2c430c062834c635a23e55632001baccf3cf145991
+seedsigner_os.SeSi-0.8.7_ShSi-B12_.pi0-smartcard.img: 1c9f8a1c84b3e626986b62d7ab847126fcb1c5bcd6a96ee15a4be2f76ecbeab6
+seedsigner_os.SeSi-0.8.7_ShSi-B12_.pi02w-smartcard.img: 105085957adce34548bda3a11e8f2125a659ff17ef3545aa0c737eec1ced8085
+seedsigner_os.SeSi-0.8.7_ShSi-B12_.pi2-smartcard.img: 78fcd7d1a1538d2f9cb191f34cfd6fa4f79421d46f6f25ab7cb988d9b337cc5f
+seedsigner_os.SeSi-0.8.7_ShSi-B12_.pi4-smartcard.img: 7e59b6e421f2fed0b4759f8f3eb20c0e225e86afbb8f4223b161f781976227c8
+- - - - - - - - - - - - - - - - - - - - - - - - 
+ **Bitcoin Message Signature:**
+- - - - - - - - - - - - - - - - - - - - - - - - 
+H5Ayg8hhAbbjZ6BpHiNVKfDPgcifnep4ByxbkWNvfB0DMT2w5AVR7p5ZC+o9RDSREFYA5LxR0pZ3OEcCRM/OIZ4=
+- - - - - - - - - - - - - - - - - - - - - - - - 
+
+**Signature Verification**
+You can confirm that the checksums are correct by verifying the Bitcoin Message Signature above with a "Message" containing the signatures of the two files. (All of the information between the lines above) with the Bitcoin address "37hiiSB1Poj6Shs8WawPS2HjT2jzHkFSQi".
+
+This is a public tip address of mine that can be verified via:
+
+My video descriptions (Basically any video on my channel: https://www.youtube.com/channel/UCEviBQwLv-yfv3BErm0ojHg/)
+Reddit profile (https://www.reddit.com/user/Crypto-Guide/comments/czy13u/a_post_or_video_of_mine_was_helpful_feel_free_to/)
+Website (https://cryptoguide.tips/send-me-a-tip/)
+
+It is an "Electrum" formatted message that can be verified with software like Electrum, Sparrow or web based tools like https://www.verifybitcoinmessage.com/ or https://bitaps.com/signature

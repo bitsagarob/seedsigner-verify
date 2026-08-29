@@ -115,7 +115,7 @@ def addresses(Q):
 def main():
     body = open(sys.argv[1], "rb").read().decode("utf-8")
     expected_addr = "37hiiSB1Poj6Shs8WawPS2HjT2jzHkFSQi"
-    sig = "IDS9imBk642PtjkbND22ioVUh79KPIWmCQXQG021Es76Ja6ZQ/FJHrLRO+NoJ2IZZghQnvsJABTfiX8o479VVD0="
+    sig = "H5Ayg8hhAbbjZ6BpHiNVKfDPgcifnep4ByxbkWNvfB0DMT2w5AVR7p5ZC+o9RDSREFYA5LxR0pZ3OEcCRM/OIZ4="
 
     # The signed message is the checksum block between the dashed separator lines.
     norm = body.replace("\r\n", "\n")

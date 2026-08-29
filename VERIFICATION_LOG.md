@@ -271,3 +271,116 @@ inside the trust boundary of a build whose whole point is that it does not need 
 resolved `babel-2.18.0` and `fonttools-4.63.0` and still produced identical bytes, so the hole is
 theoretical today rather than active. It is worth knowing about, and it is upstream's to close,
 not ours.
+
+---
+
+## 9. ShieldSigner moved to SeSi-0.8.7+ShSi-B12, and the release became zip-only
+
+Checked 2026-08-29. Stock SeedSigner was still on 0.8.7, so only the smartcard fork moved.
+
+```
+curl -s https://api.github.com/repos/SeedSigner/seedsigner/releases | head
+0.8.7  2026-07-08   The "Summer of SeedSigner" Release      <- still the latest
+
+curl -s https://api.github.com/repos/3rdIteration/seedsigner/releases | head
+SeSi-0.8.7+ShSi-B12      2026-08-21
+SeSi-0.8.7+ShSi-B12-pre  2026-08-11  (prerelease)
+SeSi-0.8.7+ShSi-B11      2026-07-14  <- what this page had pinned
+```
+
+### The signature, checked with this repository's own tool
+
+```
+python3 tools/verify_btc_msg.py tools/release-body-SeSi-0.8.7_ShSi-B12.txt
+
+[OK] between separators, stripped: header=31 -> {
+      "p2pkh-compressed": "19oji5i6CnM2u1Xs1aD1T3RujFAwiCvLHU",
+      "p2pkh-uncompressed": "1MuiJi2ysnA83ZwSuNPhf1gKgU5wNRi2Ew",
+      "p2sh-p2wpkh": "37hiiSB1Poj6Shs8WawPS2HjT2jzHkFSQi"
+}
+
+MATCH as p2sh-p2wpkh against 37hiiSB1Poj6Shs8WawPS2HjT2jzHkFSQi
+message was 600 bytes
+```
+
+Same address as B11, same Electrum framing, so no new key had to be established.
+The full release body is kept at `tools/release-body-SeSi-0.8.7_ShSi-B12.txt`.
+
+### The image hash, downloaded and computed rather than copied
+
+```
+sha256sum seedsigner_os.SeSi-0.8.7_ShSi-B12_.pi0-smartcard.img
+1c9f8a1c84b3e626986b62d7ab847126fcb1c5bcd6a96ee15a4be2f76ecbeab6
+
+signed release notes say:
+1c9f8a1c84b3e626986b62d7ab847126fcb1c5bcd6a96ee15a4be2f76ecbeab6
+```
+
+### What changed structurally: there is no .img to download any more
+
+B11 published both a 536870912 byte `.img` and a `.img.zip`, for every board. B12 publishes
+**only the `.zip`**, again for every board. `3rdIteration/seedsigner-os` at the B12 tag carries
+zero assets, so there is no bare `.img` anywhere to point at.
+
+```
+B11 assets:  ...pi0-smartcard.img      536870912
+             ...pi0-smartcard.img.zip  326954255
+B12 assets:  ...pi0-smartcard.img.zip  326996688      (no .img)
+```
+
+That breaks the rule this page was built on, point at the `.img` and never at the `.zip`, which
+existed because the developer signs the hash of the `.img` and never of the `.zip`. The `.zip`
+has no publisher-published hash, so pointing at it and printing our own number would have meant
+asking the reader to trust Bitsaga, which is the one thing the page is arguing against.
+
+Resolved by teaching the page to look inside the zip instead, in `zip.js`. It reads the local
+file header, streams the entry through the browser's own `DecompressionStream('deflate-raw')`,
+and hashes the decompressed bytes with the streaming SHA-256 that was already here. The number
+it compares is therefore still the developer-signed hash of the `.img`. Nothing is written to
+disk and nothing is held whole in memory.
+
+The reader is deliberately narrow: one entry, deflate or stored, sizes present in the local
+header, no zip64. It refuses anything else with a message rather than guessing, because a wrong
+guess would still produce a hash, and a hash that looks like an answer is worse than an error.
+The B12 zips are exactly that shape:
+
+```
+local header: sig 04034b50  flags 0x0000  method 8 (deflate)
+              csize 326996434  usize 536870912  entries 1  (not zip64)
+```
+
+### Tests
+
+`node tools/e2e.mjs`, all pass, including three new cases: the zip verifying green for a
+smartcard buyer, a zip refused for a product whose release still ships a bare `.img`, and a
+genuine B11 image reported as a superseded release rather than as tampering.
+
+```
+6b. Smartcard zip, correct product (327 MB zip, 512 MiB inside)
+  OK   green result from inside the zip
+       unzipped and hashed in 15.4s
+6c. Zip dropped while a stock product is selected
+  OK   gentle correction, not an alarm
+  OK   says it is the compressed version
+6d. Superseded B11 image, smartcard product
+  OK   a genuine older file is not treated as tampering
+  OK   says it is an older release
+
+ALL PASS
+```
+
+Reading the zip costs nothing measurable: 15.4s against 15.1s for the same image as a plain
+`.img`, on the same machine.
+
+### Not verified
+
+The smartcard reproducible build still has not been run. `buildArgs` now carries the command
+the developer publishes in the B12 notes verbatim, including `--app-repo=`, rather than the
+adapted `--pi0` variant that was there before and had never been executed either. It is
+documented, not tested. The stock rebuild in section 8 remains the only one actually run.
+
+The staleness window was cut from 180 days to 45. B12 landed eight days after the previous
+`lastConfirmed` date, so at 180 days the page would not have warned anyone until roughly
+February 2027. The fork's recent cadence is B9 in March, B10 in April, B11 in July, B12 in
+August, so 45 days matches how often this actually moves. No new process was added: it is still
+the visitor's own clock doing the comparison, and nothing runs in the background.

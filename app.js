@@ -1,4 +1,5 @@
 import { hashFile, selfTest, crossCheck } from './sha256.js';
+import { hashZipImage, zipSupported, ZipError } from './zip.js';
 
 const $ = (id) => document.getElementById(id);
 const el = (tag, text, cls) => {
@@ -89,13 +90,28 @@ function selectProduct(id) {
 
 function fw() { return R.firmware[product.firmware]; }
 
+/* What you actually download, which is not always what gets hashed. */
+const dlName = (f) => f.downloadFilename || f.filename;
+const dlSize = (f) => f.downloadSizeBytes || f.sizeBytes;
+
 function applyProduct() {
   const f = fw();
   const sig = f.signature;
 
   $('dlBtn').href = f.downloadUrl;
   $('dlMeta').textContent =
-    `${f.filename} · ${(f.sizeBytes / 1048576).toFixed(0)} MB · version ${f.version}, published ${f.publishedAt}`;
+    `${dlName(f)} · ${(dlSize(f) / 1048576).toFixed(0)} MB · version ${f.version}, published ${f.publishedAt}`;
+
+  const note = $('dlNote');
+  note.hidden = f.container !== 'zip';
+  if (f.container === 'zip') {
+    note.textContent =
+      `This release is published only as a .zip. ${f.project} signs the hash of the .img inside ` +
+      `it, never of the .zip itself. Drop the .zip on the next step anyway: this page opens it ` +
+      `and checks the image inside, which is the number that was signed. You do not have to ` +
+      `unzip it yourself.`;
+  }
+
   $('dlUrl').textContent = f.downloadUrl;
   $('relPage').href = f.releasePageUrl;
   $('relNotes').href = f.releasePageUrl;
@@ -128,10 +144,18 @@ function applyProduct() {
     ul.append(li);
   }
 
-  $('advDl').textContent = [
-    `curl -LO ${f.downloadUrl}`,
-    `sha256sum ${f.filename}`,
-  ].join('\n');
+  $('advDl').textContent = (f.container === 'zip'
+    ? [
+        `curl -LO ${f.downloadUrl}`,
+        `unzip ${dlName(f)}`,
+        `sha256sum ${f.filename}`,
+        ``,
+        `# The signed hash covers the .img, not the .zip, so unzip before hashing.`,
+      ]
+    : [
+        `curl -LO ${f.downloadUrl}`,
+        `sha256sum ${f.filename}`,
+      ]).join('\n');
 
   $('advVerify').textContent = sig.scheme === 'pgp'
     ? [
@@ -169,6 +193,7 @@ function applyProduct() {
   ].join('\n');
 
   $('cypWrite').textContent = [
+    ...(f.container === 'zip' ? [`unzip ${dlName(f)}`, ``] : []),
     `# Linux. Find the card first and be certain: lsblk`,
     `sudo dd if=${f.filename} of=/dev/sdX bs=4M status=progress conv=fsync`,
     ``,
@@ -204,7 +229,9 @@ function applyProduct() {
   ].join('\n');
 
   // Name the actual file in the caption, so nobody has to guess in a file picker.
-  $('capFile').textContent = `: ${f.filename}`;
+  $('capFile').textContent = f.container === 'zip'
+    ? `: ${dlName(f)}. If your writing tool will not take a .zip, unzip it first and use ${f.filename}.`
+    : `: ${f.filename}`;
 
   paintTime();
 
@@ -221,7 +248,7 @@ function timeEstimate() {
   const mode = document.documentElement.dataset.mode;
   if (mode === 'cypherpunk') return 'An hour or more if you rebuild from source.';
   if (!product) return 'About 10 minutes, plus the download.';
-  const mb = Math.round(fw().sizeBytes / 1048576);
+  const mb = Math.round(dlSize(fw()) / 1048576);
   return `About 10 minutes, plus a ${mb} MB download.`;
 }
 
@@ -306,6 +333,15 @@ function onMismatch(computed) {
     return;
   }
 
+  if (known && known.kind === 'old-version') {
+    showResult('warn', 'That is a genuine file, but an older release.', [
+      `This is ${known.name}, which is ${known.version}. It was published by the same developer ` +
+      'and there is nothing wrong with it, but a newer release has come out since.',
+      `We now pin ${fw().version}. Go back to step 1 and download that one.`,
+    ]);
+    return;
+  }
+
   if (known && known.kind === 'wrong-board') {
     showResult('warn', 'That is the image for a different board.', [
       `This is ${known.name}, built for the ${known.board}.`,
@@ -354,17 +390,32 @@ async function handleFile(file) {
 
   $('result').hidden = true;
 
-  if (/\.zip$/i.test(file.name)) {
+  const f = fw();
+  const isZip = /\.zip$/i.test(file.name);
+
+  // Only look inside a zip when the pinned release is published as one. Where a
+  // bare .img exists, that is still the file to check.
+  if (isZip && f.container !== 'zip') {
     showResult('warn', 'That is the compressed version.', [
-      'Some releases publish a smaller .zip next to the .img. We check the .img itself,',
-      'so go back to step 1 and use the download button there. Nothing is wrong with your file.',
+      'This release publishes the .img itself, and that is the file the signed hash covers.',
+      'Go back to step 1 and use the download button there. Nothing is wrong with your file.',
     ]);
     return;
   }
 
-  if (!/\.img$/i.test(file.name)) {
+  if (isZip && !zipSupported()) {
+    showResult('warn', 'This browser cannot open a zip.', [
+      'It has no built-in decompression, so this page cannot look inside the file for you.',
+      'Unzip it yourself and drop the .img here instead, or use the terminal commands in advanced mode.',
+    ]);
+    return;
+  }
+
+  if (!isZip && !/\.img$/i.test(file.name)) {
     showResult('warn', 'That does not look like the right file.', [
-      'The file you want ends in .img and is the one you downloaded in step 1.',
+      f.container === 'zip'
+        ? 'The file you want ends in .zip, or in .img if you already unzipped it yourself.'
+        : 'The file you want ends in .img and is the one you downloaded in step 1.',
       'Try again with that one. Nothing is wrong.',
     ]);
     return;
@@ -372,17 +423,30 @@ async function handleFile(file) {
 
   $('progWrap').hidden = false;
   $('fill').style.width = '0%';
-  $('progText').textContent = 'Reading the file. Nothing is being uploaded.';
+  $('progText').textContent = isZip
+    ? 'Opening the zip and reading the image inside. Nothing is being uploaded.'
+    : 'Reading the file. Nothing is being uploaded.';
+
+  const onProgress = (frac) => {
+    $('fill').style.width = (frac * 100).toFixed(1) + '%';
+    $('progText').textContent = `Checking… ${Math.round(frac * 100)}%`;
+  };
 
   try {
-    const computed = await hashFile(file, (frac) => {
-      $('fill').style.width = (frac * 100).toFixed(1) + '%';
-      $('progText').textContent = `Checking… ${Math.round(frac * 100)}%`;
-    });
+    const computed = isZip
+      ? (await hashZipImage(file, onProgress)).sha256
+      : await hashFile(file, onProgress);
     $('progText').textContent = 'Done.';
-    if (computed === fw().sha256) onVerified(computed);
+    if (computed === f.sha256) onVerified(computed);
     else onMismatch(computed);
   } catch (e) {
+    if (e instanceof ZipError) {
+      showResult('bad', 'That zip could not be opened.', [
+        e.message,
+        'Download it again from the release page and check it here once more.',
+      ], helpForBad());
+      return;
+    }
     showResult('bad', 'The file could not be read.', [
       'This usually means it was moved or deleted while we were reading it. Try again.',
     ]);
