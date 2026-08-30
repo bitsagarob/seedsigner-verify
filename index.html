@@ -65,8 +65,10 @@
 <section class="step" id="step-1" aria-labelledby="h1s">
   <h2 id="h1s"><span class="n">1</span> Download the software</h2>
 
+  <p class="easy-copy" id="srcEasy"></p>
+  <p class="easy-copy">Your browser will show that it is downloading from github.com. That is how you can tell where it really came from.</p>
   <p class="easy-copy">One file gets saved to your computer, usually in your Downloads folder.</p>
-  <p class="terse-copy">One file, straight from SeedSigner's own release page. Bitsaga hosts nothing.</p>
+  <p class="terse-copy" id="srcTerse"></p>
 
   <p><a class="btn primary" id="dlBtn" href="#" rel="noopener">Download the software</a></p>
   <p class="meta" id="dlMeta"></p>
@@ -78,7 +80,7 @@
   <div class="adv layer">
     <p class="k">Exact URL</p>
     <p class="mono wrap" id="dlUrl"></p>
-    <p>Your browser's download bar shows this comes from SeedSigner's own GitHub account, not from Bitsaga.</p>
+    <p id="srcAdv"></p>
     <p><a id="relPage" href="#" rel="noopener">Open the release page</a> and compare the filename yourself.</p>
     <p class="k">Fetch and hash it without this page</p>
     <pre class="mono" id="advDl"></pre>
@@ -95,7 +97,7 @@
   <div class="drop" id="drop" tabindex="0" role="button" aria-describedby="dropHelp">
     <p class="dropbig easy-copy">Drop the file you just downloaded here</p>
     <p class="dropbig terse-copy">Drop the image file here</p>
-    <p id="dropHelp" class="easy-copy">It stays on your computer.</p>
+    <p id="dropHelp" class="easy-copy">It stays on your computer. Nothing is uploaded anywhere.</p>
     <p class="terse-copy">Read locally, hashed in this tab. Nothing is sent anywhere.</p>
     <p><button type="button" class="btn ghost" id="pick">Choose the file</button></p>
     <input type="file" id="file" hidden>

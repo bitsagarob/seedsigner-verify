@@ -94,11 +94,28 @@ function fw() { return R.firmware[product.firmware]; }
 const dlName = (f) => f.downloadFilename || f.filename;
 const dlSize = (f) => f.downloadSizeBytes || f.sizeBytes;
 
+/* Read the account out of the download link rather than writing it down twice.
+   The stock and smartcard images come from different GitHub accounts, and a
+   hand-written name would eventually claim one while the button pointed at the
+   other. This cannot drift: it is the same string the browser will fetch. */
+const ghAccount = (f) => new URL(f.downloadUrl).pathname.split('/')[1];
+
 function applyProduct() {
   const f = fw();
   const sig = f.signature;
 
   $('dlBtn').href = f.downloadUrl;
+
+  const acct = ghAccount(f);
+  $('srcEasy').textContent =
+    `The button below goes straight to GitHub, to the people who make ${f.project}. ` +
+    `Bitsaga does not host this file and never touches it.`;
+  $('srcTerse').textContent =
+    `One file, straight from github.com/${acct}, which publishes ${f.project}. Bitsaga hosts nothing.`;
+  $('srcAdv').textContent =
+    `Your browser's download bar shows this comes from the ${acct} account on GitHub, not from Bitsaga. ` +
+    `The URL above is the one the button uses, so you can check it before you click.`;
+
   $('dlMeta').textContent =
     `${dlName(f)} · ${(dlSize(f) / 1048576).toFixed(0)} MB · version ${f.version}, published ${f.publishedAt}`;
 
@@ -108,8 +125,8 @@ function applyProduct() {
     // Easy mode is told what to do. Why the zip has to be opened at all is a
     // question about signatures, which is what the other two modes are for.
     $('dlNoteEasy').textContent =
-      'This one arrives as a zip. Drop it on the next step exactly as it is, there is no need ' +
-      'to unzip it first.';
+      'It is a zip file. Leave it exactly as it is. Drag the zip itself into the box in step 2 ' +
+      'and this page looks inside it for you. You never need to unzip anything.';
     $('dlNoteTerse').textContent =
       `${f.project} publishes only the .zip and signs the hash of the .img inside it, never of ` +
       `the .zip itself. This page reads that image out of the zip and checks it, so the number ` +
