@@ -1,6 +1,6 @@
 {
   "HUMAN CHECKPOINT": "Rob must independently re-verify all values below before deploy. See VERIFICATION_LOG.md",
-  "lastConfirmed": "2026-08-29",
+  "lastConfirmed": "2026-08-31",
   "stalenessWarningAfterDays": 45,
   "products": [
     {

@@ -1,4 +1,7 @@
-import { chromium } from '/home/rob/apps/abra/node_modules/playwright/index.mjs';
+import { chromium, firefox } from '/home/rob/apps/abra/node_modules/playwright/index.mjs';
+import { existsSync } from 'node:fs';
+import { deflateRawSync } from 'node:zlib';
+import { createHash } from 'node:crypto';
 
 const BASE = 'http://127.0.0.1:8777';
 const IMG_STOCK = '/home/rob/ss-check/pi0.img';
@@ -13,6 +16,55 @@ const check = (cond, label, extra = '') => {
   if (cond) console.log(`  OK   ${label}`);
   else { console.log(`  FAIL ${label} ${extra}`); fails++; }
 };
+
+// The images are ~900 MB and cannot live in git, so they go missing. Say so in
+// one line instead of dying later inside Playwright with an unrelated error.
+{
+  const missing = [IMG_STOCK, IMG_SMART, ZIP_SMART, IMG_SMART_OLD, IMG_TAMPER, NOT_IMG]
+    .filter((p) => !existsSync(p));
+  if (missing.length) {
+    console.error(`\nMissing ${missing.length} test fixture(s):`);
+    for (const m of missing) console.error(`  ${m}`);
+    console.error('\nRun:  ./tools/fetch-fixtures.sh\n');
+    process.exit(2);
+  }
+}
+
+/* Build a single-entry zip byte by byte, so the refusal paths in zip.js can be
+   driven with archives no publisher would ever produce. Fields are the local
+   file header, APPNOTE.TXT 4.3.7. */
+function makeZip(o = {}) {
+  const body = o.body ?? Buffer.from('hello world');
+  const method = o.method ?? 8;
+  const data = o.rawData ?? (method === 8 ? deflateRawSync(body) : body);
+  const name = Buffer.from(o.name ?? 'seedsigner_os.test.img');
+  const extra = o.extra ?? Buffer.alloc(0);
+  const h = Buffer.alloc(30);
+  h.writeUInt32LE(o.sig ?? 0x04034b50, 0);
+  h.writeUInt16LE(20, 4);
+  h.writeUInt16LE(o.flags ?? 0, 6);
+  h.writeUInt16LE(method, 8);
+  h.writeUInt32LE(0, 14);                              // crc32, unused by zip.js
+  h.writeUInt32LE(o.csize ?? data.length, 18);
+  h.writeUInt32LE(o.usize ?? body.length, 22);
+  h.writeUInt16LE(name.length, 26);
+  h.writeUInt16LE(extra.length, 28);
+  return Buffer.concat([h, name, extra, data]);
+}
+
+/* Run zip.js directly against those bytes, in the real browser. */
+async function tryZip(page, buf) {
+  return page.evaluate(async (bytes) => {
+    const m = await import('./zip.js');
+    const file = new File([new Uint8Array(bytes)], 'dropped.img.zip');
+    try {
+      const r = await m.hashZipImage(file);
+      return { ok: true, sha256: r.sha256, name: r.name };
+    } catch (e) {
+      return { ok: false, err: e.message, isZipError: e instanceof m.ZipError };
+    }
+  }, [...buf]);
+}
 
 const browser = await chromium.launch({ executablePath: '/usr/bin/chromium-browser' });
 
@@ -245,6 +297,90 @@ console.log('\n8. Mobile at step 3');
   await ctx.close();
 }
 
+// --------------------------------------- 9. zip.js refuses what it cannot read
+// These are the branches that matter most if a download is hostile, and until
+// now not one of them had ever executed. A wrong guess inside a zip still
+// produces a hash, and a hash that looks like an answer is worse than an error,
+// so every rejection is checked by message, not just by "it threw".
+console.log('\n9. Malformed zips are refused, not guessed at');
+{
+  const { page, ctx } = await newPage();
+
+  const body = Buffer.from('hello world');
+  const expected = createHash('sha256').update(body).digest('hex');
+
+  // Positive control first. If this fails the other nine prove nothing.
+  const good = await tryZip(page, makeZip({ body }));
+  check(good.ok && good.sha256 === expected, 'a well-formed zip still hashes the image inside',
+    JSON.stringify(good));
+  check(good.name === 'seedsigner_os.test.img', 'and reports the entry name', good.name);
+
+  const cases = [
+    ['not a zip at all', makeZip({ sig: 0x02014b50 }), /does not look like a zip/i],
+    ['a file too small to hold a header', Buffer.alloc(10), /too small/i],
+    ['sizes in a trailing data descriptor', makeZip({ flags: 0x08 }), /trailing descriptor/i],
+    ['an encrypted entry', makeZip({ flags: 0x01 }), /encrypted/i],
+    ['an unsupported compression method', makeZip({ method: 12 }), /method 12/i],
+    ['a zip64 archive', makeZip({ csize: 0xffffffff }), /zip64/i],
+    ['a truncated download', makeZip({ csize: 99999 }), /truncated/i],
+    ['a corrupted deflate stream', makeZip({ rawData: Buffer.from([1, 2, 3, 4, 5, 6, 7, 8]) }),
+      /could not be decompressed/i],
+    ['an entry shorter than it claims', makeZip({ body, usize: 999999 }), /ended early/i],
+  ];
+
+  for (const [label, buf, pattern] of cases) {
+    const r = await tryZip(page, buf);
+    const refused = !r.ok && r.isZipError && pattern.test(r.err);
+    check(refused, `refuses ${label}`, r.ok ? `ACCEPTED IT, sha ${r.sha256}` : r.err);
+  }
+
+  await ctx.close();
+}
+
+// ------------------------------- 9b. a bad zip through the actual user interface
+console.log('\n9b. A corrupt zip dropped on the page');
+{
+  const { page, ctx } = await newPage();
+  await page.click('[data-product="plus-smartcard"]');
+  const bad = makeZip({ rawData: Buffer.from([9, 9, 9, 9, 9, 9, 9, 9]) });
+  await page.setInputFiles('#file',
+    { name: 'seedsigner_os.broken.img.zip', mimeType: 'application/zip', buffer: bad });
+  const r = await resultOf(page);
+  check(r.cls === 'bad', 'shown as a stop, not a green tick', r.title);
+  check(/zip could not be opened/i.test(r.title), 'names the zip as the problem', r.title);
+  await ctx.close();
+}
+
 await browser.close();
+
+// ------------------------------------------------ 10. a second browser engine
+// zip.js leans on DecompressionStream, which is not Chromium-specific but had
+// only ever been exercised in Chromium. Firefox is a different implementation.
+console.log('\n10. Firefox, the real B12 zip end to end');
+{
+  const ff = await firefox.launch();
+  try {
+    const ctx = await ff.newContext();
+    const page = await ctx.newPage();
+    const errors = [];
+    page.on('pageerror', (e) => errors.push(e.message));
+    await page.goto(BASE + '/index.html', { waitUntil: 'networkidle' });
+
+    const supported = await page.evaluate(() => typeof DecompressionStream === 'function');
+    check(supported, 'Firefox has DecompressionStream');
+
+    await page.click('[data-product="plus-smartcard"]');
+    await page.setInputFiles('#file', ZIP_SMART);
+    const r = await resultOf(page);
+    check(r.cls === 'ok', 'the real smartcard zip verifies green in Firefox', r.title);
+    check(errors.length === 0, 'no Firefox console errors', errors.join(' | '));
+    await ctx.close();
+  } catch (e) {
+    check(false, 'Firefox run completed', e.message.split('\n')[0]);
+  } finally {
+    await ff.close();
+  }
+}
+
 console.log(fails === 0 ? '\nALL PASS\n' : `\n${fails} FAILURES\n`);
 process.exit(fails ? 1 : 0);

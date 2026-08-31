@@ -200,6 +200,26 @@ Run against the real files through the real page in Chromium. See `tools/e2e.mjs
 - A non-image file gets a gentle correction.
 - A phone-sized viewport is told to finish step 3 on a computer.
 
+**Extended 2026-08-31, after `zip.js` was added.** The suite had been testing only paths where a
+file is accepted. Every branch that *refuses* a zip was unexercised, which is backwards: those
+are the ones that matter if a download is hostile, and a wrong guess inside a zip still produces
+a hash. A hash that looks like an answer is worse than an error.
+
+- Nine malformed archives are each refused with the right reason, driven against `zip.js`
+  directly: bad signature, too small for a header, sizes in a trailing data descriptor,
+  encrypted, unsupported compression method, zip64, truncated download, corrupted deflate
+  stream, and an entry shorter than its header claims. A well-formed zip is checked first as a
+  positive control, so a harness that refused everything could not pass.
+- A corrupt zip dropped on the real page shows a stop, naming the zip as the problem.
+- **Firefox 146**, not only Chromium. `zip.js` depends on `DecompressionStream`, and a second
+  engine's implementation is the only way to know that dependence is not Chromium-specific. The
+  real 327 MB B12 zip verifies green there with no console errors. Safari is still untested; no
+  Apple hardware here.
+- The suite now refuses to start if its fixtures are missing, naming `tools/fetch-fixtures.sh`,
+  which rebuilds all ~900 MB from the publishers' release pages and rejects any file whose hash
+  is wrong. Those images cannot live in git and had been wiped once, which previously surfaced
+  as an unrelated Playwright stack trace.
+
 ---
 
 ## 7. Bitsaga signing key
