@@ -13,6 +13,13 @@ let R = null;
 let product = null;
 let cryptoReady = false;
 
+/* The log is linked on GitHub rather than served from here on purpose: a reader
+   checking whether we edited our own audit record is better served by the copy
+   this host cannot silently change. Same reason the repo is public while the
+   site is served from vps2. */
+const REPO = 'https://github.com/bitsagarob/seedsigner-verify';
+const LOG_URL = `${REPO}/blob/main/VERIFICATION_LOG.md`;
+
 /* ------------------------------------------------------------------ modes */
 const MODE_NOTE = {
   easy: 'Bitsaga. The page checks the file for you and you take its word for it.',
@@ -247,8 +254,10 @@ function applyProduct() {
   // after the smartcard image had its own. Generated per firmware now.
   const conf = f.reproducibleBuild.confirmed;
   const logLink = () => {
-    const a = el('a', 'Verification log');
-    a.href = 'VERIFICATION_LOG.md';
+    const a = el('a', 'Verification log on GitHub');
+    a.href = LOG_URL;
+    a.target = '_blank';
+    a.rel = 'noopener';
     return a;
   };
 
@@ -266,7 +275,7 @@ function applyProduct() {
 
   $('cypSite').textContent = [
     `# Check that what your browser received matches the signed manifest.`,
-    `git clone https://github.com/bitsagarob/seedsigner-verify`,
+    `git clone ${REPO}`,
     `cd seedsigner-verify && ./make-manifest.sh > /tmp/local.txt`,
     `gpg --verify signatures/manifest.txt.asc signatures/manifest.txt`,
     `diff /tmp/local.txt signatures/manifest.txt`,
