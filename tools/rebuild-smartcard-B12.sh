@@ -7,7 +7,10 @@
 # Frite and Luckfox are not yet fully reproducible, so --all would produce an
 # expected mismatch that tells us nothing about the board Bitsaga actually ships.
 #
-# niced because this box runs live services.
+# This box runs live services and the build will use every core. Note that nicing
+# the docker CLI would not help: the work runs under dockerd, not as a child of
+# this script. The stock 0.8.7 rebuild ran here on 2026-08-27 without incident,
+# which is the only evidence either way. Stop it if the live apps go sluggish.
 set -euo pipefail
 mkdir -p /home/rob/ss-rebuild
 cd /home/rob/ss-rebuild
@@ -29,7 +32,7 @@ git submodule update -q
 df -h / | tail -1
 echo "=== build starting $(date -u +%FT%TZ) ==="
 SS_ARGS="--$BOARD_TYPE --smartcard --app-repo=$APP_REPO --app-branch=$RELEASE_TAG" \
-  nice -n 10 sudo -E docker compose up --force-recreate --build
+  sudo -E docker compose up --force-recreate --build
 echo "=== build finished $(date -u +%FT%TZ) ==="
 df -h / | tail -1
 
