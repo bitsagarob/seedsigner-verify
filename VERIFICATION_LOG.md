@@ -263,6 +263,12 @@ produces. Nobody has to take the hash on this page on trust.
 Cost, so anyone deciding whether to repeat it knows what they are in for: 63 minutes wall clock
 on 16 cores, about 800 MB of disk, and a Docker install. It is an evening, not a project.
 
+**Correction, 2026-08-31: that 800 MB figure is wrong, or at least badly misleading.** It measured
+the leftover buildroot workspace, not what the build actually occupies while running. The
+smartcard rebuild in section 10 was measured properly, start to finish, and consumed **23 GB** of
+disk, of which only 1.4 GB was the workspace and the rest was Docker's layer cache. Budget tens of
+gigabytes for either build, not hundreds of megabytes.
+
 ### The one caveat, and it did not bite
 
 The build installs two Python packages from PyPI without pinning a version, `babel` and
@@ -384,3 +390,72 @@ The staleness window was cut from 180 days to 45. B12 landed eight days after th
 February 2027. The fork's recent cadence is B9 in March, B10 in April, B11 in July, B12 in
 August, so 45 days matches how often this actually moves. No new process was added: it is still
 the visitor's own clock doing the comparison, and nothing runs in the background.
+
+---
+
+## 10. The smartcard reproducible build, actually run, and it PASSES
+
+Run 2026-08-31, the first time anyone had executed it. Until now the page's cypherpunk claim,
+that you can rebuild the firmware yourself and get the same bytes, was proven for stock 0.8.7
+only. The smartcard half was documented and untested, which on a page arguing you should not have
+to trust anyone is exactly the wrong kind of gap.
+
+`tools/rebuild-smartcard-B12.sh`, scope `--pi0` only:
+
+```
+SS_ARGS="--pi0 --smartcard --app-repo=https://github.com/3rdIteration/seedsigner --app-branch=SeSi-0.8.7+ShSi-B12" \
+  sudo -E docker compose up --force-recreate --build
+
+=== build starting 2026-08-31T12:35:09Z ===
+=== build finished 2026-08-31T13:57:26Z ===
+```
+
+The build's own output, and then the same file hashed independently afterwards:
+
+```
+sha256sum images/seedsigner_os.SeSi-0.8.7_ShSi-B12_.pi0-smartcard.img
+1c9f8a1c84b3e626986b62d7ab847126fcb1c5bcd6a96ee15a4be2f76ecbeab6
+expected:
+1c9f8a1c84b3e626986b62d7ab847126fcb1c5bcd6a96ee15a4be2f76ecbeab6
+```
+
+And, as with stock, compared against the file actually downloaded from the developer's release
+page rather than only against a recorded number:
+
+```
+cmp images/seedsigner_os.SeSi-0.8.7_ShSi-B12_.pi0-smartcard.img \
+    seedsigner_os.SeSi-0.8.7_ShSi-B12_.pi0-smartcard.img
+(no output: identical, byte for byte)
+```
+
+**The build reproduces.** Both firmwares this page pins are now independently rebuilt and
+confirmed. Nobody has to take either hash on trust.
+
+A small detail that is itself evidence of reproducibility discipline: the resulting file carries a
+fixed timestamp of 2025-07-01 rather than the time it was built, so two builds on different days
+still produce identical bytes.
+
+### Cost, measured rather than estimated
+
+82 minutes wall clock on 16 cores. **23 GB of disk consumed**, of which the buildroot workspace was
+1.4 GB and the remainder was Docker's layer cache. Docker required, and root, since the build calls
+docker compose. Longer and heavier than the stock build, which is expected: the smartcard image is
+512 MiB against stock's 50 MiB.
+
+### Why --pi0 and not the --all the release notes print
+
+The B12 notes publish `--all`, which builds five boards. The same notes also say La Frite and
+Luckfox "still have a few things that need to be tweaked for full reproducibility. Pi versions are
+reproducible as normal." Following `--all` would therefore produce mismatches upstream already
+knows about, on boards Bitsaga does not ship, and a reader hitting those would reasonably conclude
+their download had been tampered with. `release.json` now carries the `--pi0` command that was
+actually executed here, so what the page prints is what has been tested.
+
+The printed command also now says that docker needs root unless the user is in the docker group.
+That cost real time during this run, and it is the same class of defect as the `--no-op` bug found
+in section 8: instructions that cannot be followed as written.
+
+### Still not verified
+
+Nothing on the reproducible-build claim. Both firmwares are now covered.
+The unpinned-PyPI concern from section 8 applies here too and remains upstream's to close.

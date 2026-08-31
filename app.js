@@ -211,6 +211,7 @@ function applyProduct() {
     `SS_ARGS="${f.reproducibleBuild.buildArgs}" docker compose up --force-recreate --build`,
     ``,
     `# Without SS_ARGS the container defaults to --no-op and just sits there.`,
+    `# docker needs root unless your user is in the docker group: prefix with sudo -E.`,
     `# the printed SHA256 must equal ${f.sha256}`,
   ].join('\n');
 

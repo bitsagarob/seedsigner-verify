@@ -105,7 +105,7 @@
       "reproducibleBuild": {
         "repo": "https://github.com/3rdIteration/seedsigner-os",
         "docs": "https://github.com/3rdIteration/seedsigner/releases/tag/SeSi-0.8.7%2BShSi-B12",
-        "buildArgs": "--all --app-repo=https://github.com/3rdIteration/seedsigner --app-branch=SeSi-0.8.7+ShSi-B12 --smartcard"
+        "buildArgs": "--pi0 --smartcard --app-repo=https://github.com/3rdIteration/seedsigner --app-branch=SeSi-0.8.7+ShSi-B12"
       },
       "projectLong": "ShieldSigner, the Satochip smartcard fork of SeedSigner by 3rdIteration. Every release is tagged ShSi."
     }
