@@ -112,6 +112,11 @@ h1 .hl{white-space:nowrap}
   border:1px solid color-mix(in srgb,var(--gold-deep) 32%,transparent);font-size:15.5px}
 .zipnote p{margin:0}
 
+details.quiet{margin-top:20px}
+details.quiet summary{cursor:pointer;color:var(--muted);font-size:15.5px}
+details.quiet p{margin:10px 0 0}
+html[data-mode="cypherpunk"] .adv-only{display:none}
+
 .step{padding:clamp(44px,7vw,76px) 0;border-top:1px solid var(--line)}
 .step h2{font-family:var(--display);font-size:clamp(29px,4.6vw,46px);line-height:1.1;
   letter-spacing:-.02em;margin:0 0 22px;font-weight:700;display:flex;gap:16px;align-items:baseline}

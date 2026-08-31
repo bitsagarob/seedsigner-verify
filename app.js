@@ -243,6 +243,27 @@ function applyProduct() {
     `# expect: ${f.sha256}`,
   ].join('\n');
 
+  // Was hardcoded, so it still described the stock run to smartcard readers long
+  // after the smartcard image had its own. Generated per firmware now.
+  const conf = f.reproducibleBuild.confirmed;
+  const logLink = () => {
+    const a = el('a', 'Verification log');
+    a.href = 'VERIFICATION_LOG.md';
+    return a;
+  };
+
+  const cypRepro = $('cypRepro');
+  cypRepro.textContent = '';
+  cypRepro.append(`We rebuilt this image on ${conf.date} and got the same bytes. It took ${conf.minutes} minutes. `);
+  cypRepro.append(logLink());
+  cypRepro.append('. Run it yourself, our word is worth no more than anyone else\'s.');
+
+  const advRepro = $('advRepro');
+  advRepro.textContent = '';
+  advRepro.append(`Yes. We rebuilt it on ${conf.date} and the result was byte for byte identical. `);
+  advRepro.append(logLink());
+  advRepro.append('.');
+
   $('cypSite').textContent = [
     `# Check that what your browser received matches the signed manifest.`,
     `git clone https://github.com/bitsagarob/seedsigner-verify`,
