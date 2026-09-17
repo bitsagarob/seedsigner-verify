@@ -113,6 +113,12 @@ function applyProduct() {
 
   $('dlBtn').href = f.downloadUrl;
 
+  const official = sig.scheme === 'pgp'
+    ? { label: 'seedsigner.com', url: 'https://seedsigner.com' }
+    : { label: `the ${f.project} release page`, url: f.releasePageUrl };
+  $('srcOfficial').textContent = official.label;
+  $('srcOfficial').href = official.url;
+
   const acct = ghAccount(f);
   $('srcEasy').textContent =
     `The button below goes straight to GitHub, to the people who make ${f.project}. ` +
@@ -274,11 +280,14 @@ function applyProduct() {
   advRepro.append('.');
 
   $('cypSite').textContent = [
-    `# Check that what your browser received matches the signed manifest.`,
+    `# Check the published site source against the signed manifest.`,
     `git clone ${REPO}`,
     `cd seedsigner-verify && ./make-manifest.sh > /tmp/local.txt`,
     `gpg --verify signatures/manifest.txt.asc signatures/manifest.txt`,
     `diff /tmp/local.txt signatures/manifest.txt`,
+    ``,
+    `# A server can send different bytes to different visitors, so this cannot prove`,
+    `# what your own browser received.`,
   ].join('\n');
 
   // Name the actual file in the caption, so nobody has to guess in a file picker.
@@ -366,6 +375,7 @@ function onVerified(computed) {
   $('gotHash').className = 'mono hit';
   showResult('ok', 'It is genuine.', [
     `This file matches exactly what ${fw().project.split(' (')[0]} released. Keep it, you need it in the next step.`,
+    'Bitsaga ran this check. Advanced mode shows how to repeat it without Bitsaga.',
   ]);
 }
 
