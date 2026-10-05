@@ -426,8 +426,9 @@ function helpForBad() {
   const links = el('p', '', 'helplinks');
   const a1 = el('a', 'Download again from SeedSigner');
   a1.href = fw().releasePageUrl; a1.target = '_blank'; a1.rel = 'noopener';
-  const a2 = el('a', 'Email contact@bitsaga.be');
-  a2.href = 'mailto:contact@bitsaga.be?subject=SeedSigner%20file%20did%20not%20check%20out';
+  const mail = 'contact' + '@' + 'bitsaga.be'; /* built here so address harvesters do not find it in the file */
+  const a2 = el('a', 'Email ' + mail);
+  a2.href = 'mailto:' + mail + '?subject=SeedSigner%20file%20did%20not%20check%20out';
   const a3 = el('a', 'Book a call');
   a3.href = 'https://cal.com/bitsaga'; a3.target = '_blank'; a3.rel = 'noopener';
   links.append(a1, a2, a3);
