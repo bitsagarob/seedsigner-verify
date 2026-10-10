@@ -1,0 +1,89 @@
+# SeedSigner SeSi-0.8.7+ShSi-B13
+
+Paired OS release: [`3rdIteration/seedsigner-os` tag `SeSi-0.8.7+ShSi-B13`](https://github.com/3rdIteration/seedsigner-os/releases/tag/SeSi-0.8.7%2BShSi-B13) (commit `e7589465aff172f4f510ad46d18776ccc8d2c203`).
+
+Dev images for Raspberry Pi, La Frite and Luckfox Pico (bench/test builds) are available here: https://github.com/3rdIteration/seedsigner-os/releases/tag/SeSi-0.8.7%2BShSi-B13
+
+## PSBT verification hardening (security)
+
+- Merged the upstream PSBT output-ownership rewrite (upstream #1032) with fork hardening preserved, plus upstream multisig output-claim hardening (upstream #1044): every derivation entry claiming this seed on a multisig output is now held to the committed script, closing a crafted-PSBT verification bypass; change outputs are verified to actually pay this seed.
+- Refuse version-confused and ambiguously framed PSBTs (psbt_faker ENC-01..10); resynced the psbt_faker corpus and closed the gaps it exposed.
+- New high-transaction-fee warning, highlighted on the PSBT Overview and PSBT Math screens (upstream #722).
+- Fixed handling of a range of malicious or broken PSBTs
+
+## Smartcards
+
+- Fixed multisig PSBT signing with Keycard/Satochip cards.
+- Smartcard menu split per applet, with master fingerprint display and Satodime.
+- Satochip Enable 2FA gated behind confirmations; back-on-QR cancels before write.
+- SeedKeeper: fixed V2 descriptor read-back decode, mapped the 0x9C01 (card full) status, added v0.1 applet test coverage.
+- Added Satodime support
+
+## Luckfox
+
+- Re-sign a Luckfox release from MicroSD with BIP85-derived keys.
+- Refuse to write an armed idblock a fused board would reject.
+- UART2 console + FIQ debugger stripped by default on every OS variant.
+- Hardened Pico Mini (SPI_NAND) image built in automatic CI.
+- Added Pico-Mini smartcard display hat hardware and enclosure files.
+
+## GPG
+
+- BIP85 GPG scheme v4: RSA keys derive via the BIP85-spec path `m/83696968'/828365'/{bits}'/{index}'`; loading BIP85 metadata auto-selects the derivation scheme from each key's `ss_version`.
+- Various GPG fixes (#417).
+
+## Fixes & docs
+
+- Fixed: a newly created seed never reached the Seeds menu; invert-colors setting ignored at boot; completed workflows buried in the back stack.
+- Docs: smartcard/feature documentation, quick starts and regenerated screenshots; SeedSigner OS docs mirrored into the GitHub Pages site.
+- Randomized dummy Satochip signing requests, per-signature timeout settings, benchmark tool, and other previously-unreleased smartcard-fork changes (see CHANGELOG.md).
+
+## General Security and Hardening
+- Security audit fixes: Verify Signature now refuses clearsigned files with unsigned text outside the signed block and hashes only the signed text; Provision MicroSD rejects path-traversal image names in unsigned `sd_update.txt`; encryption keys and Text QR content are redacted from logged Destination reprs; Luckfox release-signing keys are cleared on Home and inactivity wipe; blind digest signing requires an explicit confirmation; VALIDSIG primary-fingerprint parsing so subkey-signed releases match the trusted-signer whitelist.
+- Security review hardening (H1, H2, M1, M5, M2, M3); added SECURITY.md, bundled the CryptoGuide GPG key, and tracked ShieldSigner as a trusted signer.
+- DIY-Tools squashfs image now hash-checked before mounting.
+- Initial secure boot implementation on Luckfox Pico Devices
+- Fix reproducible builds for lafrite and luckfox pico
+
+**Note on Reproducibility:**
+All production images in this release (Pi, La Frite and Luckfox Pico) were independently rebuilt from source and verified byte-identical to the published hashes below.
+
+**To Build:**
+```
+git clone https://github.com/3rdIteration/seedsigner-os/
+cd seedsigner-os
+git checkout SeSi-0.8.7+ShSi-B13
+git submodule init
+git submodule update
+SS_ARGS="--all --app-repo=https://github.com/3rdIteration/seedsigner --app-branch=SeSi-0.8.7+ShSi-B13 --smartcard" docker compose up --force-recreate --build
+```
+
+**SHA256 Checksums (And message to verify)**
+- - - - - - - - - - - - - - - - - - - - - - - -
+seedsigner_os.SeSi-0.8.7_ShSi-B13_.lafrite-smartcard.img: 03013ec283f4a4113f2d4cb6edc09453e53fbf5c5e4f4ff034643fcebbfbeed1
+seedsigner_os.SeSi-0.8.7_ShSi-B13_.pi0-smartcard.img: 59fcd057bc4e4f8c4933253bb0f1e477c4ff58eff88cd2fa532d6f55bca4ea26
+seedsigner_os.SeSi-0.8.7_ShSi-B13_.pi02w-smartcard.img: 8527cb15c4a774be2f8bf3d335fbf03975a8b2057f3998d64fc001fbdfa50aa3
+seedsigner_os.SeSi-0.8.7_ShSi-B13_.pi2-smartcard.img: ed509e1d16c20f63de7cf93e3da49b99c09ec0b024228909cdee985d23483703
+seedsigner_os.SeSi-0.8.7_ShSi-B13_.pi4-smartcard.img: e61b645e045660c4bf8a2a889e2b09c0b86b788f5e2d3643119786009fcbe810
+seedsigner-luckfox-pico-max-sd-SeSi-0.8.7_ShSi-B13-osproduction-signed-devkey.img: c8106b5fcdc7101915feec87e607babb75cc7918234a3b986b4c875a76f1f3b0
+seedsigner-luckfox-pico-mini-sd-SeSi-0.8.7_ShSi-B13-osproduction-signed-devkey.img: 0b6ae5c48c952b614e515c042e58b9b8527c3a8ff8e7a7894ffa9e6196ff4ebf
+seedsigner-luckfox-pico-max-nand-files-SeSi-0.8.7_ShSi-B13-osproduction-signed-devkey.zip: d19acbcbc7759f8b6c5e5fe25fa6f62adccca12d194f45311c260907b7b789b5
+seedsigner-luckfox-pico-mini-nand-files-SeSi-0.8.7_ShSi-B13-osproduction-signed-devkey.zip: 584b921fb3cdd9061100587b20500610972ab726b414899cfe954a590ae64068
+seedsigner-luckfox-pico-pi-emmc-files-SeSi-0.8.7_ShSi-B13-osproduction-signed-devkey.zip: 03bd9cd98463b8a2ec77d0d911857c51a3bc57c9909730bb69affa49434cca1c
+- - - - - - - - - - - - - - - - - - - - - - - -
+ **Bitcoin Message Signature:**
+- - - - - - - - - - - - - - - - - - - - - - - -
+IH6xlTcrqQfR4KkdduZgiOOc73rqIhw45OYNUyTQNtBETKnYr+n/VskbdN6NEvxrMeOPBVher7mUGR9XYeFEzhA=
+- - - - - - - - - - - - - - - - - - - - - - - -
+
+**Signature Verification**
+You can confirm that the checksums are correct by verifying the Bitcoin Message Signature above with a "Message" containing the checksums of the files. (All of the information between the lines above) with the Bitcoin address "37hiiSB1Poj6Shs8WawPS2HjT2jzHkFSQi".
+
+This is a public tip address of mine that can be verified via:
+
+My video descriptions (Basically any video on my channel: https://www.youtube.com/channel/UCEviBQwLv-yfv3BErm0ojHg/)
+Reddit profile (https://www.reddit.com/user/Crypto-Guide/comments/czy13u/a_post_or_video_of_mine_was_helpful_feel_free_to/)
+Website (https://cryptoguide.tips/send-me-a-tip/)
+
+It is an "Electrum" formatted message that can be verified with software like Electrum, Sparrow or web based tools like https://www.verifybitcoinmessage.com/ or https://bitaps.com/signature
+

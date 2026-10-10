@@ -267,17 +267,22 @@ function applyProduct() {
     return a;
   };
 
+  // A new release has no rebuild of ours until one is run, so both claims stay
+  // hidden until release.json says it happened for this exact version.
   const cypRepro = $('cypRepro');
   cypRepro.textContent = '';
-  cypRepro.append(`We rebuilt this image on ${conf.date} and got the same bytes. It took ${conf.minutes} minutes. `);
-  cypRepro.append(logLink());
-  cypRepro.append('. Run it yourself, our word is worth no more than anyone else\'s.');
-
   const advRepro = $('advRepro');
   advRepro.textContent = '';
-  advRepro.append(`Yes. We rebuilt it on ${conf.date} and the result was byte for byte identical. `);
-  advRepro.append(logLink());
-  advRepro.append('.');
+  advRepro.closest('details').hidden = !conf;
+  if (conf) {
+    cypRepro.append(`We rebuilt this image on ${conf.date} and got the same bytes. It took ${conf.minutes} minutes. `);
+    cypRepro.append(logLink());
+    cypRepro.append('. Run it yourself, our word is worth no more than anyone else\'s.');
+
+    advRepro.append(`Yes. We rebuilt it on ${conf.date} and the result was byte for byte identical. `);
+    advRepro.append(logLink());
+    advRepro.append('.');
+  }
 
   $('cypSite').textContent = [
     `# Check the published site source against the signed manifest.`,

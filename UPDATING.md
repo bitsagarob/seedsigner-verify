@@ -48,9 +48,10 @@ ShieldSigner, Bitcoin message signature over the checksum block in the release n
 python3 tools/verify_btc_msg.py release-body.txt
 ```
 
-Expect a match against `37hiiSB1Poj6Shs8WawPS2HjT2jzHkFSQi`. Update the address and signature
-in that script if the developer publishes new ones, and confirm any new address against his
-website, YouTube and Reddit before trusting it.
+Expect a match against `37hiiSB1Poj6Shs8WawPS2HjT2jzHkFSQi`. The script reads the signature
+from the release notes, since it changes every release. The address is the trust anchor and is
+fixed in the script: update it only if the developer publishes a new one, and confirm any new
+address against the developer's website, YouTube and Reddit before trusting it.
 
 **4. Edit `release.json`.** Version, filename, size, sha256, download URL, release page URL,
 published date, signature block. Move the outgoing hashes into `knownFiles` with kind

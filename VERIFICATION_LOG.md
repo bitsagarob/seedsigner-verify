@@ -479,3 +479,122 @@ in section 8: instructions that cannot be followed as written.
 
 Nothing on the reproducible-build claim. Both firmwares are now covered.
 The unpinned-PyPI concern from section 8 applies here too and remains upstream's to close.
+
+---
+
+## 11. ShieldSigner moved to SeSi-0.8.7+ShSi-B13
+
+Checked 2026-10-10. Stock SeedSigner is still on 0.8.7, so again only the smartcard fork moved.
+
+```
+gh release list -R SeedSigner/seedsigner
+0.8.7                    2026-07-08  Latest
+
+gh release list -R 3rdIteration/seedsigner
+SeSi-0.8.7+ShSi-B13      2026-10-06  Latest
+SeSi-0.8.7+ShSi-B13-pre  2026-09-24  Pre-release
+SeSi-0.8.7+ShSi-B12      2026-08-21  <- what this page had pinned
+```
+
+B13 matters for buyers, not only for freshness. Its notes list a crafted-PSBT verification
+bypass closed for multisig outputs (upstream #1044) and a fix for multisig signing with
+Satochip cards.
+
+### The signature, checked with this repository's own tool
+
+The full release body is kept at `tools/release-body-SeSi-0.8.7_ShSi-B13.txt`.
+
+```
+python3 tools/verify_btc_msg.py tools/release-body-SeSi-0.8.7_ShSi-B13.txt
+
+signature from the release notes: IH6xlTcrqQfR4KkdduZgiOOc73rqIhw45OYNUyTQNtBETKnYr+n/VskbdN6NEvxrMeOPBVher7mUGR9XYeFEzhA=
+[OK] between separators, stripped: header=32 -> {
+      "p2pkh-compressed": ...,
+      "p2pkh-uncompressed": ...,
+      "p2sh-p2wpkh": "37hiiSB1Poj6Shs8WawPS2HjT2jzHkFSQi"
+}
+
+MATCH as p2sh-p2wpkh against 37hiiSB1Poj6Shs8WawPS2HjT2jzHkFSQi
+message was 1365 bytes
+```
+
+Same address as B11 and B12, same framing, so no new key had to be established.
+
+The tool had to change first, and failed closed rather than open. B13's separator lines no
+longer end in a space, so the script printed "could not locate the separator lines". It also
+carried the B12 signature hardcoded, which UPDATING.md told the reader to edit by hand. It now
+matches the separator either way and reads the signature out of the release notes. The address
+stays fixed in the script, because it is the trust anchor and the signature is not. Re-run on
+the two older bodies after the change, both still verify:
+
+```
+B11: MATCH as p2sh-p2wpkh, message was 477 bytes
+B12: MATCH as p2sh-p2wpkh, message was 600 bytes
+```
+
+### The image hash, downloaded and computed rather than copied
+
+```
+curl -LO .../SeSi-0.8.7%2BShSi-B13/seedsigner_os.SeSi-0.8.7_ShSi-B13_.pi0-smartcard.img.zip
+314179794 bytes
+
+sha256 of the .img inside the zip:
+59fcd057bc4e4f8c4933253bb0f1e477c4ff58eff88cd2fa532d6f55bca4ea26
+
+signed release notes say:
+59fcd057bc4e4f8c4933253bb0f1e477c4ff58eff88cd2fa532d6f55bca4ea26
+```
+
+The zip is the same shape as B12's, so `zip.js` needed no change:
+
+```
+local header: sig 04034b50  flags 0x0000  method 8 (deflate)
+              csize 314179540  usize 536870912  entries 1  (not zip64)
+```
+
+### What changed in release.json
+
+B13 is the `match`. The B12 image is demoted to `old-version`, not deleted, so a buyer still
+holding it is told it is an older release rather than shown a tampering alarm. The four other
+B13 boards are added as `wrong-board`. `lastConfirmed` is 2026-10-10, so the staleness warning
+fires after 2026-11-24.
+
+### The rebuild claim, held back until it is true
+
+The page said "We rebuilt this image on 2026-08-31" for the smartcard firmware. That was true
+of B12 and would be false of B13, which nobody here has rebuilt. `reproducibleBuild.confirmed`
+is therefore removed from the smartcard entry, and `app.js` now shows the two "we rebuilt it"
+lines only when that field exists for the version on the page. Stock keeps its claim, because
+0.8.7 is the release that was actually rebuilt. The rebuild command itself still shows, so
+anyone can run it.
+
+`tools/rebuild-smartcard-B13.sh` is the B12 script with the tag and the expected hash changed.
+Running it and recording the result here is what puts the claim back. The B13 notes say the
+developer rebuilt every production image byte for byte. That is the developer's claim, not ours, so the
+page does not repeat it.
+
+### Tests
+
+`./tools/fetch-fixtures.sh` now fetches B13 as the current release and B12 as the older one.
+`node tools/e2e.mjs`: all pass. One new case, 2b, checks that stock shows its rebuild and that
+the smartcard firmware claims none before one is run.
+
+```
+2b. Rebuild claim only for a release we rebuilt
+  OK   stock shows the rebuild it actually had
+  OK   smartcard claims no rebuild before one is run
+6b. Smartcard zip, correct product (314 MB zip, 512 MiB inside)
+  OK   green result from inside the zip
+6d. Superseded B12 image, smartcard product
+  OK   a genuine older file is not treated as tampering
+  OK   says it is an older release
+10. Firefox, the real B13 zip end to end
+  OK   the real smartcard zip verifies green in Firefox
+
+ALL PASS
+```
+
+### Not verified
+
+The B13 reproducible build. Until `tools/rebuild-smartcard-B13.sh` has been run, the page makes
+no rebuild claim for this release.

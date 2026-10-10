@@ -8,6 +8,7 @@ Usage: python3 verify_btc_msg.py <release-body.txt>
 import base64
 import hashlib
 import json
+import re
 import sys
 
 # secp256k1
@@ -115,16 +116,21 @@ def addresses(Q):
 def main():
     body = open(sys.argv[1], "rb").read().decode("utf-8")
     expected_addr = "37hiiSB1Poj6Shs8WawPS2HjT2jzHkFSQi"
-    sig = "H5Ayg8hhAbbjZ6BpHiNVKfDPgcifnep4ByxbkWNvfB0DMT2w5AVR7p5ZC+o9RDSREFYA5LxR0pZ3OEcCRM/OIZ4="
 
     # The signed message is the checksum block between the dashed separator lines.
+    # B12 ends each separator line with a space and B13 does not, so match the
+    # line either way.
     norm = body.replace("\r\n", "\n")
-    sep = "- - - - - - - - - - - - - - - - - - - - - - - - "
-    parts = norm.split(sep)
-    if len(parts) < 3:
+    parts = re.split(r"^(?:- ){23}- ?$", norm, flags=re.M)
+    if len(parts) < 4:
         print("could not locate the separator lines")
         return 1
     block = parts[1]
+    # The signature sits between the third and fourth separator lines. Read from
+    # the release notes, because it changes every release. The address above is
+    # the trust anchor and does not.
+    sig = parts[3].strip()
+    print(f"signature from the release notes: {sig}")
 
     candidates = {
         "between separators, stripped": block.strip(),

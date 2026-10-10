@@ -5,9 +5,9 @@ import { createHash } from 'node:crypto';
 
 const BASE = 'http://127.0.0.1:8777';
 const IMG_STOCK = '/home/rob/ss-check/pi0.img';
-const IMG_SMART = '/home/rob/ss-check/seedsigner_os.SeSi-0.8.7_ShSi-B12_.pi0-smartcard.img';
-const ZIP_SMART = '/home/rob/ss-check/seedsigner_os.SeSi-0.8.7_ShSi-B12_.pi0-smartcard.img.zip';
-const IMG_SMART_OLD = '/home/rob/ss-check/seedsigner_os.SeSi-0.8.7_ShSi-B11_.pi0-smartcard.img';
+const IMG_SMART = '/home/rob/ss-check/seedsigner_os.SeSi-0.8.7_ShSi-B13_.pi0-smartcard.img';
+const ZIP_SMART = '/home/rob/ss-check/seedsigner_os.SeSi-0.8.7_ShSi-B13_.pi0-smartcard.img.zip';
+const IMG_SMART_OLD = '/home/rob/ss-check/seedsigner_os.SeSi-0.8.7_ShSi-B12_.pi0-smartcard.img';
 const IMG_TAMPER = '/home/rob/ss-check/tampered.img';
 const NOT_IMG = '/home/rob/ss-check/notanimage.txt';
 
@@ -140,6 +140,35 @@ console.log('\n2. Modes');
   await ctx.close();
 }
 
+// ------------------------------------- 2b. the rebuild claim, only where run
+// release.json carries reproducibleBuild.confirmed only for a version we rebuilt
+// ourselves. Stock 0.8.7 has one; a new ShieldSigner release has none until the
+// rebuild is run, and the page must not say "we rebuilt it" before then.
+console.log('\n2b. Rebuild claim only for a release we rebuilt');
+{
+  const { page, ctx } = await newPage();
+  await page.click('[data-set-mode="advanced"]');
+  const claim = () => page.evaluate(() => ({
+    hidden: document.getElementById('advRepro').closest('details').hidden,
+    adv: document.getElementById('advRepro').textContent,
+    cyp: document.getElementById('cypRepro').textContent,
+  }));
+  await page.click('[data-product="premium"]');
+  const stock = await claim();
+  check(!stock.hidden && /rebuilt it on/.test(stock.adv) && /rebuilt this image on/.test(stock.cyp),
+        'stock shows the rebuild it actually had', JSON.stringify(stock));
+  await page.click('[data-product="plus-smartcard"]');
+  const smart = await claim();
+  const R = await page.evaluate(() => fetch('release.json').then((r) => r.json()));
+  if (R.firmware.smartcard.reproducibleBuild.confirmed) {
+    check(!smart.hidden && /rebuilt it on/.test(smart.adv), 'smartcard shows its rebuild', JSON.stringify(smart));
+  } else {
+    check(smart.hidden && smart.adv === '' && smart.cyp === '',
+          'smartcard claims no rebuild before one is run', JSON.stringify(smart));
+  }
+  await ctx.close();
+}
+
 // --------------------------------------------------- 3. happy path, stock
 console.log('\n3. Stock image, correct product');
 {
@@ -221,7 +250,7 @@ console.log('\n6. Smartcard image, correct product (537 MB)');
 // ------------------------- 6b. the zip the publisher actually ships now
 // From B12 the ShieldSigner release is zip-only, and the signed hash covers the
 // .img inside it. If this fails, buyers have no way to check their download.
-console.log('\n6b. Smartcard zip, correct product (327 MB zip, 512 MiB inside)');
+console.log('\n6b. Smartcard zip, correct product (314 MB zip, 512 MiB inside)');
 {
   const { page, ctx } = await newPage();
   await page.click('[data-product="plus-smartcard"]');
@@ -246,7 +275,7 @@ console.log('\n6c. Zip dropped while a stock product is selected');
 }
 
 // ------------------------------------- 6d. the previous release, still genuine
-console.log('\n6d. Superseded B11 image, smartcard product');
+console.log('\n6d. Superseded B12 image, smartcard product');
 {
   const { page, ctx } = await newPage();
   await page.click('[data-product="plus-smartcard"]');
@@ -356,7 +385,7 @@ await browser.close();
 // ------------------------------------------------ 10. a second browser engine
 // zip.js leans on DecompressionStream, which is not Chromium-specific but had
 // only ever been exercised in Chromium. Firefox is a different implementation.
-console.log('\n10. Firefox, the real B12 zip end to end');
+console.log('\n10. Firefox, the real B13 zip end to end');
 {
   const ff = await firefox.launch();
   try {
