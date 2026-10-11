@@ -23,11 +23,12 @@
     },
     {
       "id": "plus-smartcard",
-      "label": "ShieldSigner",
+      "label": "SeedSigner Plus Smartcard",
       "firmware": "smartcard",
       "needsDisplaySetting": true,
       "look": "Bigger screen & card slot",
-      "image": "assets/product-plus-smartcard.png"
+      "image": "assets/product-plus-smartcard.png",
+      "runs": "Runs ShieldSigner"
     },
     {
       "id": "cardsigner",
