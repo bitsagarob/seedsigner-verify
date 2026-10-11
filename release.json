@@ -28,6 +28,15 @@
       "needsDisplaySetting": true,
       "look": "Bigger screen & card slot",
       "image": "assets/product-plus-smartcard.png"
+    },
+    {
+      "id": "cardsigner",
+      "label": "CardSigner",
+      "firmware": "smartcard",
+      "needsDisplaySetting": true,
+      "look": "Aluminium case & card slot",
+      "image": "assets/product-cardsigner.png",
+      "runs": "Runs ShieldSigner"
     }
   ],
   "firmware": {

@@ -391,9 +391,11 @@ function onMismatch(computed) {
   const known = R.knownFiles.find((k) => k.sha256 === computed);
 
   if (known && known.kind === 'match') {
-    const other = R.products.find((p) => p.firmware === known.firmware);
+    // every model that takes this file (two take the smartcard image)
+    const others = R.products.filter((p) => p.firmware === known.firmware).map((p) => p.label);
+    const forWhom = others.length > 1 ? `${others.slice(0, -1).join(', ')} and ${others[others.length - 1]}` : (others[0] || known.firmware);
     showResult('warn', 'That is the file for a different model.', [
-      `This is ${known.name}, which is the software for ${other ? other.label : known.firmware}.`,
+      `This is ${known.name}, which is the software for ${forWhom}.`,
       `You chose ${product.label}, which needs a different file. Go back to step 1 and use the button there.`,
     ]);
     return;

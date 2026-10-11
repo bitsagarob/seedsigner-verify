@@ -139,7 +139,7 @@ html[data-mode="cypherpunk"] .adv-only{display:none}
 .btn.small{padding:9px 18px;font-size:15px}
 
 /* ---------- product picker ---------- */
-.picker{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+.picker{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
 .picker button{font:inherit;text-align:center;background:var(--panel);border:1.5px solid var(--line);display:flex;flex-direction:column;gap:4px;justify-content:flex-start;
   border-radius:var(--r-sm);padding:18px 20px;cursor:pointer;color:var(--fg)}
 .picker button img{width:100%;max-width:150px;aspect-ratio:1;object-fit:contain;
