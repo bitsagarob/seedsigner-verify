@@ -8,8 +8,10 @@
 // TALL parts (screen, joystick, buttons, header, the five small parts) are drawn
 // to measured size, because on a photo taken at a slant they lean.
 //
-//   Front: https://www.waveshare.com/media/catalog/product/1/_/1.3inch-lcd-hat-1.jpg
+//   Front: Waveshare's Amazon listing (B07FJQ4F2C), 1700 px, nearly straight on
+//          https://m.media-amazon.com/images/I/71HjVG+JhkL.jpg
 //   Back:  https://www.waveshare.com/media/catalog/product/1/_/1.3inch-lcd-hat-2.jpg
+//          No straight-on photo of the back exists online; this one is at a slant.
 //
 //   mkdir /tmp/wst && cd /tmp/wst && npm i potrace@2 jimp@0.22
 //   NODE_PATH=/tmp/wst/node_modules node tools/trace-waveshare.mjs
@@ -27,9 +29,9 @@ const { Potrace } = require('potrace');
 const W = 65, H = 30.2, PX = 40;
 const HOLES = [[3.5, 3.5], [61.5, 3.5], [3.5, 26.7], [61.5, 26.7]];
 const SRC = {
-  front: { url: 'https://www.waveshare.com/media/catalog/product/1/_/1.3inch-lcd-hat-1.jpg',
-           // hole centres picked by hand (px): 836,369  271,577  718,189  166,383
-           quad: '887.2:385.0:251.7:620.6:732.6:151.7:116.1:366.9' },
+  front: { url: 'https://m.media-amazon.com/images/I/71HjVG+JhkL.jpg',
+           // hole centres picked by hand (px): 100.3,331  1200,328.3  97.7,783.7  1201.7,771.3
+           quad: '32.8:263.1:1264.6:261.7:29.1:853.2:1267.1:837.6' },
   back:  { url: 'https://www.waveshare.com/media/catalog/product/1/_/1.3inch-lcd-hat-2.jpg',
            // hole centres picked by hand (px): 171,415  694,176  300,620  830,362
            quad: '118.6:400.3:703.7:135.4:285.9:668.8:881.2:376.2' },
@@ -58,7 +60,7 @@ async function trace(img, pred, turd) {
   return p.getPathTag().match(/ d="([^"]*)"/)[1];
 }
 const traced = (d, fill, extra = '') => d ? `<path transform="scale(${1 / PX})" fill="${fill}" fill-rule="evenodd" ${extra} d="${d}"/>` : '';
-const inHole = (x, y) => HOLES.some(([a, b]) => Math.hypot(x - a, y - b) < 3.3);
+const inHole = (x, y) => HOLES.some(([a, b]) => Math.hypot(x - a, y - b) < 3.6);
 const nearEdge = (x, y) => {
   if (x < 0.8 || x > W - 0.8 || y < 0.8 || y > H - 0.8) return true;
   const cx = Math.min(Math.max(x, 3), W - 3), cy = Math.min(Math.max(y, 3), H - 3);
@@ -118,52 +120,58 @@ async function back() {
 
 async function front() {
   const img = await Jimp.read(flatten('front'));
-  const inScreen = (x, y) => x > 16.8 && x < 48 && y > 1.2 && y < 29.9;
-  // The joystick leans on the photo and glints, so its whole area, printed arrows
-  // included, is drawn instead of traced. Arrow tips measured on the flattened photo.
-  const inJoy = (x, y) => Math.abs(x - 7.0) < 6.6 && y > 8.3 && y < 22.7;
-  const keys = [9.1, 15.0, 20.9];
-  const inKey = (x, y) => x > 50.8 && x < 62.4 && keys.some((c) => y > c - 1.95 && y < c + 2.7);
+  const inScreen = (x, y) => (x > 17.4 && x < 47.8 && y < 29.4) || (x > 47.6 && x < 49.8 && y > 2.0 && y < 22.6);
+  const inJoy = (x, y) => Math.abs(x - 7.0) < 6.6 && y > 8.3 && y < 22.3;
+  const keys = [9.2, 15.1, 21.0];
+  const inKey = (x, y) => x > 51.2 && x < 62.6 && keys.some((c) => y > c - 1.9 && y < c + 1.9);
+  // Only the white print is traced here. The copper on this side shows as faint
+  // one-sided highlights, so the few traces are drawn along the photo instead.
   const white = await trace(img, (r, g, b, x, y) => !inHole(x, y) && !nearEdge(x, y) && !inScreen(x, y) && !inJoy(x, y) && !inKey(x, y) && isWhite(r, g, b), 4);
 
-  // The few traces the screen does not cover, drawn along the photo.
   const tr = (d) => `<path d="${d}" fill="none" stroke="${C.gap}" stroke-width="0.62" stroke-linecap="round"/>`
     + `<path d="${d}" fill="none" stroke="#1a62d4" stroke-width="0.38" stroke-linecap="round"/>`;
-  const via = (x, y) => `<circle cx="${x}" cy="${y}" r="0.42" fill="${C.gap}"/><circle cx="${x}" cy="${y}" r="0.2" fill="${C.hole}"/>`;
+  const via = (x, y) => `<circle cx="${x}" cy="${y}" r="0.4" fill="${C.gap}"/><circle cx="${x}" cy="${y}" r="0.18" fill="${C.hole}"/>`;
   const traces = [
-    tr('M 9.6 10.6 C 10.5 9.3 13.8 9.1 15.0 10.5 L 16.2 12.7'), via(16.2, 13.2),
-    tr('M 11.4 12.2 C 12.6 11.8 14.4 12.3 14.9 13.7 L 15.0 18.6 C 15.0 20.6 12.4 21.2 10.9 22.5'), via(10.8, 22.8),
-    tr('M 51.6 9.1 C 50.9 9.1 50.6 9.8 50.6 10.8 L 50.6 26.6 C 50.6 27.6 49.9 28.1 48.0 28.1'),
-    tr('M 51.6 15.0 C 51.4 15.0 51.3 15.4 51.3 16.0 L 51.3 27.3 C 51.3 28.3 50.5 28.8 48.0 28.8'),
-    tr('M 51.6 20.9 C 52.0 20.9 52.0 21.3 52.0 21.9 L 52.0 28.0 C 52.0 29.0 51.2 29.5 48.0 29.5'),
+    tr('M 9.4 10.9 L 10.5 9.9 C 11.0 9.7 13.2 9.7 14.0 9.8 C 15.0 9.9 16.0 10.6 16.2 12.0'), via(16.3, 12.8),
+    tr('M 10.9 12.0 C 11.5 11.7 12.4 11.7 12.9 11.8 C 14.0 12.0 14.8 12.8 14.8 14.2 L 14.8 20.2 C 14.8 21.2 13.6 22.2 11.4 22.3'), via(10.8, 22.3),
+    tr('M 9.3 28.4 C 9.8 27.3 10.8 26.7 12.0 26.6 L 17.6 26.4'), via(9.0, 28.7),
+    tr('M 12.0 29.0 C 12.5 28.3 13.2 27.9 14.0 27.8 L 17.6 27.7'), via(11.8, 29.2),
+    tr('M 51.7 9.2 C 51.0 9.2 50.6 9.8 50.6 10.6 L 50.6 24.8 C 50.6 25.9 49.7 26.3 47.6 26.3'),
+    tr('M 51.7 15.1 C 51.3 15.1 51.1 15.5 51.1 16.0 L 51.1 25.2 C 51.1 26.4 50.1 26.9 47.6 26.9'),
+    tr('M 51.7 21.0 C 51.6 21.0 51.6 21.3 51.6 21.7 L 51.6 25.6 C 51.6 27.0 50.5 27.5 47.6 27.5'),
+    ...[[8.1, 2.6], [12.8, 4.3], [16.0, 2.6], [10.8, 7.3], [1.3, 9.3], [52.5, 1.6], [54.7, 2.8], [63.4, 12.6]].map(([x, y]) => via(x, y)),
   ];
   const screen = [
-    rect(17.6, 2.0, 29.9, 25.8, '#d9dde3', 'rx="0.3"'),
-    rect(17.75, 2.15, 25.65, 25.5, '#0b0c10'),
-    rect(18.9, 3.2, 23.4, 23.4, '#050608', `stroke="#1d212a" stroke-width="0.12"`),
-    rect(43.4, 2.15, 2.9, 25.5, '#15171c'), rect(44.2, 6.0, 0.4, 18.0, '#7d828a'),
-    rect(46.3, 2.6, 1.25, 24.6, C.orange, 'rx="0.3"'),
+    rect(17.75, 1.9, 29.65, 27.1, '#e3e6ea', 'rx="0.3"'),
+    rect(18.25, 2.5, 26.75, 26.0, '#0b0c10'),
+    rect(20.2, 3.9, 23.4, 23.4, '#050608', `stroke="#1d212a" stroke-width="0.12"`),
+    rect(45.0, 2.5, 2.4, 26.0, '#15171c'), rect(45.75, 4.5, 1.3, 21.0, '#2a2620'),
   ];
+  // Five-way switch as seen from above: body with chamfered corners, two big
+  // tabs, three small pins on each diagonal, the round stick in the middle.
   const jx = 7.0, jy = 15.5;
   const joy = [
-    ...[[-3.6, -3.6], [3.6, -3.6], [-3.6, 3.6], [3.6, 3.6]].map(([dx, dy]) => rect(jx + dx - 0.75, jy + dy - 0.75, 1.5, 1.5, C.silver)),
-    rect(jx - 3.5, jy - 3.5, 7, 7, '#c3c8cf', `rx="0.8" stroke="#8f959e" stroke-width="0.12"`),
-    `<circle cx="${jx}" cy="${jy}" r="2.5" fill="#dfe3e8" stroke="#9aa0a8" stroke-width="0.1"/>`,
-    rect(jx - 0.9, jy - 0.9, 1.8, 1.8, '#222428', 'rx="0.25"'),
-    ...[[0, -6.0], [0, 6.0], [-5.9, 0], [5.75, 0]].map(([dx, dy]) => {
-      const x = jx + dx, y = jy + dy, a = 0.85, l = 1.05; // half width, length
-      const pts = dy ? (dy < 0 ? [[x, y - l / 2], [x - a, y + l / 2], [x + a, y + l / 2]] : [[x, y + l / 2], [x - a, y - l / 2], [x + a, y - l / 2]])
-                     : (dx < 0 ? [[x - l / 2, y], [x + l / 2, y - a], [x + l / 2, y + a]] : [[x + l / 2, y], [x - l / 2, y - a], [x - l / 2, y + a]]);
+    rect(2.5, 10.85, 2.5, 2.5, C.silver, 'transform="rotate(45 3.75 12.1)"'),
+    rect(9.15, 17.45, 2.5, 2.5, C.silver, 'transform="rotate(45 10.4 18.7)"'),
+    ...[[9.2, 11.2], [10.0, 12.3], [11.0, 13.3], [2.7, 17.5], [3.5, 18.7], [4.7, 19.7]].map(([x, y]) =>
+      rect(x - 0.55, y - 0.4, 1.1, 0.8, C.silver, `rx="0.15" transform="rotate(45 ${x} ${y})"`)),
+    `<path d="M ${jx - 1.8} ${jy - 3.7} L ${jx + 1.8} ${jy - 3.7} L ${jx + 3.7} ${jy - 1.8} L ${jx + 3.7} ${jy + 1.8} L ${jx + 1.8} ${jy + 3.7} L ${jx - 1.8} ${jy + 3.7} L ${jx - 3.7} ${jy + 1.8} L ${jx - 3.7} ${jy - 1.8} Z" fill="#d3d7dc" stroke="#959ba3" stroke-width="0.12"/>`,
+    `<circle cx="${jx - 0.2}" cy="${jy - 0.2}" r="1.8" fill="#1f2125" stroke="#3a3d43" stroke-width="0.12"/>`,
+    ...[[7.0, 9.3, 'u'], [7.0, 21.0, 'd'], [1.2, 15.2, 'l'], [13.0, 15.2, 'r']].map(([x, y, dir]) => {
+      const a = 0.85, l = 1.05;
+      const pts = { u: [[x, y - l / 2], [x - a, y + l / 2], [x + a, y + l / 2]], d: [[x, y + l / 2], [x - a, y - l / 2], [x + a, y - l / 2]],
+                    l: [[x - l / 2, y], [x + l / 2, y - a], [x + l / 2, y + a]], r: [[x + l / 2, y], [x - l / 2, y - a], [x - l / 2, y + a]] }[dir];
       return `<polygon points="${pts.map((p) => p.map(r2).join(',')).join(' ')}" fill="${C.white}"/>`;
     }),
   ];
   const btn = keys.flatMap((c) => [
-    rect(51.4, c - 0.45, 2.0, 0.9, C.silver, 'rx="0.2"'), rect(59.8, c - 0.45, 2.0, 0.9, C.silver, 'rx="0.2"'),
-    rect(53.4, c - 1.75, 6.4, 3.5, '#c9ced6', `rx="0.25" stroke="#8f959e" stroke-width="0.12"`),
-    rect(54.9, c - 0.9, 3.4, 1.8, '#f3f4f6', `rx="0.2" stroke="#b7bcc4" stroke-width="0.08"`),
+    rect(51.7, c - 0.4, 2.2, 0.8, C.silver, 'rx="0.4"'), rect(59.9, c - 0.4, 2.3, 0.8, C.silver, 'rx="0.4"'),
+    rect(53.7, c - 1.8, 6.3, 3.6, '#cdd1d7', `rx="0.2" stroke="#8f959e" stroke-width="0.12"`),
+    rect(54.4, c - 1.25, 4.9, 2.5, '#b9bec6', 'rx="0.15"'),
+    rect(55.5, c - 0.8, 2.7, 1.6, '#efe6cf', `rx="0.15" stroke="#bdb39a" stroke-width="0.06"`),
   ]);
   fs.writeFileSync(new URL('../hw/waveshare-front.svg', import.meta.url), frame([
-    ...traces, rect(48, 2.6, 1.4, 19.4, C.hole, 'rx="0.7"'), traced(white, C.white), ...joy, ...btn, ...screen,
+    ...traces, rect(48.1, 2.6, 1.2, 19.6, C.hole, 'rx="0.6"'), traced(white, C.white), ...joy, ...btn, ...screen,
   ]));
 }
 

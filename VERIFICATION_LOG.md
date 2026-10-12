@@ -632,7 +632,10 @@ card of the parts and pins; Rob found it confusing, so it was replaced the same 
 redrawing of Waveshare's two product photos (`tools/trace-waveshare.mjs`): each photo flattened on
 its mounting holes, flat features traced with potrace, tall parts drawn to measured size. The
 resistor markings read off the back photo (100, 103, 102) agree with the schematic values
-(10 ohm, 10k, 1k).
+(10 ohm, 10k, 1k). A wider search (Waveshare, LCSC, Amazon, retailers, SeedSigner docs) found no
+straight-on photo of the back at any useful size; the front now comes from Waveshare's 1700 px
+Amazon photo, which is nearly straight on. Two print versions exist: newer boards add the word
+"Waveshare" under the logo and a QC sticker.
 
 ### Not verified
 

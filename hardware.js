@@ -107,9 +107,9 @@ const BOARDS = {
     w: 65, h: 30.2, maxZoom: 30,
     svg: 'hw/waveshare-front.svg',
     marks: [
-      { x: 17.6, y: 2, w: 29.9, h: 25.8, name: 'Screen, 1.3 inch, 240 x 240',
+      { x: 17.75, y: 1.9, w: 29.65, h: 27.1, name: 'Screen, 1.3 inch, 240 x 240',
         note: 'The ST7789 controller is inside the screen, so the board itself carries no chip. The ribbon folds around the right edge and goes through the slot.' },
-      { x: 48, y: 2.6, w: 1.4, h: 19.4, name: 'Slot for the screen ribbon',
+      { x: 48.1, y: 2.6, w: 1.2, h: 19.6, name: 'Slot for the screen ribbon',
         note: 'The ribbon passes through here and is soldered on the back.' },
       { x: 0.4, y: 8.6, w: 13.2, h: 13.8, name: 'Joystick: up, down, left, right, press',
         note: 'One five-way switch. Each direction is one wire to the Pi (GPIO 6, 19, 5, 26 and 13). The common side goes to ground.' },
@@ -127,7 +127,9 @@ const BOARDS = {
       { x: 18.4, y: 3.9, w: 9.4, h: 14.0, name: 'Screen ribbon, soldered on 12 pads',
         note: 'There is no connector: the ribbon is soldered straight onto the board. Pin 1 is at the top, pin 12 at the bottom.' },
       { x: 32.5, y: 7.2, w: 4.6, h: 10.4, name: 'Five small parts, and nothing else', kind: 'good',
-        note: 'From the top: a brown capacitor (C1, 100 nF), a resistor marked 100 (10 ohm), the transistor Q1 (S8050, three legs) that switches the backlight, and resistors marked 103 (10k) and 102 (1k). Waveshare\'s schematic has no other parts. A sixth part, or any chip, is not in the design: stop.' },
+        note: 'From the top: a brown capacitor (C1, 100 nF), a resistor (10 ohm), the transistor Q1 (S8050, three legs) that switches the backlight, and two more resistors (10k and 1k). On Waveshare\'s photo they are marked 100, 103 and 102; the codes can differ between batches. Waveshare\'s schematic has no other parts. A sixth part, or any chip, is not in the design: stop.' },
+      { x: 2.5, y: 9.5, w: 11, h: 9.5, name: 'Logo: two print versions',
+        note: 'Older boards show only the logo. Newer boards also print the word Waveshare under it and often carry a round QC sticker. Both are genuine.' },
       { x: 15.6, y: 2.6, w: 1.4, h: 19.4, name: 'Slot for the screen ribbon' },
     ],
   },
@@ -137,7 +139,7 @@ const BOARDS = {
 const GROUPS = [
   { key: 'pi', name: 'Pi Zero', views: { front: 'pi', back: 'piBack' } },
   { key: 'plus', name: 'SeedSigner Plus board', views: { front: 'front', back: 'back' } },
-  { key: 'waveshare', name: 'Waveshare 1.3 inch board', views: { front: 'waveshareFront', back: 'waveshareBack' } },
+  { key: 'waveshare', name: 'Waveshare board', views: { front: 'waveshareFront', back: 'waveshareBack' } },
 ];
 let group = GROUPS[0];
 let side = 'front';

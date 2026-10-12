@@ -10,7 +10,7 @@ its source.
 | `pi-zero-v13-back.jpg`, `pi-zero-w-back.jpg` | [File:Raspberry_Pi_Zero_W_vs_Zero_(backside).jpeg](https://commons.wikimedia.org/wiki/File:Raspberry_Pi_Zero_W_vs_Zero_(backside).jpeg), Wikimedia Commons | Ubahnverleih | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
 | `plus-hat-front.svg` | Gerber files in [3rdIteration/seedsigner-hardware](https://github.com/3rdIteration/seedsigner-hardware/tree/7e4f05816bac9b20943996b960d65f37322d617e/display_hats/plus_hat/designspark_format) at commit `7e4f058` | MadBo (board design) | [CERN-OHL-S v2](https://ohwr.org/cern_ohl_s_v2.txt) |
 | `plus-hat-back.svg` | same | same | same |
-| `waveshare-front.svg`, `waveshare-back.svg` | our redrawing of Waveshare's [product photos](https://www.waveshare.com/1.3inch-lcd-hat.htm) | Bitsaga, from photos by Waveshare | our own work in it is MIT; any rights in the photos stay with Waveshare |
+| `waveshare-front.svg`, `waveshare-back.svg` | our redrawing of Waveshare's product photos: front from their [Amazon listing](https://www.amazon.com/dp/B07FJQ4F2C), back from their [product page](https://www.waveshare.com/1.3inch-lcd-hat.htm) | Bitsaga, from photos by Waveshare | our own work in it is MIT; any rights in the photos stay with Waveshare |
 
 Changes made:
 
