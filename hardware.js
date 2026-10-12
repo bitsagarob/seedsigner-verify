@@ -48,7 +48,7 @@ const BOARDS = {
     ],
   },
   front: {
-    tab: 'Plus screen board, front',
+    tab: 'Plus board, front',
     w: 137.85, h: 52.03, maxZoom: 300,
     svg: 'hw/plus-hat-front.svg',
     marks: [
@@ -64,7 +64,7 @@ const BOARDS = {
     ],
   },
   back: {
-    tab: 'Plus screen board, back',
+    tab: 'Plus board, back',
     w: 137.85, h: 52.03, maxZoom: 300,
     svg: 'hw/plus-hat-back.svg',
     marks: [
@@ -79,6 +79,25 @@ const BOARDS = {
       { x: 82.5, y: 39.4, w: 25.3, h: 12.3, name: 'J11: USB-C, with R12, R13, C2',
         note: 'The designer printed "Power Only, Data Pins Disabled" next to it. R12 and R13 (5.1k) are the standard resistors that ask a charger for 5 V.' },
       { x: 42.4, y: 13.3, w: 3.4, h: 25.4, name: 'Slot for the screen ribbon' },
+    ],
+  },
+  waveshare: {
+    tab: 'Waveshare board',
+    w: 160, h: 100, maxZoom: 12,
+    svg: 'hw/waveshare-parts.svg',
+    marks: [
+      { x: 2, y: 9.5, w: 139, h: 18.5, name: '40-pin socket to the Pi',
+        note: 'Only 14 pins carry a signal, plus 3.3 V and ground. No part uses 5 V. A trace to a dark blue pin is not in Waveshare\'s schematic.' },
+      { x: 6, y: 35, w: 56, h: 30, name: 'Screen and C1',
+        note: 'The ST7789 controller is inside the screen. Five signal lines go to the Pi. The ribbon is soldered onto the back of the board. C1 is one small capacitor.' },
+      { x: 6, y: 68, w: 56, h: 27, name: 'Backlight: Q1, R1, R2, R3',
+        note: 'One transistor and three resistors switch the screen light. Q1 has three legs, the most of any part soldered on the board itself.' },
+      { x: 66, y: 35, w: 46, h: 30, name: 'Joystick S1',
+        note: 'Five directions, five pins. The common side goes to ground.' },
+      { x: 66, y: 68, w: 46, h: 27, name: 'Buttons K1 to K3',
+        note: 'One pin each. The other side goes to ground.' },
+      { x: 116, y: 35, w: 38, h: 60, name: 'Count the parts: 11', kind: 'good',
+        note: 'If you count more parts, or find a chip with many legs, stop. A board revision can differ from the schematic, so compare with a second board when you can.' },
     ],
   },
 };
@@ -226,6 +245,7 @@ async function show(key) {
 
   svg = svgEl('svg', { class: 'hw-svg', role: 'img',
     'aria-label': key === 'pi' ? 'Raspberry Pi Zero v1.3 and Pi Zero W, photographed from the top'
+                                : key === 'waveshare' ? 'Waveshare 1.3 inch screen board: every part and every used pin, drawn from Waveshare\'s schematic'
                                 : `SeedSigner Plus screen board, ${key}, drawn from the published Gerber files` });
   const stage = $('hwStage');
   stage.replaceChildren(svg);

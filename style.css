@@ -241,8 +241,8 @@ html[data-mode="advanced"] .sell{display:block}
 /* ---------- step 5: hardware viewer ---------- */
 .hw{border:1px solid var(--line);border-radius:var(--r-sm);background:var(--panel);overflow:hidden}
 .hw:fullscreen{display:flex;flex-direction:column;justify-content:center;border-radius:0;background:#000}
-.hw-tabs{display:flex;flex-wrap:wrap;gap:4px;padding:8px;border-bottom:1px solid var(--line)}
-.hw-tabs button{font:inherit;font-size:14.5px;border:0;background:transparent;color:var(--muted);
+.hw-tabs{display:flex;gap:4px;padding:8px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+.hw-tabs button{flex:none;white-space:nowrap;font:inherit;font-size:14.5px;border:0;background:transparent;color:var(--muted);
   padding:7px 13px;border-radius:999px;cursor:pointer}
 .hw-tabs button[aria-selected="true"]{background:var(--sand);color:var(--fg);font-weight:600}
 .hw-stage{background:#1a1f1a;line-height:0}
