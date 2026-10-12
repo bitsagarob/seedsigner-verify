@@ -241,7 +241,15 @@ html[data-mode="advanced"] .sell{display:block}
 /* ---------- step 5: hardware viewer ---------- */
 .hw{border:1px solid var(--line);border-radius:var(--r-sm);background:var(--panel);overflow:hidden}
 .hw:fullscreen{display:flex;flex-direction:column;justify-content:center;border-radius:0;background:#000}
-.hw-tabs{display:flex;gap:4px;padding:8px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+.hw-head{display:flex;align-items:center;gap:8px;padding:8px;border-bottom:1px solid var(--line)}
+.hw-tabs{display:flex;gap:4px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
+#hwSelect{display:none;flex:1;min-width:0;font:inherit;font-size:15px;font-weight:600;color:var(--fg);
+  background:var(--sand);border:0;border-radius:999px;padding:8px 14px}
+.hw-sides{display:flex;flex:none;background:var(--sand);border-radius:999px;padding:3px;gap:2px}
+.hw-sides[hidden]{display:none}
+.hw-sides button{font:inherit;font-size:14px;border:0;background:transparent;color:var(--muted);
+  padding:5px 12px;border-radius:999px;cursor:pointer}
+.hw-sides button[aria-pressed="true"]{background:var(--panel);color:var(--fg);font-weight:600}
 .hw-tabs button{flex:none;white-space:nowrap;font:inherit;font-size:14.5px;border:0;background:transparent;color:var(--muted);
   padding:7px 13px;border-radius:999px;cursor:pointer}
 .hw-tabs button[aria-selected="true"]{background:var(--sand);color:var(--fg);font-weight:600}
@@ -272,7 +280,7 @@ html[data-mode="advanced"] .sell{display:block}
   min-width:36px;height:34px;padding:0 12px;border-radius:999px;cursor:pointer}
 .hw-tools #hwZoom{min-width:44px;text-align:center;color:var(--muted);font-variant-numeric:tabular-nums;font-size:14px}
 .hw-tools .optin{margin:0 0 0 auto}
-.hw:fullscreen .hw-tabs,.hw:fullscreen .hw-tools,.hw:fullscreen .hw-compare{background:var(--panel)}
+.hw:fullscreen .hw-head,.hw:fullscreen .hw-tools,.hw:fullscreen .hw-compare{background:var(--panel)}
 .hw-list{list-style:none;padding:0;margin:18px 0 22px;display:grid;gap:6px}
 .hw-list li{border:1px solid var(--line);border-radius:var(--r-sm);padding:8px 14px;background:var(--panel)}
 .hw-list li.on{border-color:var(--gold-deep)}
@@ -291,4 +299,6 @@ html[data-mode="advanced"] .sell{display:block}
 .hw-bom th{color:var(--muted);font-weight:600}
 @media (max-width:660px){
   .hw-tools .optin{margin-left:0}
+  .hw-tabs{display:none}
+  #hwSelect{display:block}
 }

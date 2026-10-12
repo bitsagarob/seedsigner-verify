@@ -17,7 +17,7 @@ const svgEl = (tag, attrs = {}) => {
 
 const BOARDS = {
   pi: {
-    tab: 'Pi Zero',
+    label: 'Raspberry Pi Zero v1.3 and Pi Zero W, photographed from the top',
     w: 65, h: 30, maxZoom: 8,
     v13: 'hw/pi-zero-v13.jpg',
     w_: 'hw/pi-zero-w.jpg',
@@ -47,8 +47,29 @@ const BOARDS = {
         note: 'The Zero W has a bigger black wire-wound coil on the power supply here.' },
     ],
   },
+  piBack: {
+    label: 'Raspberry Pi Zero v1.3 and Pi Zero W, photographed from the bottom',
+    w: 65, h: 30, maxZoom: 5,
+    v13: 'hw/pi-zero-v13-back.jpg',
+    w_: 'hw/pi-zero-w-back.jpg',
+    marks: [
+      { x: 7, y: 1.5, w: 50.5, h: 4.3, name: 'Solder joints of the 40 GPIO pins',
+        note: 'The back of a Pi Zero carries no parts at all, only pads and print. Look here for extra wires or solder bridging two pins. Any part on this side was added.' },
+      { x: 7, y: 6.8, w: 4.8, h: 4.5, name: 'RUN and TV holes',
+        note: 'Four small holes that are normally empty. A wire in them is not normal.' },
+      { x: 51.5, y: 6.5, w: 11, h: 14.5, name: 'Test pads, right',
+        note: 'Round gold pads used in the factory, labelled PP on the v1.3. Nothing should be soldered to them.' },
+      { x: 9.5, y: 21, w: 19.5, h: 8, name: 'Test pads, bottom', note: 'Same: factory test pads, nothing soldered to them.' },
+      { x: 24.5, y: 9, w: 17.5, h: 3.3, name: '"Raspberry Pi Zero V1.3"', kind: 'good',
+        note: 'The v1.3 prints its name and version here.' },
+      { x: 11.75, y: 5.75, w: 37.75, h: 4.25, name: '"Raspberry Pi Zero W" and an FCC ID', kind: 'bad',
+        note: 'The W prints its own name, plus FCC and IC numbers for its radio. If your board says Zero W, stop.' },
+      { x: 28, y: 26.5, w: 18, h: 3, name: '"Uses antenna technology licensed from Proant AB"', kind: 'bad',
+        note: 'Only the W carries this line, because only the W has an antenna.' },
+    ],
+  },
   front: {
-    tab: 'Plus board, front',
+    label: 'SeedSigner Plus screen board, front, drawn from the published Gerber files',
     w: 137.85, h: 52.03, maxZoom: 300,
     svg: 'hw/plus-hat-front.svg',
     marks: [
@@ -64,7 +85,7 @@ const BOARDS = {
     ],
   },
   back: {
-    tab: 'Plus board, back',
+    label: 'SeedSigner Plus screen board, back, drawn from the published Gerber files',
     w: 137.85, h: 52.03, maxZoom: 300,
     svg: 'hw/plus-hat-back.svg',
     marks: [
@@ -82,7 +103,7 @@ const BOARDS = {
     ],
   },
   waveshare: {
-    tab: 'Waveshare board',
+    label: 'Waveshare 1.3 inch screen board: every part and every used pin, drawn from Waveshare\'s schematic',
     w: 160, h: 100, maxZoom: 12,
     svg: 'hw/waveshare-parts.svg',
     marks: [
@@ -101,6 +122,16 @@ const BOARDS = {
     ],
   },
 };
+
+// What the reader picks: a board, then a side. Waveshare has one view, which
+// covers both sides because it is a parts list, not a picture.
+const GROUPS = [
+  { key: 'pi', name: 'Pi Zero', views: { front: 'pi', back: 'piBack' } },
+  { key: 'plus', name: 'SeedSigner Plus board', views: { front: 'front', back: 'back' } },
+  { key: 'waveshare', name: 'Waveshare 1.3 inch board', views: { front: 'waveshare' } },
+];
+let group = GROUPS[0];
+let side = 'front';
 
 let board = null;
 let svg = null;
@@ -235,23 +266,26 @@ function setSplit(v) {
   line.setAttribute('x1', x); line.setAttribute('x2', x);
 }
 
-async function show(key) {
+async function show(g, sd) {
+  group = g;
+  side = g.views[sd] ? sd : 'front';
+  const key = g.views[side];
   board = BOARDS[key];
   active = -1;
   for (const b of document.querySelectorAll('#hwTabs button')) {
-    b.setAttribute('aria-selected', String(b.dataset.board === key));
+    b.setAttribute('aria-selected', String(b.dataset.group === g.key));
   }
-  $('hwCompare').hidden = key !== 'pi';
+  $('hwSelect').value = g.key;
+  $('hwSides').hidden = !g.views.back;
+  for (const b of $('hwSides').children) b.setAttribute('aria-pressed', String(b.dataset.side === side));
+  $('hwCompare').hidden = !board.v13;
 
-  svg = svgEl('svg', { class: 'hw-svg', role: 'img',
-    'aria-label': key === 'pi' ? 'Raspberry Pi Zero v1.3 and Pi Zero W, photographed from the top'
-                                : key === 'waveshare' ? 'Waveshare 1.3 inch screen board: every part and every used pin, drawn from Waveshare\'s schematic'
-                                : `SeedSigner Plus screen board, ${key}, drawn from the published Gerber files` });
+  svg = svgEl('svg', { class: 'hw-svg', role: 'img', 'aria-label': board.label });
   const stage = $('hwStage');
   stage.replaceChildren(svg);
   vb = fit();
 
-  if (key === 'pi') {
+  if (board.v13) {
     const defs = svgEl('defs');
     const clip = svgEl('clipPath', { id: 'hwClipW' });
     clip.append(svgEl('rect', { x: 0, y: 0, width: board.w, height: board.h }));
@@ -310,13 +344,18 @@ function list() {
 }
 
 function wire() {
-  const tabs = $('hwTabs');
-  for (const [key, b] of Object.entries(BOARDS)) {
+  const tabs = $('hwTabs'), sel = $('hwSelect');
+  for (const g of GROUPS) {
     const btn = document.createElement('button');
-    btn.type = 'button'; btn.role = 'tab'; btn.dataset.board = key; btn.textContent = b.tab;
-    btn.addEventListener('click', () => show(key));
+    btn.type = 'button'; btn.role = 'tab'; btn.dataset.group = g.key; btn.textContent = g.name;
+    btn.addEventListener('click', () => show(g, side));
     tabs.append(btn);
+    const o = document.createElement('option');
+    o.value = g.key; o.textContent = g.name;
+    sel.append(o);
   }
+  sel.addEventListener('change', () => show(GROUPS.find((g) => g.key === sel.value), side));
+  for (const b of $('hwSides').children) b.addEventListener('click', () => show(group, b.dataset.side));
   $('hwIn').addEventListener('click', () => zoomAt(1.6, vb.x + vb.w / 2, vb.y + vb.h / 2));
   $('hwOut').addEventListener('click', () => zoomAt(1 / 1.6, vb.x + vb.w / 2, vb.y + vb.h / 2));
   $('hwFit').addEventListener('click', () => flyTo(fit()));
@@ -331,7 +370,7 @@ function wire() {
 
   // The photos are ~2 MB, so nothing loads until the step is near the screen.
   const io = new IntersectionObserver((entries) => {
-    if (entries.some((e) => e.isIntersecting)) { io.disconnect(); show('pi'); }
+    if (entries.some((e) => e.isIntersecting)) { io.disconnect(); show(GROUPS[0], 'front'); }
   }, { rootMargin: '600px 0px' });
   io.observe($('step-5'));
 }

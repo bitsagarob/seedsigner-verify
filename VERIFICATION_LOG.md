@@ -620,8 +620,19 @@ CC BY-SA 4.0), warped onto one 65 x 30 mm frame by `tools/align-pi-photos.sh`. T
 mounting-hole centres were picked by hand; the script holds them. Source photo
 `Raspberry_Pi_Zero_1.3.jpg` hashed `341d1e5a6f35becb36647964671a55af102138d5d98ce7f662b170cd19d0865d`.
 
+**Pi Zero backs (added the same day).** One Commons photo by Ubahnverleih shows both backs
+(`Raspberry_Pi_Zero_W_vs_Zero_(backside).jpeg`, CC BY-SA 4.0, sha256
+`5de02cb51319b6959aa10129c04ff21fc76105605fb96e1ecbfe156edd6603a9`). Each board is cut out and
+flattened with the same four-hole method; the board is flat on this side, so the warp is clean.
+The giveaway is the print: "Raspberry Pi Zero V1.3" against "Raspberry Pi Zero W V1.1" with an FCC ID
+and a line crediting the antenna licence.
+
+**Waveshare 1.3 inch board.** No open-licence photo exists. The tab is our own card of the parts
+and pins in Waveshare's schematic (`tools/draw-waveshare.mjs`): 11 parts, 14 signal pins.
+
 ### Not verified
 
+- The Waveshare card has not been compared with a physical board.
 - The part marks were placed by eye on these two photos and the Gerber drawing. They are a guide.
 - "Power Only, Data Pins Disabled" is the designer's silkscreen text. Nobody here has traced the
   USB-C data pads on the copper layers.
