@@ -627,12 +627,18 @@ flattened with the same four-hole method; the board is flat on this side, so the
 The giveaway is the print: "Raspberry Pi Zero V1.3" against "Raspberry Pi Zero W V1.1" with an FCC ID
 and a line crediting the antenna licence.
 
-**Waveshare 1.3 inch board.** No open-licence photo exists. The tab is our own card of the parts
-and pins in Waveshare's schematic (`tools/draw-waveshare.mjs`): 11 parts, 14 signal pins.
+**Waveshare 1.3 inch board.** No open-licence photo and no layout exist. A first version showed a
+card of the parts and pins; Rob found it confusing, so it was replaced the same day by a vector
+redrawing of Waveshare's two product photos (`tools/trace-waveshare.mjs`): each photo flattened on
+its mounting holes, flat features traced with potrace, tall parts drawn to measured size. The
+resistor markings read off the back photo (100, 103, 102) agree with the schematic values
+(10 ohm, 10k, 1k).
 
 ### Not verified
 
-- The Waveshare card has not been compared with a physical board.
+- The Waveshare drawing has not been compared with a physical board. Source photos are 1024 px,
+  so positions can be off by a fraction of a millimetre, and the traces that run under the
+  header and the screen are not drawn.
 - The part marks were placed by eye on these two photos and the Gerber drawing. They are a guide.
 - "Power Only, Data Pins Disabled" is the designer's silkscreen text. Nobody here has traced the
   USB-C data pads on the copper layers.

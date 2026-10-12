@@ -102,33 +102,42 @@ const BOARDS = {
       { x: 42.4, y: 13.3, w: 3.4, h: 25.4, name: 'Slot for the screen ribbon' },
     ],
   },
-  waveshare: {
-    label: 'Waveshare 1.3 inch screen board: every part and every used pin, drawn from Waveshare\'s schematic',
-    w: 160, h: 100, maxZoom: 12,
-    svg: 'hw/waveshare-parts.svg',
+  waveshareFront: {
+    label: 'Waveshare 1.3 inch screen board, front, redrawn from Waveshare\'s product photos',
+    w: 65, h: 30.2, maxZoom: 30,
+    svg: 'hw/waveshare-front.svg',
     marks: [
-      { x: 2, y: 9.5, w: 139, h: 18.5, name: '40-pin socket to the Pi',
-        note: 'Only 14 pins carry a signal, plus 3.3 V and ground. No part uses 5 V. A trace to a dark blue pin is not in Waveshare\'s schematic.' },
-      { x: 6, y: 35, w: 56, h: 30, name: 'Screen and C1',
-        note: 'The ST7789 controller is inside the screen. Five signal lines go to the Pi. The ribbon is soldered onto the back of the board. C1 is one small capacitor.' },
-      { x: 6, y: 68, w: 56, h: 27, name: 'Backlight: Q1, R1, R2, R3',
-        note: 'One transistor and three resistors switch the screen light. Q1 has three legs, the most of any part soldered on the board itself.' },
-      { x: 66, y: 35, w: 46, h: 30, name: 'Joystick S1',
-        note: 'Five directions, five pins. The common side goes to ground.' },
-      { x: 66, y: 68, w: 46, h: 27, name: 'Buttons K1 to K3',
-        note: 'One pin each. The other side goes to ground.' },
-      { x: 116, y: 35, w: 38, h: 60, name: 'Count the parts: 11', kind: 'good',
-        note: 'If you count more parts, or find a chip with many legs, stop. A board revision can differ from the schematic, so compare with a second board when you can.' },
+      { x: 17.6, y: 2, w: 29.9, h: 25.8, name: 'Screen, 1.3 inch, 240 x 240',
+        note: 'The ST7789 controller is inside the screen, so the board itself carries no chip. The ribbon folds around the right edge and goes through the slot.' },
+      { x: 48, y: 2.6, w: 1.4, h: 19.4, name: 'Slot for the screen ribbon',
+        note: 'The ribbon passes through here and is soldered on the back.' },
+      { x: 0.4, y: 8.6, w: 13.2, h: 13.8, name: 'Joystick: up, down, left, right, press',
+        note: 'One five-way switch. Each direction is one wire to the Pi (GPIO 6, 19, 5, 26 and 13). The common side goes to ground.' },
+      { x: 51.2, y: 5.6, w: 10.8, h: 17.2, name: 'KEY1, KEY2, KEY3',
+        note: 'Three plain push buttons, one wire each to the Pi (GPIO 21, 20 and 16). The traces run down and under the screen.' },
+    ],
+  },
+  waveshareBack: {
+    label: 'Waveshare 1.3 inch screen board, back, redrawn from Waveshare\'s product photos',
+    w: 65, h: 30.2, maxZoom: 30,
+    svg: 'hw/waveshare-back.svg',
+    marks: [
+      { x: 7.1, y: 24.16, w: 50.8, h: 5.08, name: '40-pin socket to the Pi',
+        note: 'Only 14 pins carry a signal (6 for the screen, 5 for the joystick, 3 for the keys), plus 3.3 V and ground. No part uses 5 V.' },
+      { x: 18.4, y: 3.9, w: 9.4, h: 14.0, name: 'Screen ribbon, soldered on 12 pads',
+        note: 'There is no connector: the ribbon is soldered straight onto the board. Pin 1 is at the top, pin 12 at the bottom.' },
+      { x: 32.5, y: 7.2, w: 4.6, h: 10.4, name: 'Five small parts, and nothing else', kind: 'good',
+        note: 'From the top: a brown capacitor (C1, 100 nF), a resistor marked 100 (10 ohm), the transistor Q1 (S8050, three legs) that switches the backlight, and resistors marked 103 (10k) and 102 (1k). Waveshare\'s schematic has no other parts. A sixth part, or any chip, is not in the design: stop.' },
+      { x: 15.6, y: 2.6, w: 1.4, h: 19.4, name: 'Slot for the screen ribbon' },
     ],
   },
 };
 
-// What the reader picks: a board, then a side. Waveshare has one view, which
-// covers both sides because it is a parts list, not a picture.
+// What the reader picks: a board, then a side.
 const GROUPS = [
   { key: 'pi', name: 'Pi Zero', views: { front: 'pi', back: 'piBack' } },
   { key: 'plus', name: 'SeedSigner Plus board', views: { front: 'front', back: 'back' } },
-  { key: 'waveshare', name: 'Waveshare 1.3 inch board', views: { front: 'waveshare' } },
+  { key: 'waveshare', name: 'Waveshare 1.3 inch board', views: { front: 'waveshareFront', back: 'waveshareBack' } },
 ];
 let group = GROUPS[0];
 let side = 'front';
