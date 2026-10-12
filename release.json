@@ -23,7 +23,7 @@
     },
     {
       "id": "plus-smartcard",
-      "label": "SeedSigner Plus Smartcard",
+      "label": "CardSigner",
       "firmware": "smartcard",
       "needsDisplaySetting": true,
       "look": "Bigger screen & card slot",
@@ -32,7 +32,7 @@
     },
     {
       "id": "cardsigner",
-      "label": "CardSigner",
+      "label": "CardSigner Premium",
       "firmware": "smartcard",
       "needsDisplaySetting": true,
       "look": "Aluminium case & card slot",
