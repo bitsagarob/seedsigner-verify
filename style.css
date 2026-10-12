@@ -257,7 +257,6 @@ html[data-mode="advanced"] .sell{display:block}
 .hw-svg{width:100%;height:auto;display:block;cursor:grab;user-select:none;-webkit-user-select:none}
 .hw-svg:active{cursor:grabbing}
 .hw:fullscreen .hw-svg{max-height:calc(100vh - 120px)}
-.hw-split{stroke:#fff;stroke-width:2;stroke-dasharray:6 4;pointer-events:none}
 .hw-mark rect{fill:transparent;stroke:var(--gold);stroke-width:1.6}
 .hw-mark circle{fill:var(--gold);stroke:#2a1a00;stroke-width:.2}
 .hw-mark text{fill:#2a1a00;font-family:var(--display);font-weight:700;pointer-events:none}
@@ -268,13 +267,6 @@ html[data-mode="advanced"] .sell{display:block}
 .hw-mark{cursor:pointer}
 .hw-mark.on rect{stroke-width:3}
 .hw-marks.off{display:none}
-.hw-compare{display:flex;align-items:center;gap:12px;padding:10px 14px;border-top:1px solid var(--line);font-size:14px}
-.hw-compare[hidden]{display:none}
-.hw-compare input{flex:1;accent-color:var(--gold-deep)}
-.hw-compare span{line-height:1.2;font-weight:600}
-.hw-compare small{display:block;font-weight:400;color:var(--muted);font-size:12.5px}
-.hw-good{color:var(--good)}
-.hw-w{color:var(--warn);text-align:right}
 .hw-wnote{margin:0;padding:10px 14px;border-top:1px solid var(--line);font-size:14px;
   background:color-mix(in srgb,var(--warn) 12%,transparent)}
 .hw-wnote a{display:inline-block;margin-top:4px;font-weight:600}
@@ -283,7 +275,7 @@ html[data-mode="advanced"] .sell{display:block}
   min-width:36px;height:34px;padding:0 12px;border-radius:999px;cursor:pointer}
 .hw-tools #hwZoom{min-width:44px;text-align:center;color:var(--muted);font-variant-numeric:tabular-nums;font-size:14px}
 .hw-tools .optin{margin:0 0 0 auto}
-.hw:fullscreen .hw-head,.hw:fullscreen .hw-tools,.hw:fullscreen .hw-compare{background:var(--panel)}
+.hw:fullscreen .hw-head,.hw:fullscreen .hw-tools,.hw:fullscreen .hw-wnote{background:var(--panel)}
 .hw-list{list-style:none;padding:0;margin:18px 0 22px;display:grid;gap:6px}
 .hw-list li{border:1px solid var(--line);border-radius:var(--r-sm);padding:8px 14px;background:var(--panel)}
 .hw-list li.on{border-color:var(--gold-deep)}

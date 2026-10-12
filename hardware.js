@@ -17,10 +17,9 @@ const svgEl = (tag, attrs = {}) => {
 
 const BOARDS = {
   pi: {
-    label: 'Raspberry Pi Zero v1.3 and Pi Zero W, photographed from the top',
+    label: 'Raspberry Pi Zero v1.3, photographed from the top',
     w: 65, h: 30, maxZoom: 8,
-    v13: 'hw/pi-zero-v13.jpg',
-    w_: 'hw/pi-zero-w.jpg',
+    img: 'hw/pi-zero-v13.jpg',
     marks: [
       { x: 23.7, y: 11, w: 12, h: 12.1, name: 'Processor with memory on top',
         note: 'One square chip. The processor sits underneath the memory chip, stacked. The text on top can differ between batches.' },
@@ -37,21 +36,12 @@ const BOARDS = {
         note: 'The v1.3 is the first Pi Zero with this connector. Older Zeros (v1.2) do not have it.' },
       { x: 42, y: 7.5, w: 7, h: 9, name: 'Raspberry logo (v1.3)', kind: 'good',
         note: 'On the v1.3 the logo is printed here. On the Zero W this area holds the radio chip and extra parts.' },
-      { x: 41, y: 15, w: 5, h: 3.2, name: 'Radio chip (Zero W only)', kind: 'warn',
-        note: 'Wi-Fi and Bluetooth chip. SeedSigner does not use it. You can switch it off on the board yourself: see the guide under the slider.' },
-      { x: 21, y: 25, w: 14, h: 4.5, name: 'Printed antenna (Zero W only)', kind: 'warn',
-        note: 'A bare patch of board with a ring of tiny dots (vias) around it, between the HDMI and USB ports. On the v1.3 this area carries the HDMI print and normal traces.' },
-      { x: 37.2, y: 18.9, w: 3.6, h: 3.1, name: 'Antenna plug pads (Zero W only)', kind: 'warn',
-        note: 'Empty pads for an external antenna connector. If something is soldered here, stop.' },
-      { x: 56, y: 10.2, w: 4, h: 4.6, name: 'Large coil (Zero W only)', kind: 'warn',
-        note: 'The Zero W has a bigger black wire-wound coil on the power supply here.' },
     ],
   },
   piBack: {
-    label: 'Raspberry Pi Zero v1.3 and Pi Zero W, photographed from the bottom',
+    label: 'Raspberry Pi Zero v1.3, photographed from the bottom',
     w: 65, h: 30, maxZoom: 5,
-    v13: 'hw/pi-zero-v13-back.jpg',
-    w_: 'hw/pi-zero-w-back.jpg',
+    img: 'hw/pi-zero-v13-back.jpg',
     marks: [
       { x: 7, y: 1.5, w: 50.5, h: 4.3, name: 'Solder joints of the 40 GPIO pins',
         note: 'The back of a Pi Zero carries no parts at all, only pads and print. Look here for extra wires or solder bridging two pins. Any part on this side was added.' },
@@ -62,8 +52,50 @@ const BOARDS = {
       { x: 9.5, y: 21, w: 19.5, h: 8, name: 'Test pads, bottom', note: 'Same: factory test pads, nothing soldered to them.' },
       { x: 24.5, y: 9, w: 17.5, h: 3.3, name: '"Raspberry Pi Zero V1.3"', kind: 'good',
         note: 'The v1.3 prints its name and version here.' },
+    ],
+  },
+  piW: {
+    label: 'Raspberry Pi Zero W, photographed from the top',
+    w: 65, h: 30, maxZoom: 8,
+    img: 'hw/pi-zero-w.jpg',
+    marks: [
+      { x: 23.7, y: 11, w: 12, h: 12.1, name: 'Processor with memory on top',
+        note: 'One square chip. The processor sits underneath the memory chip, stacked. The text on top can differ between batches.' },
+      { x: 1.5, y: 7, w: 11.5, h: 12.2, name: 'microSD slot',
+        note: 'The card with the software goes in here. The Pi Zero has no other storage on the board.' },
+      { x: 7.5, y: 1.5, w: 50.5, h: 4.6, name: '40 GPIO holes',
+        note: 'The screen board plugs in here. Look for extra wires soldered to these holes or between them.' },
+      { x: 16.7, y: 20, w: 3.5, h: 2.5, name: 'Crystal X1',
+        note: 'Small metal can that sets the clock. Same place on both boards.' },
+      { x: 6.5, y: 22.5, w: 11.2, h: 7.5, name: 'Mini HDMI' },
+      { x: 37.5, y: 25, w: 7.7, h: 5, name: 'USB (data)' },
+      { x: 50, y: 25, w: 8, h: 5, name: 'USB (power)' },
+      { x: 61.5, y: 7, w: 3, h: 16.5, name: 'Camera connector',
+        note: 'The v1.3 is the first Pi Zero with this connector. Older Zeros (v1.2) do not have it.' },
+      { x: 41, y: 15, w: 5, h: 3.2, name: 'Radio chip (Zero W only)', kind: 'warn',
+        note: 'Wi-Fi and Bluetooth chip. SeedSigner does not use it. You can switch it off on the board yourself: see the guide under the picture.' },
+      { x: 21, y: 25, w: 14, h: 4.5, name: 'Printed antenna (Zero W only)', kind: 'warn',
+        note: 'A bare patch of board with a ring of tiny dots (vias) around it, between the HDMI and USB ports. On the v1.3 this area carries the HDMI print and normal traces.' },
+      { x: 37.2, y: 18.9, w: 3.6, h: 3.1, name: 'Antenna plug pads (Zero W only)', kind: 'warn',
+        note: 'Empty pads for an external antenna connector. If something is soldered here, stop.' },
+      { x: 56, y: 10.2, w: 4, h: 4.6, name: 'Large coil (Zero W only)', kind: 'warn',
+        note: 'The Zero W has a bigger black wire-wound coil on the power supply here.' },
+    ],
+  },
+  piWBack: {
+    label: 'Raspberry Pi Zero W, photographed from the bottom',
+    w: 65, h: 30, maxZoom: 5,
+    img: 'hw/pi-zero-w-back.jpg',
+    marks: [
+      { x: 7, y: 1.5, w: 50.5, h: 4.3, name: 'Solder joints of the 40 GPIO pins',
+        note: 'The back of a Pi Zero carries no parts at all, only pads and print. Look here for extra wires or solder bridging two pins. Any part on this side was added.' },
+      { x: 7, y: 6.8, w: 4.8, h: 4.5, name: 'RUN and TV holes',
+        note: 'Four small holes that are normally empty. A wire in them is not normal.' },
+      { x: 51.5, y: 6.5, w: 11, h: 14.5, name: 'Test pads, right',
+        note: 'Round gold pads used in the factory, labelled PP on the v1.3. Nothing should be soldered to them.' },
+      { x: 9.5, y: 21, w: 19.5, h: 8, name: 'Test pads, bottom', note: 'Same: factory test pads, nothing soldered to them.' },
       { x: 11.75, y: 5.75, w: 37.75, h: 4.25, name: '"Raspberry Pi Zero W" and an FCC ID', kind: 'warn',
-        note: 'The W prints its own name, plus FCC and IC numbers for its radio. If your board says Zero W, it has Wi-Fi and Bluetooth: see the guide under the slider to switch them off.' },
+        note: 'The W prints its own name, plus FCC and IC numbers for its radio. If your board says Zero W, it has Wi-Fi and Bluetooth: see the guide under the picture to switch them off.' },
       { x: 28, y: 26.5, w: 18, h: 3, name: '"Uses antenna technology licensed from Proant AB"', kind: 'warn',
         note: 'Only the W carries this line, because only the W has an antenna.' },
     ],
@@ -137,7 +169,8 @@ const BOARDS = {
 
 // What the reader picks: a board, then a side.
 const GROUPS = [
-  { key: 'pi', name: 'Pi Zero', views: { front: 'pi', back: 'piBack' } },
+  { key: 'pi', name: 'Pi Zero v1.3', views: { front: 'pi', back: 'piBack' } },
+  { key: 'piw', name: 'Pi Zero W', views: { front: 'piW', back: 'piWBack' } },
   { key: 'plus', name: 'SeedSigner Plus board', views: { front: 'front', back: 'back' } },
   { key: 'waveshare', name: 'Waveshare board', views: { front: 'waveshareFront', back: 'waveshareBack' } },
 ];
@@ -148,7 +181,6 @@ let board = null;
 let svg = null;
 let vb = null;
 let marksG = null;
-let split = 0.5;
 let active = -1;
 
 /* ------------------------------------------------------------ view box */
@@ -267,20 +299,9 @@ async function inlineSvg(url) {
   return node;
 }
 
-function setSplit(v) {
-  split = v;
-  const x = board.w * split;
-  const clip = svg.querySelector('#hwClipW rect');
-  if (!clip) return;
-  clip.setAttribute('x', x); clip.setAttribute('width', board.w - x);
-  const line = svg.querySelector('.hw-split');
-  line.setAttribute('x1', x); line.setAttribute('x2', x);
-  wNote();
-}
-
-// The guide to switch off the Zero W radio shows when the W is in view or one of its parts is picked.
+// The guide to switch off the radio shows with the Pi Zero W.
 function wNote() {
-  $('hwWNote').hidden = !(board.v13 && (split < 0.5 || board.marks[active]?.kind === 'warn'));
+  $('hwWNote').hidden = group.key !== 'piw';
 }
 
 async function show(g, sd) {
@@ -295,7 +316,6 @@ async function show(g, sd) {
   $('hwSelect').value = g.key;
   $('hwSides').hidden = !g.views.back;
   for (const b of $('hwSides').children) b.setAttribute('aria-pressed', String(b.dataset.side === side));
-  $('hwCompare').hidden = !board.v13;
   wNote();
 
   svg = svgEl('svg', { class: 'hw-svg', role: 'img', 'aria-label': board.label });
@@ -303,16 +323,8 @@ async function show(g, sd) {
   stage.replaceChildren(svg);
   vb = fit();
 
-  if (board.v13) {
-    const defs = svgEl('defs');
-    const clip = svgEl('clipPath', { id: 'hwClipW' });
-    clip.append(svgEl('rect', { x: 0, y: 0, width: board.w, height: board.h }));
-    defs.append(clip);
-    svg.append(defs,
-      svgEl('image', { href: board.v13, x: 0, y: 0, width: board.w, height: board.h }),
-      svgEl('image', { href: board.w_, x: 0, y: 0, width: board.w, height: board.h, 'clip-path': 'url(#hwClipW)' }),
-      svgEl('line', { class: 'hw-split', y1: 0, y2: board.h, 'vector-effect': 'non-scaling-stroke' }));
-    setSplit(split);
+  if (board.img) {
+    svg.append(svgEl('image', { href: board.img, x: 0, y: 0, width: board.w, height: board.h }));
   } else {
     svg.append(await inlineSvg(board.svg));
   }
@@ -335,7 +347,6 @@ async function show(g, sd) {
 
 function select(i) {
   active = i;
-  wNote();
   const m = board.marks[i];
   const w = Math.max(m.w, m.h * board.w / board.h) * 1.8;
   flyTo({ w, h: w * board.h / board.w, x: m.x + m.w / 2 - w / 2, y: m.y + m.h / 2 - w * board.h / board.w / 2 });
@@ -385,7 +396,6 @@ function wire() {
     else if (v.webkitRequestFullscreen) v.webkitRequestFullscreen();
   });
   $('hwLabels').addEventListener('change', (e) => marksG && marksG.classList.toggle('off', !e.target.checked));
-  $('hwSplit').addEventListener('input', (e) => setSplit(Number(e.target.value) / 100));
 
   // The photos are ~2 MB, so nothing loads until the step is near the screen.
   const io = new IntersectionObserver((entries) => {
