@@ -133,5 +133,8 @@ commands, regenerate and sign the manifest, commit, push.
 MIT. Fork it, mirror it, sell hardware with it. If you improve the copy, a pull request would
 be welcome.
 
+Exception: the reference images in `hw/` keep the licences of their sources (CC BY-SA 4.0 for the
+two Pi Zero photos, CERN-OHL-S v2 for the Plus board drawings). See [hw/README.md](hw/README.md).
+
 Not affiliated with the SeedSigner project. SeedSigner is an independent open-source project,
 and the smartcard firmware is an independent fork of it.
