@@ -288,11 +288,14 @@
     </div>
     <div class="hw-stage" id="hwStage"></div>
     <div class="hw-compare" id="hwCompare">
-      <span class="hw-good">Pi Zero v1.3<small>correct board</small></span>
+      <span class="hw-good">Pi Zero v1.3<small>no Wi-Fi or Bluetooth</small></span>
       <input type="range" id="hwSplit" min="0" max="100" value="50"
              aria-label="Slide between the Pi Zero v1.3 and the Pi Zero W">
-      <span class="hw-bad">Pi Zero W<small>wrong board</small></span>
+      <span class="hw-w">Pi Zero W<small>has Wi-Fi and Bluetooth</small></span>
     </div>
+    <p class="hw-wnote" id="hwWNote" hidden>The Pi Zero W has a Wi-Fi and Bluetooth chip. SeedSigner does
+       not use it. You can switch it off on the board yourself: you remove one small part next to the chip.
+       <a href="https://github.com/DesobedienteTecnologico/rpi_disable_wifi_and_bt_by_hardware" rel="noopener">How to disable Wi-Fi and Bluetooth by hardware</a></p>
     <div class="hw-tools">
       <button type="button" id="hwOut" aria-label="Zoom out">&minus;</button>
       <span id="hwZoom" aria-live="polite">1x</span>

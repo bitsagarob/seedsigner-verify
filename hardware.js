@@ -37,13 +37,13 @@ const BOARDS = {
         note: 'The v1.3 is the first Pi Zero with this connector. Older Zeros (v1.2) do not have it.' },
       { x: 42, y: 7.5, w: 7, h: 9, name: 'Raspberry logo (v1.3)', kind: 'good',
         note: 'On the v1.3 the logo is printed here. On the Zero W this area holds the radio chip and extra parts.' },
-      { x: 41, y: 15, w: 5, h: 3.2, name: 'Radio chip (Zero W only)', kind: 'bad',
-        note: 'Wi-Fi and Bluetooth chip. A SeedSigner board must not have it. If your board has a black chip here, stop.' },
-      { x: 21, y: 25, w: 14, h: 4.5, name: 'Printed antenna (Zero W only)', kind: 'bad',
+      { x: 41, y: 15, w: 5, h: 3.2, name: 'Radio chip (Zero W only)', kind: 'warn',
+        note: 'Wi-Fi and Bluetooth chip. SeedSigner does not use it. You can switch it off on the board yourself: see the guide under the slider.' },
+      { x: 21, y: 25, w: 14, h: 4.5, name: 'Printed antenna (Zero W only)', kind: 'warn',
         note: 'A bare patch of board with a ring of tiny dots (vias) around it, between the HDMI and USB ports. On the v1.3 this area carries the HDMI print and normal traces.' },
-      { x: 37.2, y: 18.9, w: 3.6, h: 3.1, name: 'Antenna plug pads (Zero W only)', kind: 'bad',
+      { x: 37.2, y: 18.9, w: 3.6, h: 3.1, name: 'Antenna plug pads (Zero W only)', kind: 'warn',
         note: 'Empty pads for an external antenna connector. If something is soldered here, stop.' },
-      { x: 56, y: 10.2, w: 4, h: 4.6, name: 'Large coil (Zero W only)', kind: 'bad',
+      { x: 56, y: 10.2, w: 4, h: 4.6, name: 'Large coil (Zero W only)', kind: 'warn',
         note: 'The Zero W has a bigger black wire-wound coil on the power supply here.' },
     ],
   },
@@ -62,9 +62,9 @@ const BOARDS = {
       { x: 9.5, y: 21, w: 19.5, h: 8, name: 'Test pads, bottom', note: 'Same: factory test pads, nothing soldered to them.' },
       { x: 24.5, y: 9, w: 17.5, h: 3.3, name: '"Raspberry Pi Zero V1.3"', kind: 'good',
         note: 'The v1.3 prints its name and version here.' },
-      { x: 11.75, y: 5.75, w: 37.75, h: 4.25, name: '"Raspberry Pi Zero W" and an FCC ID', kind: 'bad',
-        note: 'The W prints its own name, plus FCC and IC numbers for its radio. If your board says Zero W, stop.' },
-      { x: 28, y: 26.5, w: 18, h: 3, name: '"Uses antenna technology licensed from Proant AB"', kind: 'bad',
+      { x: 11.75, y: 5.75, w: 37.75, h: 4.25, name: '"Raspberry Pi Zero W" and an FCC ID', kind: 'warn',
+        note: 'The W prints its own name, plus FCC and IC numbers for its radio. If your board says Zero W, it has Wi-Fi and Bluetooth: see the guide under the slider to switch them off.' },
+      { x: 28, y: 26.5, w: 18, h: 3, name: '"Uses antenna technology licensed from Proant AB"', kind: 'warn',
         note: 'Only the W carries this line, because only the W has an antenna.' },
     ],
   },
@@ -275,6 +275,12 @@ function setSplit(v) {
   clip.setAttribute('x', x); clip.setAttribute('width', board.w - x);
   const line = svg.querySelector('.hw-split');
   line.setAttribute('x1', x); line.setAttribute('x2', x);
+  wNote();
+}
+
+// The guide to switch off the Zero W radio shows when the W is in view or one of its parts is picked.
+function wNote() {
+  $('hwWNote').hidden = !(board.v13 && (split < 0.5 || board.marks[active]?.kind === 'warn'));
 }
 
 async function show(g, sd) {
@@ -290,6 +296,7 @@ async function show(g, sd) {
   $('hwSides').hidden = !g.views.back;
   for (const b of $('hwSides').children) b.setAttribute('aria-pressed', String(b.dataset.side === side));
   $('hwCompare').hidden = !board.v13;
+  wNote();
 
   svg = svgEl('svg', { class: 'hw-svg', role: 'img', 'aria-label': board.label });
   const stage = $('hwStage');
@@ -328,6 +335,7 @@ async function show(g, sd) {
 
 function select(i) {
   active = i;
+  wNote();
   const m = board.marks[i];
   const w = Math.max(m.w, m.h * board.w / board.h) * 1.8;
   flyTo({ w, h: w * board.h / board.w, x: m.x + m.w / 2 - w / 2, y: m.y + m.h / 2 - w * board.h / board.w / 2 });
