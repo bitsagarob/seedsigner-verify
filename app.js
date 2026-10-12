@@ -329,7 +329,7 @@ const group = (fpr) => (fpr.match(/.{1,4}/g) || []).join(' ');
    is ever disabled: someone may legitimately want to read step 3 before they have
    checked a file, or come back to step 4 later. */
 function wireScrollSpy() {
-  const steps = [1, 2, 3, 4].map((n) => ({ n, el: $(`step-${n}`) }));
+  const steps = [1, 2, 3, 4, 5].map((n) => ({ n, el: $(`step-${n}`) }));
 
   const update = () => {
     const line = innerHeight * 0.35;   // a band a third down the viewport

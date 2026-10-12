@@ -302,7 +302,7 @@ console.log('\n7b. The rail follows scroll position');
 {
   const { page, ctx } = await newPage();
   let ok = true;
-  for (const n of [1, 2, 3, 4]) {
+  for (const n of [1, 2, 3, 4, 5]) {
     await page.evaluate((i) =>
       document.getElementById(`step-${i}`).scrollIntoView({ block: 'start', behavior: 'instant' }), n);
     await page.waitForTimeout(200);

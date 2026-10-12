@@ -598,3 +598,31 @@ ALL PASS
 
 The B13 reproducible build. Until `tools/rebuild-smartcard-B13.sh` has been run, the page makes
 no rebuild claim for this release.
+
+## 12. Step 5, hardware reference images (2026-10-12)
+
+The page gained a fifth step: reference images to compare a buyer's boards against.
+
+**Plus screen board.** Drawn from the designer's own Gerber files in
+`3rdIteration/seedsigner-hardware` at commit `7e4f05816bac9b20943996b960d65f37322d617e`,
+`display_hats/plus_hat/designspark_format/` (CERN-OHL-S v2). `tools/render-plus-hat.mjs` with
+`pcb-stackup@4` was run twice and produced the same bytes both times:
+
+    3cc17d3279c1a8517eb85d449f1e51214f03fb2b2070069042b43deb08bceb03  hw/plus-hat-front.svg
+    a204341123f7aae918261916b7eaf27856cc087e5965fd075b602f949ea1ddc4  hw/plus-hat-back.svg
+
+The only change to pcb-stackup's output is moving its `<style>` colours onto attributes, because
+the page's CSP forbids inline styles.
+
+**Pi Zero.** Raspberry Pi publishes no board layout for the Pi Zero, so the reference is two
+Wikimedia Commons photos (v1.3 by Horst-Josef, WH by the Raspberry Pi Foundation, both
+CC BY-SA 4.0), warped onto one 65 x 30 mm frame by `tools/align-pi-photos.sh`. The four
+mounting-hole centres were picked by hand; the script holds them. Source photo
+`Raspberry_Pi_Zero_1.3.jpg` hashed `341d1e5a6f35becb36647964671a55af102138d5d98ce7f662b170cd19d0865d`.
+
+### Not verified
+
+- The part marks were placed by eye on these two photos and the Gerber drawing. They are a guide.
+- "Power Only, Data Pins Disabled" is the designer's silkscreen text. Nobody here has traced the
+  USB-C data pads on the copper layers.
+- The newer KiCad version of the Plus board (6-pin USB-C) is not drawn.

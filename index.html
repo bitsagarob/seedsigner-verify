@@ -21,6 +21,7 @@
       <li data-rail="2"><span class="num">2</span><span class="rl">Check</span></li>
       <li data-rail="3"><span class="num">3</span><span class="rl">Card</span></li>
       <li data-rail="4"><span class="num">4</span><span class="rl">Start</span></li>
+      <li data-rail="5"><span class="num">5</span><span class="rl">Hardware</span></li>
     </ol>
   </nav>
 
@@ -267,6 +268,109 @@
   </div>
 </section>
 
+<!-- ------------------------------------------------------------------ -->
+<section class="step" id="step-5" aria-labelledby="h5s">
+  <h2 id="h5s"><span class="n">5</span> Check the hardware</h2>
+
+  <p class="easy-copy">Open the case and hold your boards next to these pictures. Look at the
+     parts and the lines between them, not at the printed text.</p>
+  <p class="terse-copy">Reference images for each board in the device. Compare part placement,
+     part count and traces. Markings and date codes vary by batch. The layout must not.</p>
+
+  <div class="hw" id="hwViewer">
+    <div class="hw-tabs" id="hwTabs" role="tablist" aria-label="Board"></div>
+    <div class="hw-stage" id="hwStage"></div>
+    <div class="hw-compare" id="hwCompare">
+      <span class="hw-good">Pi Zero v1.3<small>correct board</small></span>
+      <input type="range" id="hwSplit" min="0" max="100" value="50"
+             aria-label="Slide between the Pi Zero v1.3 and the Pi Zero W">
+      <span class="hw-bad">Pi Zero W<small>wrong board</small></span>
+    </div>
+    <div class="hw-tools">
+      <button type="button" id="hwOut" aria-label="Zoom out">&minus;</button>
+      <span id="hwZoom" aria-live="polite">1x</span>
+      <button type="button" id="hwIn" aria-label="Zoom in">+</button>
+      <button type="button" id="hwFit">Fit</button>
+      <button type="button" id="hwFull">Full screen</button>
+      <label class="optin"><input type="checkbox" id="hwLabels" checked> Marks</label>
+    </div>
+  </div>
+  <p class="hint">Pinch or scroll to zoom, drag to move. Tap a number to go to that part.</p>
+
+  <ol class="hw-list" id="hwList"></ol>
+
+  <p class="bootnote easy-copy">These are pictures of one board each, not of yours. The text on the
+     chips, the date codes and the colours can be different. The place, the shape and the number of
+     the parts, and the lines between them, must be the same.</p>
+  <p class="bootnote terse-copy">One reference board each, not your unit. Chip markings, date codes,
+     solder mask shade and second-source passives can differ. Placement, footprints and traces must
+     match. A visual check finds added parts, extra wires and a swapped board. It cannot see inside a
+     chip or inside the inner layers of a board.</p>
+
+  <div class="adv layer">
+    <p class="k">Where these images come from</p>
+    <ul>
+      <li>Pi Zero v1.3: photo by Horst-Josef,
+        <a href="https://commons.wikimedia.org/wiki/File:Raspberry_Pi_Zero_1.3.jpg" rel="noopener">Wikimedia Commons</a>, CC BY-SA 4.0.</li>
+      <li>Pi Zero W (WH): photo by the Raspberry Pi Foundation,
+        <a href="https://commons.wikimedia.org/wiki/File:Raspberry_Pi_Zero_WH.jpg" rel="noopener">Wikimedia Commons</a>, CC BY-SA 4.0.</li>
+      <li>Plus screen board: drawn from the designer's own Gerber files in
+        <a href="https://github.com/3rdIteration/seedsigner-hardware/tree/7e4f05816bac9b20943996b960d65f37322d617e/display_hats/plus_hat" rel="noopener">3rdIteration/seedsigner-hardware</a>
+        at commit <span class="mono">7e4f058</span>, CERN-OHL-S v2. The board says "PCB Design by MadBo 11-2024".</li>
+    </ul>
+    <p>Both photos are warped onto the same 65 x 30 mm frame with the four mounting holes as
+       anchors, so the slider compares the same spot on both boards. The W photo was taken at a
+       slant, so tall parts lean a little. Our two images are CC BY-SA 4.0, like their sources.</p>
+    <p>Raspberry Pi does not publish the board layout of the Pi Zero, only a reduced schematic.
+       For the Pi Zero a photo is the best reference anyone has. The Plus board is open hardware,
+       so its drawing is exact and stays sharp at any zoom.</p>
+    <p>The same folder also has a newer KiCad version of the Plus board, with a 6-pin USB-C. Your
+       board can be that version. Colours in the drawing are not real colours.</p>
+
+    <p class="k">Parts list of the Plus screen board</p>
+    <div class="hw-bom">
+    <table>
+      <thead><tr><th>Ref</th><th>Qty</th><th>Part</th><th>LCSC</th></tr></thead>
+      <tbody>
+        <tr><td>J3 to J10</td><td>8</td><td>C&amp;K PTS636 SM25F push button</td><td class="mono">C2689642</td></tr>
+        <tr><td>CONN2</td><td>1</td><td>Liansheng FH-00369, 40-pin socket to the Pi</td><td class="mono">C2685112</td></tr>
+        <tr><td>J2</td><td>1</td><td>Samtec ZF5S-40-01-T-WT, 40-contact ribbon connector</td><td class="mono">C262648</td></tr>
+        <tr><td>J11</td><td>1</td><td>HRO TYPE-C-31-M-12, USB-C</td><td class="mono">C165948</td></tr>
+        <tr><td>Q5</td><td>1</td><td>SI2302, SOT-23 transistor</td><td class="mono">C5296725</td></tr>
+        <tr><td>R1 to R4</td><td>4</td><td>0 ohm, 0805</td><td class="mono">C269738</td></tr>
+        <tr><td>R5</td><td>1</td><td>10k, 0805</td><td class="mono">C17414</td></tr>
+        <tr><td>R6 to R8</td><td>3</td><td>62 ohm, 0805</td><td class="mono">C2933559</td></tr>
+        <tr><td>R9</td><td>1</td><td>330 ohm, 0805</td><td class="mono">C2907321</td></tr>
+        <tr><td>R10</td><td>1</td><td>33k, 0805</td><td class="mono">C17633</td></tr>
+        <tr><td>R12, R13</td><td>2</td><td>5.1k, 0805</td><td class="mono">C144553</td></tr>
+        <tr><td>C1, C2</td><td>2</td><td>100 nF, 0805</td><td class="mono">C1711</td></tr>
+        <tr><td>CONN1</td><td>1</td><td>2.8 inch IPS SPI screen, 40 pins, ST7789</td><td></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p class="fn">Copied from the BOM file in the same folder. Nothing on the list is a radio,
+       a memory chip or a processor.</p>
+  </div>
+
+  <div class="cyp layer">
+    <p class="k">Make these images yourself</p>
+    <pre class="mono">git clone https://github.com/3rdIteration/seedsigner-hardware
+git -C seedsigner-hardware checkout 7e4f05816bac9b20943996b960d65f37322d617e
+# Open display_hats/plus_hat/designspark_format/*.gbr in any Gerber viewer,
+# or rebuild the two SVGs on this page byte for byte:
+git clone https://github.com/bitsagarob/seedsigner-verify &amp;&amp; cd seedsigner-verify
+npm i pcb-stackup@4
+node tools/render-plus-hat.mjs ../seedsigner-hardware/display_hats/plus_hat/designspark_format
+sha256sum hw/plus-hat-*.svg   # compare with signatures/manifest.txt</pre>
+    <p><span class="mono">tools/align-pi-photos.sh</span> downloads the two photos and holds the
+       hole coordinates used for the warp, so you can check where every pixel came from.</p>
+    <p class="k">What looking cannot prove</p>
+    <p>A chip with the right shape and the right text can still be a different chip. The Pi Zero
+       has copper layers inside the board that nobody sees without an X-ray. A good match lowers
+       the risk of a crude implant or a swapped board. It does not prove the hardware is honest.</p>
+  </div>
+</section>
+
 </main>
 
 <footer class="site">
@@ -295,5 +399,6 @@
 </footer>
 
 <script type="module" src="app.js"></script>
+<script type="module" src="hardware.js"></script>
 </body>
 </html>
