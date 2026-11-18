@@ -74,12 +74,19 @@ hand would be exactly the kind of unverifiable claim this project argues against
 
 ## Cutting a signed release of the site
 
+If the release key is in its own keyring and not in `~/.gnupg`, set `GNUPGHOME` to that keyring
+first. Without it, `gpg` stops with "No secret key", which looks like a missing key. Name the key
+in both signing steps: a plain `git tag -s` picks a key by your committer email, and that email
+need not be the key's.
+
 ```
+# export GNUPGHOME=<the release keyring>   # only if the key is not in ~/.gnupg
 ./make-manifest.sh > signatures/manifest.txt
-gpg --detach-sign --armor --output signatures/manifest.txt.asc signatures/manifest.txt
+gpg --detach-sign --armor --local-user 715E4B76200E7455C8F0AAB4DE395EC9D53D5FF3 \
+    --output signatures/manifest.txt.asc signatures/manifest.txt
 git add -A
 git commit -m "release: <what changed>"
-git tag -s site-$(date +%Y-%m-%d) -m "signed site release"
+git tag -s -u 715E4B76200E7455C8F0AAB4DE395EC9D53D5FF3 site-$(date +%Y-%m-%d) -m "signed site release"
 git push && git push --tags
 ```
 
