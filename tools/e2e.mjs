@@ -32,7 +32,10 @@ const check = (cond, label, extra = '') => {
 
 /* Build a single-entry zip byte by byte, so the refusal paths in zip.js can be
    driven with archives no publisher would ever produce. Fields are the local
-   file header, APPNOTE.TXT 4.3.7. */
+   file header, APPNOTE.TXT 4.3.7, then the central directory record (4.3.12)
+   and the end record (4.3.16), as in a real release. directory: false leaves
+   the last two out. before: bytes put ahead of the entry, which the directory
+   then points past. */
 function makeZip(o = {}) {
   const body = o.body ?? Buffer.from('hello world');
   const method = o.method ?? 8;
@@ -49,7 +52,27 @@ function makeZip(o = {}) {
   h.writeUInt32LE(o.usize ?? body.length, 22);
   h.writeUInt16LE(name.length, 26);
   h.writeUInt16LE(extra.length, 28);
-  return Buffer.concat([h, name, extra, data]);
+  const entry = Buffer.concat([h, name, extra, data]);
+  if (o.directory === false) return entry;
+
+  const lead = o.before ?? Buffer.alloc(0);
+  const c = Buffer.alloc(46);
+  c.writeUInt32LE(0x02014b50, 0);
+  c.writeUInt16LE(20, 4);
+  c.writeUInt16LE(20, 6);
+  c.writeUInt16LE(o.flags ?? 0, 8);
+  c.writeUInt16LE(method, 10);
+  c.writeUInt32LE(o.csize ?? data.length, 20);
+  c.writeUInt32LE(o.usize ?? body.length, 24);
+  c.writeUInt16LE(name.length, 28);
+  c.writeUInt32LE(lead.length, 42);                    // where the entry starts
+  const e = Buffer.alloc(22);
+  e.writeUInt32LE(0x06054b50, 0);
+  e.writeUInt16LE(1, 8);
+  e.writeUInt16LE(1, 10);
+  e.writeUInt32LE(c.length + name.length, 12);
+  e.writeUInt32LE(lead.length + entry.length, 16);
+  return Buffer.concat([lead, entry, c, name, e]);
 }
 
 /* Run zip.js directly against those bytes, in the real browser. */
@@ -338,7 +361,7 @@ console.log('\n9. Malformed zips are refused, not guessed at');
   const body = Buffer.from('hello world');
   const expected = createHash('sha256').update(body).digest('hex');
 
-  // Positive control first. If this fails the other nine prove nothing.
+  // Positive control first. If this fails the other twelve prove nothing.
   const good = await tryZip(page, makeZip({ body }));
   check(good.ok && good.sha256 === expected, 'a well-formed zip still hashes the image inside',
     JSON.stringify(good));
@@ -355,6 +378,15 @@ console.log('\n9. Malformed zips are refused, not guessed at');
     ['a corrupted deflate stream', makeZip({ rawData: Buffer.from([1, 2, 3, 4, 5, 6, 7, 8]) }),
       /could not be decompressed/i],
     ['an entry shorter than it claims', makeZip({ body, usize: 999999 }), /ended early/i],
+    // deepsec, 2026-11-18: the genuine image at offset 0, a second image after
+    // it, and a directory that points at the second. unzip, 7-Zip and Etcher
+    // extract the second one; zip.js used to hash the first and say genuine.
+    ['a second image hidden behind the first',
+      makeZip({ body: Buffer.from('evil firmware'), before: makeZip({ body, directory: false }) }),
+      /not built the way the release is/i],
+    ['a zip cut off before its directory', makeZip({ body, directory: false }), /truncated/i],
+    ['an entry longer than it claims (a decompression bomb)',
+      makeZip({ body: Buffer.alloc(8 << 20), usize: 1000 }), /more data than it claims/i],
   ];
 
   for (const [label, buf, pattern] of cases) {

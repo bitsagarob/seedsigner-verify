@@ -646,3 +646,49 @@ Amazon photo, which is nearly straight on. Two print versions exist: newer board
 - "Power Only, Data Pins Disabled" is the designer's silkscreen text. Nobody here has traced the
   USB-C data pads on the copper layers.
 - The newer KiCad version of the Plus board (6-pin USB-C) is not drawn.
+
+## 13. zip.js checks the whole zip, not only its first entry (2026-11-18)
+
+A deepsec scan found that `zip.js` read only the local header at offset 0 and never looked at
+the central directory. unzip, 7-Zip, Windows Explorer, macOS Archive Utility and Etcher pick what
+to extract from the central directory. So a zip could hold the genuine image at offset 0 and a
+second image after it, with the directory pointing at the second: this page said genuine, and
+an unzip tool gave the second image. Reproduced before the fix with a crafted zip: `zip.js`
+hashed the genuine bytes, and Python's `zipfile` extracted the other image.
+
+**The fix.** Before it hashes anything, `zip.js` now requires the exact layout of a one-entry
+release: the entry at offset 0, then its one directory record, then the end record, with no
+comment and no byte in between. The directory record must match the local header (flags,
+method, CRC-32, sizes, name). The real B13 zip has this layout: one entry, directory at
+314179650 right after the data, 122 bytes, end record with no comment.
+
+**Also fixed.** The read loop now stops as soon as the inflated data passes the declared size.
+Before, a small crafted zip could inflate for hours at "100%" before it failed.
+
+### Tests
+
+`tools/e2e.mjs` builds its test zips with a central directory now, and has three new cases. The
+hidden-image case and the bomb case were run against the old `zip.js` first: it accepted the
+hidden image and gave the wrong message for the bomb. `node tools/e2e.mjs`: all 50 checks pass.
+
+```
+6b. Smartcard zip, correct product (314 MB zip, 512 MiB inside)
+  OK   green result from inside the zip
+       unzipped and hashed in 13.8s
+9. Malformed zips are refused, not guessed at
+  OK   a well-formed zip still hashes the image inside
+  OK   refuses a second image hidden behind the first
+  OK   refuses a zip cut off before its directory
+  OK   refuses an entry longer than it claims (a decompression bomb)
+10. Firefox, the real B13 zip end to end
+  OK   the real smartcard zip verifies green in Firefox
+
+ALL PASS
+```
+
+### Not verified
+
+- A future release zip with a comment, a second file or zip64 is now refused. Run the tests
+  against each new release (UPDATING.md step 6) to find out before visitors do.
+- The CRC-32 of the inflated image is still not computed. The SHA-256 compare covers the bytes;
+  only an unzip tool would notice a wrong CRC.
